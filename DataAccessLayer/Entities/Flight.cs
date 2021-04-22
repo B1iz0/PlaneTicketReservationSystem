@@ -24,5 +24,6 @@ namespace DataAccessLayer.Entities
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalDate { get; set; }
         public DateTime ArrivalTime { get; set; }
+        public List<Booking> Bookings { get; set; }
     }
 }
