@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DataAccessLayer.Entities
+namespace PlaneTicketReservationSystem.Data.Entities
 {
     public class AirplaneEntity
     {

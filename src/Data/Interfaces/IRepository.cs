@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace DataAccessLayer.Interfaces
+namespace PlaneTicketReservationSystem.Data.Interfaces
 {
     public interface IRepository<T> where T : class
     {

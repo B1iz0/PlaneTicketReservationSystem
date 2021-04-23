@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using DataAccessLayer.DataContext;
-using DataAccessLayer.Entities;
-using DataAccessLayer.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using PlaneTicketReservationSystem.Data.DataContext;
+using PlaneTicketReservationSystem.Data.Entities;
+using PlaneTicketReservationSystem.Data.Interfaces;
 
-namespace DataAccessLayer.Repositories
+namespace PlaneTicketReservationSystem.Data.Repositories
 {
     public class AirplaneRepository : IRepository<AirplaneEntity>
     {

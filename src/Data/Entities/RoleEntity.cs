@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DataAccessLayer.Entities
+namespace PlaneTicketReservationSystem.Data.Entities
 {
     public class RoleEntity
     {

@@ -1,7 +1,7 @@
-﻿using DataAccessLayer.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using PlaneTicketReservationSystem.Data.Entities;
 
-namespace DataAccessLayer.DataContext
+namespace PlaneTicketReservationSystem.Data.DataContext
 {
     public class ReservationSystemContext : DbContext
     {
