@@ -5,17 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccessLayer.Entities
 {
-    public class Booking
+    public class BookingEntity
     {
         [Key]
         public int Id { get; set; }
         [Required]
         public int FlightId { get; set; }
         [ForeignKey("FlightId")]
-        public Flight Flight { get; set; }
+        public FlightEntity Flight { get; set; }
         [Required]
         public int UserId { get; set; }
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public UserEntity User { get; set; }
     }
 }

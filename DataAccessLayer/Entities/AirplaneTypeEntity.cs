@@ -5,12 +5,11 @@ using System.Text;
 
 namespace DataAccessLayer.Entities
 {
-    public class Country
+    public class AirplaneTypeEntity
     {
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
-        public List<City> Cities { get; set; } = new List<City>();
+        public string TypeName { get; set; }
     }
 }

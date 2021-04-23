@@ -2,7 +2,7 @@
 
 namespace DataAccessLayer.Entities
 {
-    public class Role
+    public class RoleEntity
     {
         [Key]
         public int Id { get; set; }

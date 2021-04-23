@@ -6,14 +6,14 @@ using System.Text;
 
 namespace DataAccessLayer.Entities
 {
-    public class Flight
+    public class FlightEntity
     {
         [Key]
         public int Id { get; set; }
         [Required]
         public int AirplaneId { get; set; }
         [ForeignKey("AirplaneId")]
-        public Airplane Airplane { get; set; }
+        public AirplaneEntity Airplane { get; set; }
         [Required]
         public long FlightNumber { get; set; }
         [Required]
@@ -24,6 +24,6 @@ namespace DataAccessLayer.Entities
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalDate { get; set; }
         public DateTime ArrivalTime { get; set; }
-        public List<Booking> Bookings { get; set; }
+        public List<BookingEntity> Bookings { get; set; }
     }
 }

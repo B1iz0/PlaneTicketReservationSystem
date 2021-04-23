@@ -6,14 +6,14 @@ using System.Text;
 
 namespace DataAccessLayer.Entities
 {
-    public class User
+    public class UserEntity
     {
         [Key]
         public string Email { get; set; }
         [Required]
         public int RoleId { get; set; }
         [ForeignKey("RoleId")]
-        public Role Role { get; set; }
+        public RoleEntity Role { get; set; }
         [Required]
         public string Login { get; set; }
         [Required]
@@ -23,6 +23,6 @@ namespace DataAccessLayer.Entities
         [Required]
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
-        public List<Booking> Bookings { get; set; } = new List<Booking>();
+        public List<BookingEntity> Bookings { get; set; } = new List<BookingEntity>();
     }
 }

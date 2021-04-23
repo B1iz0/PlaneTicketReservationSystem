@@ -10,13 +10,13 @@ namespace DataAccessLayer.DataContext
         {
         }
 
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<AirplaneType> AirplaneTypes { get; set; }
-        public DbSet<Airplane> Airplanes { get; set; }
-        public DbSet<Flight> Flights { get; set; }
-        public DbSet<Country> Countries { get; set; }
-        public DbSet<City> Cities { get; set; }
-        public DbSet<Airport> Airports { get; set; }
+        public DbSet<RoleEntity> Roles { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<AirplaneTypeEntity> AirplaneTypes { get; set; }
+        public DbSet<AirplaneEntity> Airplanes { get; set; }
+        public DbSet<FlightEntity> Flights { get; set; }
+        public DbSet<CountryEntity> Countries { get; set; }
+        public DbSet<CityEntity> Cities { get; set; }
+        public DbSet<AirportEntity> Airports { get; set; }
     }
 }

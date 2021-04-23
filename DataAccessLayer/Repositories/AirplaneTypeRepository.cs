@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Repositories
 {
-    public class AirplaneTypeRepository : IRepository<AirplaneType>
+    public class AirplaneTypeRepository : IRepository<AirplaneTypeEntity>
     {
         private ReservationSystemContext db;
 
@@ -17,34 +17,34 @@ namespace DataAccessLayer.Repositories
         {
             this.db = context;
         }
-        public IEnumerable<AirplaneType> GetAll()
+        public IEnumerable<AirplaneTypeEntity> GetAll()
         {
             return db.AirplaneTypes;
         }
 
-        public AirplaneType Get(int id)
+        public AirplaneTypeEntity Get(int id)
         {
             return db.AirplaneTypes.Find(id);
         }
 
-        public IEnumerable<AirplaneType> Find(Func<AirplaneType, bool> predicate)
+        public IEnumerable<AirplaneTypeEntity> Find(Func<AirplaneTypeEntity, bool> predicate)
         {
             return db.AirplaneTypes.Where(predicate).ToList();
         }
 
-        public void Create(AirplaneType item)
+        public void Create(AirplaneTypeEntity item)
         {
             db.AirplaneTypes.Add(item);
         }
 
-        public void Update(AirplaneType item)
+        public void Update(AirplaneTypeEntity item)
         {
             db.Entry(item).State = EntityState.Modified;
         }
 
         public void Delete(int id)
         {
-            AirplaneType type = db.AirplaneTypes.Find(id);
+            AirplaneTypeEntity type = db.AirplaneTypes.Find(id);
             if (type != null)
             {
                 db.AirplaneTypes.Remove(type);

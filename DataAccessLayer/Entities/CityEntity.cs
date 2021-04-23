@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DataAccessLayer.Entities
 {
-    public class City
+    public class CityEntity
     {
         [Key]
         public int Id { get; set; }
@@ -15,7 +15,7 @@ namespace DataAccessLayer.Entities
         [Required]
         public int CountryId { get; set; }
         [ForeignKey("CountryId")]
-        public Country Country { get; set; }
-        public List<Airport> Airports { get; set; } = new List<Airport>();
+        public CountryEntity Country { get; set; }
+        public List<AirportEntity> Airports { get; set; } = new List<AirportEntity>();
     }
 }
