@@ -7,17 +7,11 @@ namespace PlaneTicketReservationSystem.Data.Entities
 {
     public class FlightEntity
     {
-        [Key]
         public int Id { get; set; }
-        [Required]
         public int AirplaneId { get; set; }
-        [ForeignKey("AirplaneId")]
         public AirplaneEntity Airplane { get; set; }
-        [Required]
         public long FlightNumber { get; set; }
-        [Required]
         public int FromId { get; set; }
-        [Required]
         public int ToId { get; set; }
         public DateTime DepartureDate { get; set; }
         public DateTime DepartureTime { get; set; }

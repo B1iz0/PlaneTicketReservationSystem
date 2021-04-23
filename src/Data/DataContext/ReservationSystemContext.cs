@@ -18,5 +18,6 @@ namespace PlaneTicketReservationSystem.Data.DataContext
         public DbSet<CountryEntity> Countries { get; set; }
         public DbSet<CityEntity> Cities { get; set; }
         public DbSet<AirportEntity> Airports { get; set; }
+        public DbSet<BookingEntity> Bookings { get; set; }
     }
 }

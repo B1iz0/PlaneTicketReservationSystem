@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PlaneTicketReservationSystem.Data.DataContext;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi
 {
@@ -19,6 +21,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<ReservationSystemContext>(opt =>
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                    b => b.MigrationsAssembly("ReservationSystemApi")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
