@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlaneTicketReservationSystem.Data.Entities;
 
-namespace PlaneTicketReservationSystem.Data.DataContext
+namespace PlaneTicketReservationSystem.Data
 {
     public class ReservationSystemContext : DbContext
     {
