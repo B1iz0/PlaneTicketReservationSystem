@@ -10,8 +10,8 @@ using PlaneTicketReservationSystem.Data.DataContext;
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
 {
     [DbContext(typeof(ReservationSystemContext))]
-    [Migration("20210427075051_FirstMigration")]
-    partial class FirstMigration
+    [Migration("20210427105435_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,7 +34,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
                     b.Property<long>("Capacity")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("CompanyEntityId")
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FlightId")
                         .HasColumnType("int");
 
                     b.Property<int>("ModelNumber")
@@ -47,7 +50,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
 
                     b.HasIndex("AirplaneTypeId");
 
-                    b.HasIndex("CompanyEntityId");
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Airplanes");
                 });
@@ -60,7 +63,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.HasKey("Id");
 
@@ -77,17 +82,19 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
                     b.Property<int>("CityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CompanyEntityId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
 
-                    b.HasIndex("CompanyEntityId");
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Airports");
                 });
@@ -125,7 +132,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
@@ -145,7 +154,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
@@ -162,7 +173,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
@@ -202,7 +215,12 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AirplaneId");
+                    b.HasIndex("AirplaneId")
+                        .IsUnique();
+
+                    b.HasIndex("FromId");
+
+                    b.HasIndex("ToId");
 
                     b.ToTable("Flights");
                 });
@@ -215,7 +233,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
@@ -230,18 +250,21 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Login")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -260,16 +283,20 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.AirplaneEntity", b =>
                 {
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.AirplaneTypeEntity", "AirplaneType")
-                        .WithMany()
+                        .WithMany("Airplanes")
                         .HasForeignKey("AirplaneTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PlaneTicketReservationSystem.Data.Entities.CompanyEntity", "Company")
+                        .WithMany("Airplanes")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PlaneTicketReservationSystem.Data.Entities.CompanyEntity", null)
-                        .WithMany("Airplanes")
-                        .HasForeignKey("CompanyEntityId");
-
                     b.Navigation("AirplaneType");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.AirportEntity", b =>
@@ -280,11 +307,15 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PlaneTicketReservationSystem.Data.Entities.CompanyEntity", null)
+                    b.HasOne("PlaneTicketReservationSystem.Data.Entities.CompanyEntity", "Company")
                         .WithMany("Airports")
-                        .HasForeignKey("CompanyEntityId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("City");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.BookingEntity", b =>
@@ -320,9 +351,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.CompanyEntity", b =>
                 {
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.CountryEntity", "Country")
-                        .WithMany()
+                        .WithMany("Companies")
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Country");
@@ -331,23 +362,56 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.FlightEntity", b =>
                 {
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.AirplaneEntity", "Airplane")
-                        .WithMany()
-                        .HasForeignKey("AirplaneId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne("Flight")
+                        .HasForeignKey("PlaneTicketReservationSystem.Data.Entities.FlightEntity", "AirplaneId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PlaneTicketReservationSystem.Data.Entities.AirportEntity", "From")
+                        .WithMany("OutgoingAirplanes")
+                        .HasForeignKey("FromId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PlaneTicketReservationSystem.Data.Entities.AirportEntity", "To")
+                        .WithMany("ArrivingAirplanes")
+                        .HasForeignKey("ToId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Airplane");
+
+                    b.Navigation("From");
+
+                    b.Navigation("To");
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.UserEntity", b =>
                 {
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.RoleEntity", "Role")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.AirplaneEntity", b =>
+                {
+                    b.Navigation("Flight");
+                });
+
+            modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.AirplaneTypeEntity", b =>
+                {
+                    b.Navigation("Airplanes");
+                });
+
+            modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.AirportEntity", b =>
+                {
+                    b.Navigation("ArrivingAirplanes");
+
+                    b.Navigation("OutgoingAirplanes");
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.CityEntity", b =>
@@ -365,11 +429,18 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.CountryEntity", b =>
                 {
                     b.Navigation("Cities");
+
+                    b.Navigation("Companies");
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.FlightEntity", b =>
                 {
                     b.Navigation("Bookings");
+                });
+
+            modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.RoleEntity", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.UserEntity", b =>
