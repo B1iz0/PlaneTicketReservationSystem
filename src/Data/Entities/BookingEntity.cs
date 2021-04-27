@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace PlaneTicketReservationSystem.Data.Entities
+﻿namespace PlaneTicketReservationSystem.Data.Entities
 {
     public class BookingEntity
     {

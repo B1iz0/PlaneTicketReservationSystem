@@ -13,6 +13,7 @@ namespace PlaneTicketReservationSystem.Data.DataContext
         public DbSet<RoleEntity> Roles { get; set; }
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<AirplaneTypeEntity> AirplaneTypes { get; set; }
+        public DbSet<CompanyEntity> Companies { get; set; }
         public DbSet<AirplaneEntity> Airplanes { get; set; }
         public DbSet<FlightEntity> Flights { get; set; }
         public DbSet<CountryEntity> Countries { get; set; }
