@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlaneTicketReservationSystem.Data.Entities;
 
@@ -34,6 +36,28 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.Entity<FlightEntity>(FlightConfigure);
             modelBuilder.Entity<RoleEntity>(RoleConfigure);
             modelBuilder.Entity<UserEntity>(UserConfigure);
+
+            modelBuilder.Entity<RoleEntity>().HasData(
+                new RoleEntity[]
+                {
+                    new RoleEntity() {Id = 1, Name = "AdminApp"},
+                    new RoleEntity() {Id = 2, Name = "Admin"},
+                    new RoleEntity() {Id = 3, Name = "User"}
+                });
+            modelBuilder.Entity<UserEntity>().HasData(
+                new UserEntity[]
+                {
+                    new UserEntity()
+                    {
+                        Id = 1,
+                        Email = "b1iz0@mail.ru",
+                        Password = PasswordHasher.GenerateHash("12345", PasswordHasher.Salt, SHA256.Create()),
+                        FirstName = "Dmitry",
+                        LastName = "Mashkov",
+                        PhoneNumber = "+375292420474",
+                        RoleId = 1,
+                    }
+                });
         }
 
         public void AirplaneConfigure(EntityTypeBuilder<AirplaneEntity> modelBuilder)

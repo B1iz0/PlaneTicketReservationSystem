@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlaneTicketReservationSystem.Data;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Migrations
 {
     [DbContext(typeof(ReservationSystemContext))]
-    partial class ReservationSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20210428134116_InitializingWithDefaultRoles")]
+    partial class InitializingWithDefaultRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
