@@ -50,12 +50,11 @@ namespace PlaneTicketReservationSystem.Data
                     new UserEntity()
                     {
                         Id = 1,
-                        Email = "b1iz0@mail.ru",
+                        Email = "admin",
                         Password = PasswordHasher.GenerateHash("12345", PasswordHasher.Salt, SHA256.Create()),
-                        FirstName = "Dmitry",
-                        LastName = "Mashkov",
-                        PhoneNumber = "+375292420474",
-                        RoleId = 1,
+                        FirstName = "admin",
+                        LastName = "admin",
+                        RoleId = 1
                     }
                 });
         }
