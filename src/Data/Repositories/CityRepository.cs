@@ -9,44 +9,49 @@ namespace PlaneTicketReservationSystem.Data.Repositories
 {
     public class CityRepository : IRepository<CityEntity>
     {
-        private ReservationSystemContext db;
+        private readonly ReservationSystemContext _db;
+        private readonly DbSet<CityEntity> _cities;
 
         public CityRepository(ReservationSystemContext context)
         {
-            this.db = context;
+            this._db = context;
+            _cities = context.Cities;
         }
         public void Create(CityEntity item)
         {
-            db.Cities.Add(item);
+            _cities.Add(item);
+            _db.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            CityEntity city = db.Cities.Find(id);
+            CityEntity city = _cities.Find(id);
             if (city != null)
             {
-                db.Cities.Remove(city);
+                _cities.Remove(city);
+                _db.SaveChanges();
             }
         }
 
         public IEnumerable<CityEntity> Find(Func<CityEntity, bool> predicate)
         {
-            return db.Cities.Where(predicate).ToList();
+            return _cities.Where(predicate).ToList();
         }
 
         public CityEntity Get(int id)
         {
-            return db.Cities.Find(id);
+            return _cities.Find(id);
         }
 
         public IEnumerable<CityEntity> GetAll()
         {
-            return db.Cities;
+            return _cities;
         }
 
         public void Update(CityEntity item)
         {
-            db.Entry(item).State = EntityState.Modified;
+            _db.Entry(item).State = EntityState.Modified;
+            _db.SaveChanges();
         }
     }
 }

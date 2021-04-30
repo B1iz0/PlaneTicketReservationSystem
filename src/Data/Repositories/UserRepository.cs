@@ -9,45 +9,50 @@ namespace PlaneTicketReservationSystem.Data.Repositories
 {
     public class UserRepository : IRepository<UserEntity>
     {
-        private ReservationSystemContext db;
+        private readonly ReservationSystemContext _db;
+        private readonly DbSet<UserEntity> _users;
 
         public UserRepository(ReservationSystemContext context)
         {
-            this.db = context;
+            this._db = context;
+            _users = context.Users;
         }
 
         public void Create(UserEntity item)
         {
-            db.Users.Add(item);
+            _users.Add(item);
+            _db.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            UserEntity user = db.Users.Find(id);
+            UserEntity user = _users.Find(id);
             if (user != null)
             {
-                db.Users.Remove(user);
+                _users.Remove(user);
+                _db.SaveChanges();
             }
         }
 
         public IEnumerable<UserEntity> Find(Func<UserEntity, bool> predicate)
         {
-            return db.Users.Where(predicate).ToList();
+            return _users.Where(predicate).ToList();
         }
 
         public UserEntity Get(int id)
         {
-            return db.Users.Find(id);
+            return _users.Find(id);
         }
 
         public IEnumerable<UserEntity> GetAll()
         {
-            return db.Users;
+            return _users;
         }
 
         public void Update(UserEntity item)
         {
-            db.Entry(item).State = EntityState.Modified;
+            _db.Entry(item).State = EntityState.Modified;
+            _db.SaveChanges();
         }
     }
 }

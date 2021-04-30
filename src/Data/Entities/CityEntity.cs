@@ -8,6 +8,6 @@ namespace PlaneTicketReservationSystem.Data.Entities
         public string Name { get; set; }
         public int CountryId { get; set; }
         public CountryEntity Country { get; set; }
-        public List<AirportEntity> Airports { get; set; } = new List<AirportEntity>();
+        public List<AirportEntity> Airports { get; set; }
     }
 }

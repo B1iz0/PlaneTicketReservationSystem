@@ -9,43 +9,48 @@ namespace PlaneTicketReservationSystem.Data.Repositories
 {
     public class CountryRepository : IRepository<CountryEntity>
     {
-        private ReservationSystemContext db;
+        private readonly ReservationSystemContext _db;
+        private readonly DbSet<CountryEntity> _countries;
 
         public CountryRepository(ReservationSystemContext context)
         {
-            this.db = context;
+            this._db = context;
+            _countries = context.Countries;
         }
         public IEnumerable<CountryEntity> GetAll()
         {
-            return db.Countries;
+            return _countries;
         }
 
         public CountryEntity Get(int id)
         {
-            return db.Countries.Find(id);
+            return _countries.Find(id);
         }
 
         public IEnumerable<CountryEntity> Find(Func<CountryEntity, bool> predicate)
         {
-            return db.Countries.Where(predicate).ToList();
+            return _countries.Where(predicate).ToList();
         }
 
         public void Create(CountryEntity item)
         {
-            db.Countries.Add(item);
+            _countries.Add(item);
+            _db.SaveChanges();
         }
 
         public void Update(CountryEntity item)
         {
-            db.Entry(item).State = EntityState.Modified;
+            _db.Entry(item).State = EntityState.Modified;
+            _db.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            CountryEntity country = db.Countries.Find(id);
+            CountryEntity country = _countries.Find(id);
             if (country != null)
             {
-                db.Countries.Remove(country);
+                _countries.Remove(country);
+                _db.SaveChanges();
             }
         }
     }

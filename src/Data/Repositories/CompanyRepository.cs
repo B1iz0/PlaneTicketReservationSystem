@@ -9,43 +9,48 @@ namespace PlaneTicketReservationSystem.Data.Repositories
 {
     public class CompanyRepository : IRepository<CompanyEntity>
     {
-        private ReservationSystemContext db;
+        private readonly ReservationSystemContext _db;
+        private readonly DbSet<CompanyEntity> _companies;
 
         public CompanyRepository(ReservationSystemContext context)
         {
-            this.db = context;
+            this._db = context;
+            _companies = context.Companies;
         }
         public IEnumerable<CompanyEntity> GetAll()
         {
-            return db.Companies;
+            return _companies;
         }
 
         public CompanyEntity Get(int id)
         {
-            return db.Companies.Find(id);
+            return _companies.Find(id);
         }
 
         public IEnumerable<CompanyEntity> Find(Func<CompanyEntity, bool> predicate)
         {
-            return db.Companies.Where(predicate).ToList();
+            return _companies.Where(predicate).ToList();
         }
 
         public void Create(CompanyEntity item)
         {
-            db.Companies.Add(item);
+            _companies.Add(item);
+            _db.SaveChanges();
         }
 
         public void Update(CompanyEntity item)
         {
-            db.Entry(item).State = EntityState.Modified;
+            _db.Entry(item).State = EntityState.Modified;
+            _db.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            CompanyEntity company = db.Companies.Find(id);
+            CompanyEntity company = _companies.Find(id);
             if (company != null)
             {
-                db.Companies.Remove(company);
+                _companies.Remove(company);
+                _db.SaveChanges();
             }
         }
     }

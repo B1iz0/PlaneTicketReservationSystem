@@ -12,6 +12,6 @@ namespace PlaneTicketReservationSystem.Data.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
-        public List<BookingEntity> Bookings { get; set; } = new List<BookingEntity>();
+        public List<BookingEntity> Bookings { get; set; }
     }
 }

@@ -9,43 +9,48 @@ namespace PlaneTicketReservationSystem.Data.Repositories
 {
     public class AirplaneTypeRepository : IRepository<AirplaneTypeEntity>
     {
-        private ReservationSystemContext db;
+        private readonly ReservationSystemContext _db;
+        private readonly DbSet<AirplaneTypeEntity> _airplaneTypes;
 
         public AirplaneTypeRepository(ReservationSystemContext context)
         {
-            this.db = context;
+            this._db = context;
+            _airplaneTypes = context.AirplaneTypes;
         }
         public IEnumerable<AirplaneTypeEntity> GetAll()
         {
-            return db.AirplaneTypes;
+            return _airplaneTypes;
         }
 
         public AirplaneTypeEntity Get(int id)
         {
-            return db.AirplaneTypes.Find(id);
+            return _airplaneTypes.Find(id);
         }
 
         public IEnumerable<AirplaneTypeEntity> Find(Func<AirplaneTypeEntity, bool> predicate)
         {
-            return db.AirplaneTypes.Where(predicate).ToList();
+            return _airplaneTypes.Where(predicate).ToList();
         }
 
         public void Create(AirplaneTypeEntity item)
         {
-            db.AirplaneTypes.Add(item);
+            _airplaneTypes.Add(item);
+            _db.SaveChanges();
         }
 
         public void Update(AirplaneTypeEntity item)
         {
-            db.Entry(item).State = EntityState.Modified;
+            _db.Entry(item).State = EntityState.Modified;
+            _db.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            AirplaneTypeEntity type = db.AirplaneTypes.Find(id);
+            AirplaneTypeEntity type = _airplaneTypes.Find(id);
             if (type != null)
             {
-                db.AirplaneTypes.Remove(type);
+                _airplaneTypes.Remove(type);
+                _db.SaveChanges();
             }
         }
     }

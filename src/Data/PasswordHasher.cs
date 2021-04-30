@@ -28,10 +28,10 @@ namespace PlaneTicketReservationSystem.Data
             return Convert.ToBase64String(salt);
         }
 
-        //public static bool CheckHash(string password, string hash)
-        //{
-        //    var passwordHash = GenerateHash(password, , SHA256.Create());
-        //    return hash == passwordHash;
-        //}
+        public static bool CheckHash(string password, string hash)
+        {
+            var passwordHash = GenerateHash(password, Salt, SHA256.Create());
+            return hash == passwordHash;
+        }
     }
 }
