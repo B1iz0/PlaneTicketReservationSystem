@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Mappers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
@@ -19,11 +20,13 @@ namespace PlaneTicketReservationSystem.Business.Services
     {
         private readonly UserRepository _users;
         private readonly AppSettings _appSettings;
+        private readonly UserMapper _mapper;
 
         public UserService(IOptions<AppSettings> appSettings, ReservationSystemContext context)
         {
             _users = new UserRepository(context);
             _appSettings = appSettings.Value;
+            _mapper = new UserMapper();
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
@@ -50,39 +53,23 @@ namespace PlaneTicketReservationSystem.Business.Services
             return new AuthenticateResponse(result, token);
         }
 
-        public IEnumerable<UserEntity> GetAll()
+        public IEnumerable<User> GetAll()
         {
-            return _users.GetAll();
+            return _mapper.FromEntitiesToModels(_users.GetAll());
         }
 
         public User GetById(int id)
         {
-            UserEntity user = _users.Get(id);
-
+            User user = _mapper.FromEntityToModel(_users.Get(id));
+            
             if (user == null) return null;
-            User result = new User()
-            {
-                Email = user.Email,
-                FirstName = user.FirstName,
-                Id = user.Id,
-                LastName = user.LastName,
-                RoleId = user.RoleId,
-                Password = user.Password
-            };
-            return result;
+            return user;
         }
 
         public void Post(User user)
         {
-            _users.Create(
-                new UserEntity()
-                {
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create()),
-                    RoleId = user.RoleId
-                });
+            user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
+            _users.Create(_mapper.FromModelToEntity(user));
         }
 
         public void Delete(int id)

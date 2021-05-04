@@ -7,7 +7,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public interface IUserService
     {
         AuthenticateResponse Authenticate(AuthenticateRequest model);
-        IEnumerable<UserEntity> GetAll();
+        IEnumerable<User> GetAll();
         User GetById(int id);
         void Post(User user);
         void Delete(int id);
