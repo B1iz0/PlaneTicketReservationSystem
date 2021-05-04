@@ -6,6 +6,6 @@ namespace PlaneTicketReservationSystem.Data.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<UserEntity> Users { get; set; }
+        public virtual List<UserEntity> Users { get; set; }
     }
 }

@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
         public int FlightId { get; set; }
-        public FlightEntity Flight { get; set; }
+        public virtual FlightEntity Flight { get; set; }
         public int UserId { get; set; }
-        public UserEntity User { get; set; }
+        public virtual UserEntity User { get; set; }
     }
 }

@@ -6,7 +6,7 @@ namespace PlaneTicketReservationSystem.Data.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<CityEntity> Cities { get; set; }
-        public List<CompanyEntity> Companies { get; set; }
+        public virtual List<CityEntity> Cities { get; set; }
+        public virtual List<CompanyEntity> Companies { get; set; }
     }
 }
