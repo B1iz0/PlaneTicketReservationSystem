@@ -48,7 +48,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         // POST api/<UsersController>
-        [Authorize]
+        [Authorize(Policy = "AdminApp")]
         [HttpPost]
         public void Post([FromBody] User user)
         {

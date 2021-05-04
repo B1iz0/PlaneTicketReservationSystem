@@ -81,13 +81,18 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         private string GenerateJwtToken(User user)
         {
+            var roleName = _users.Get(user.Id).Role.Name;
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Key);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Audience = _appSettings.Audience,
                 Issuer = _appSettings.Issuer,
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim("id", user.Id.ToString()),
+                    new Claim("role", roleName)
+                }),
                 Expires = DateTime.UtcNow.AddMinutes(_appSettings.LifeTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

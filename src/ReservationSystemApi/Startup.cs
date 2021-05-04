@@ -52,6 +52,14 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
                         ValidateIssuerSigningKey = true
                     };
                 });
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("AdminApp", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole("AdminApp");
+                });
+            });
             services.Configure<AppSettings>(Configuration.GetSection("AuthOptions"));
 
             services.AddScoped<IUserService, UserService>();
