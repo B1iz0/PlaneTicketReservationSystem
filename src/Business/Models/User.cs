@@ -8,8 +8,9 @@ namespace PlaneTicketReservationSystem.Business.Models
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public int RoleId { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public string Password { get; set; }
     }
 }

@@ -28,8 +28,12 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
             services.AddCors();
             services.AddControllers();
             services.AddDbContext<ReservationSystemContext>(opt =>
-                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly("ReservationSystemApi")));
+                {
+                    opt.UseLazyLoadingProxies();
+                    opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                        b => b.MigrationsAssembly("ReservationSystemApi"));
+                }
+                );
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {
@@ -48,7 +52,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
                         ValidateIssuerSigningKey = true
                     };
                 });
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<AppSettings>(Configuration.GetSection("AuthOptions"));
 
             services.AddScoped<IUserService, UserService>();
         }
