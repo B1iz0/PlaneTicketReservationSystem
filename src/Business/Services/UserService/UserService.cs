@@ -20,13 +20,13 @@ namespace PlaneTicketReservationSystem.Business.Services.UserService
     {
         private readonly UserRepository _users;
         private readonly AppSettings _appSettings;
-        private readonly BaseMapper<UserEntity, User> _mapper;
+        private readonly UserMapper<UserEntity, User> _mapper;
 
         public UserService(IOptions<AppSettings> appSettings, ReservationSystemContext context)
         {
             _users = new UserRepository(context);
             _appSettings = appSettings.Value;
-            _mapper = new BaseMapper<UserEntity, User>();
+            _mapper = new UserMapper<UserEntity, User>();
         }
 
         public string Authenticate(Authenticate model)
