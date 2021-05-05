@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
+using PlaneTicketReservationSystem.Business.Services.UserService;
+using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels;
+using UserDetails = PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels.UserDetails;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -11,16 +15,20 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly UserMapper _userMapper;
+        private readonly AuthenticateMapper _authMapper;
 
         public UsersController(IUserService userService)
         {
             _userService = userService;
+            _userMapper = new UserMapper();
+            _authMapper = new AuthenticateMapper();
         }
 
         [HttpPost("authenticate")]
         public IActionResult Authenticate(AuthenticateRequest model)
         {
-            var response = _userService.Authenticate(model);
+            var response = _userService.Authenticate(_authMapper.AuthenticateRequestToAuthenticate(model));
 
             if (response == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
@@ -29,7 +37,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         // GET: api/<UsersController>
-        [Authorize]
+        [Authorize(Policy = "AdminApp")]
         [HttpGet]
         //Will use mapping soon
         public IActionResult Get()
@@ -49,10 +57,18 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // POST api/<UsersController>
         [Authorize(Policy = "AdminApp")]
-        [HttpPost]
-        public void Post([FromBody] User user)
+        [HttpPost()]
+        public void Post([FromBody] UserRegistration user)
         {
-            _userService.Post(user);
+            _userService.Post(_userMapper.UserRegistrationToUser(user));
+        }
+
+        // POST api/<UsersController>
+        [Authorize]
+        [HttpPost("registration")]
+        public void Registration([FromBody] UserRegistration user)
+        {
+            _userService.Post(_userMapper.UserRegistrationToUser(user));
         }
 
         // PUT api/<UsersController>/5

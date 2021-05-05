@@ -14,43 +14,30 @@ using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Repositories;
 
-namespace PlaneTicketReservationSystem.Business.Services
+namespace PlaneTicketReservationSystem.Business.Services.UserService
 {
     public class UserService : IUserService
     {
         private readonly UserRepository _users;
         private readonly AppSettings _appSettings;
-        private readonly UserMapper _mapper;
+        private readonly BaseMapper<UserEntity, User> _mapper;
 
         public UserService(IOptions<AppSettings> appSettings, ReservationSystemContext context)
         {
             _users = new UserRepository(context);
             _appSettings = appSettings.Value;
-            _mapper = new UserMapper();
+            _mapper = new BaseMapper<UserEntity, User>();
         }
 
-        public AuthenticateResponse Authenticate(AuthenticateRequest model)
+        public string Authenticate(Authenticate model)
         {
-            var users = _users.Find(x => x.Email == model.Email && PasswordHasher.CheckHash(model.Password, x.Password)).ToList();
-
-            // return null if user not found
-            if (!users.Any()) return null;
-
-            UserEntity user = users.First();
-            User result = new User()
-            {
-                Email = user.Email,
-                FirstName = user.FirstName,
-                Id = user.Id,
-                LastName = user.LastName,
-                RoleId = user.RoleId,
-                Password = user.Password
-            };
-
-            // authentication successful so generate jwt token
+            var user = _users.Find(x => x.Email == model.Email && PasswordHasher.CheckHash(model.Password, x.Password))
+                .ToList()
+                .First();
+            if (user == null) return null;
+            User result = _mapper.FromEntityToModel(user);
             var token = GenerateJwtToken(result);
-
-            return new AuthenticateResponse(result, token);
+            return token;
         }
 
         public IEnumerable<User> GetAll()
@@ -61,7 +48,6 @@ namespace PlaneTicketReservationSystem.Business.Services
         public User GetById(int id)
         {
             User user = _mapper.FromEntityToModel(_users.Get(id));
-            
             if (user == null) return null;
             return user;
         }
@@ -77,8 +63,6 @@ namespace PlaneTicketReservationSystem.Business.Services
             _users.Delete(id);
         }
 
-        // helper methods
-
         private string GenerateJwtToken(User user)
         {
             var roleName = _users.Get(user.Id).Role.Name;
@@ -91,6 +75,7 @@ namespace PlaneTicketReservationSystem.Business.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim("id", user.Id.ToString()),
+                    new Claim("email", user.Email),
                     new Claim("role", roleName)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(_appSettings.LifeTime),

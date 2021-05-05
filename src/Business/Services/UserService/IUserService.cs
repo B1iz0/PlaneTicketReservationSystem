@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Data.Entities;
 
-namespace PlaneTicketReservationSystem.Business.Services
+namespace PlaneTicketReservationSystem.Business.Services.UserService
 {
     public interface IUserService
     {
-        AuthenticateResponse Authenticate(AuthenticateRequest model);
+        string Authenticate(Authenticate model);
         IEnumerable<User> GetAll();
         User GetById(int id);
         void Post(User user);
