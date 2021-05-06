@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.RoleModels;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels
 {
@@ -9,7 +10,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int RoleId { get; set; }
+        public RoleResponse Role { get; set; }
         [JsonIgnore]
         public string Password { get; set; }
+        // Add List of Bookings for current user
     }
 }

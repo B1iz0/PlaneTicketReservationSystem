@@ -7,10 +7,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using PlaneTicketReservationSystem.Business;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Services;
+using PlaneTicketReservationSystem.Business.Services.RoleService;
 using PlaneTicketReservationSystem.Business.Services.UserService;
 using PlaneTicketReservationSystem.Data;
+using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi
 {
@@ -64,6 +67,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
             services.Configure<AppSettings>(Configuration.GetSection("AuthOptions"));
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
+
+            services.AddScoped<ApiMappingsConfiguration>();
+            services.AddScoped<BusinessMappingsConfiguration>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

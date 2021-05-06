@@ -5,10 +5,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlaneTicketReservationSystem.Business.Helpers;
-using PlaneTicketReservationSystem.Business.Mappers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
@@ -20,13 +20,13 @@ namespace PlaneTicketReservationSystem.Business.Services.UserService
     {
         private readonly UserRepository _users;
         private readonly AppSettings _appSettings;
-        private readonly UserMapper _mapper;
+        private readonly Mapper _userMapper;
 
-        public UserService(IOptions<AppSettings> appSettings, ReservationSystemContext context)
+        public UserService(IOptions<AppSettings> appSettings, ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _users = new UserRepository(context);
             _appSettings = appSettings.Value;
-            _mapper = new UserMapper();
+            _userMapper = new Mapper(conf.UserMapperConfiguration);
         }
 
         public string Authenticate(Authenticate model)
@@ -35,19 +35,19 @@ namespace PlaneTicketReservationSystem.Business.Services.UserService
                 .ToList()
                 .First();
             if (user == null) return null;
-            User result = _mapper.FromEntityToModel(user);
+            User result = _userMapper.Map<User>(user);
             var token = GenerateJwtToken(result);
             return token;
         }
 
         public IEnumerable<User> GetAll()
         {
-            return _mapper.FromEntitiesToModels(_users.GetAll());
+            return _userMapper.Map<IEnumerable<User>>(_users.GetAll());
         }
 
         public User GetById(int id)
         {
-            User user = _mapper.FromEntityToModel(_users.Get(id));
+            User user = _userMapper.Map<User>(_users.Get(id));
             if (user == null) return null;
             return user;
         }
@@ -55,7 +55,7 @@ namespace PlaneTicketReservationSystem.Business.Services.UserService
         public void Post(User user)
         {
             user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
-            _users.Create(_mapper.FromModelToEntity(user));
+            _users.Create(_userMapper.Map<UserEntity>(user));
         }
 
         public void Delete(int id)
