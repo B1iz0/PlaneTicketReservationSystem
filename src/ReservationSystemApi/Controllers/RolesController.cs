@@ -50,8 +50,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // PUT api/<RolesController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] RoleRequest value)
         {
+            _roleService.Update(id, _roleMapper.Map<Role>(value));
         }
 
         // DELETE api/<RolesController>/5
