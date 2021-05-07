@@ -20,7 +20,7 @@ namespace PlaneTicketReservationSystem.Data
             return result.ToString();
         }
 
-        public static string GenerateSalt(int saltLength)
+        public static string GenerateSalt(int saltLength = SaltLength)
         {
             var salt = new byte[saltLength];
             var random = new RNGCryptoServiceProvider();

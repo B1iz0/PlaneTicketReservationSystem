@@ -21,42 +21,36 @@ namespace PlaneTicketReservationSystem.Business
         {
             UserConfiguration = new MapperConfiguration(x =>
             {
-                x.CreateMap<UserEntity, User>();
-                x.CreateMap<User, UserEntity>();
+                x.CreateMap<UserEntity, User>().ReverseMap();
                 x.CreateMap<RoleEntity, Role>();
             });
             RoleConfiguration = new MapperConfiguration(x =>
             {
-                x.CreateMap<RoleEntity, Role>();
-                x.CreateMap<Role, RoleEntity>();
+                x.CreateMap<RoleEntity, Role>().ReverseMap();
                 x.CreateMap<UserEntity, User>();
             });
             AirplaneConfiguration = new MapperConfiguration(x =>
             {
-                x.CreateMap<AirplaneEntity, Airplane>();
-                x.CreateMap<Airplane, AirplaneEntity>();
+                x.CreateMap<AirplaneEntity, Airplane>().ReverseMap();
                 x.CreateMap<AirplaneTypeEntity, AirplaneTypeEntity>();
                 x.CreateMap<CompanyEntity, Company>();
                 x.CreateMap<FlightEntity, Flight>();
             });
             AirplaneTypeConfiguration = new MapperConfiguration(x =>
             {
-                x.CreateMap<AirplaneTypeEntity, AirplaneType>();
-                x.CreateMap<AirplaneType, AirplaneTypeEntity>();
+                x.CreateMap<AirplaneTypeEntity, AirplaneType>().ReverseMap();
                 x.CreateMap<AirplaneEntity, Airplane>();
             });
             AirportConfiguration = new MapperConfiguration(x =>
             {
-                x.CreateMap<AirportEntity, Airport>();
-                x.CreateMap<Airport, AirportEntity>();
+                x.CreateMap<AirportEntity, Airport>().ReverseMap();
                 x.CreateMap<CityEntity, City>();
                 x.CreateMap<CompanyEntity, Company>();
                 x.CreateMap<FlightEntity, Flight>();
             });
             BookingConfiguration = new MapperConfiguration(x =>
             {
-                x.CreateMap<BookingEntity, Booking>();
-                x.CreateMap<Booking, BookingEntity>();
+                x.CreateMap<BookingEntity, Booking>().ReverseMap();
                 x.CreateMap<FlightEntity, Flight>();
                 x.CreateMap<UserEntity, User>();
             });
@@ -68,22 +62,19 @@ namespace PlaneTicketReservationSystem.Business
             });
             CompanyConfiguration = new MapperConfiguration(x =>
             {
-                x.CreateMap<CompanyEntity, Company>();
-                x.CreateMap<Company, CompanyEntity>();
+                x.CreateMap<CompanyEntity, Company>().ReverseMap();
                 x.CreateMap<CountryEntity, Country>();
                 x.CreateMap<AirplaneEntity, Airplane>();
             });
             CountryConfiguration = new MapperConfiguration(x =>
             {
-                x.CreateMap<CountryEntity, Country>();
-                x.CreateMap<Country, CountryEntity>();
+                x.CreateMap<CountryEntity, Country>().ReverseMap();
                 x.CreateMap<CityEntity, City>();
                 x.CreateMap<CompanyEntity, Company>();
             });
             FlightConfiguration = new MapperConfiguration(x =>
             {
-                x.CreateMap<FlightEntity, Flight>();
-                x.CreateMap<Flight, FlightEntity>();
+                x.CreateMap<FlightEntity, Flight>().ReverseMap();
                 x.CreateMap<AirplaneEntity, Airplane>();
                 x.CreateMap<AirportEntity, Airport>();
                 x.CreateMap<BookingEntity, Booking>();
