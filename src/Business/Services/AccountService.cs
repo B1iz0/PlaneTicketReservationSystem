@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using Microsoft.Extensions.Options;
@@ -11,22 +9,21 @@ using Microsoft.IdentityModel.Tokens;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
-using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Repositories;
 
-namespace PlaneTicketReservationSystem.Business.Services.UserService
+namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class UserService : IUserService
+    public class AccountService : IAccountService
     {
         private readonly UserRepository _users;
         private readonly AppSettings _appSettings;
         private readonly Mapper _userMapper;
 
-        public UserService(IOptions<AppSettings> appSettings, ReservationSystemContext context, BusinessMappingsConfiguration conf)
+        public AccountService(IOptions<AppSettings> appSettings, ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _users = new UserRepository(context);
             _appSettings = appSettings.Value;
-            _userMapper = new Mapper(conf.UserMapperConfiguration);
+            _userMapper = new Mapper(conf.UserConfiguration);
         }
 
         public string Authenticate(Authenticate model)
@@ -40,32 +37,10 @@ namespace PlaneTicketReservationSystem.Business.Services.UserService
             return token;
         }
 
-        public IEnumerable<User> GetAll()
-        {
-            return _userMapper.Map<IEnumerable<User>>(_users.GetAll());
-        }
-
-        public User GetById(int id)
-        {
-            User user = _userMapper.Map<User>(_users.Get(id));
-            if (user == null) return null;
-            return user;
-        }
-
-        public void Post(User user)
-        {
-            user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
-            _users.Create(_userMapper.Map<UserEntity>(user));
-        }
-
-        public void Delete(int id)
-        {
-            _users.Delete(id);
-        }
-
-        private string GenerateJwtToken(User user)
+        public string GenerateJwtToken(User user)
         {
             var roleName = _users.Get(user.Id).Role.Name;
+            if (roleName == null) return null;
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Key);
             var tokenDescriptor = new SecurityTokenDescriptor

@@ -1,4 +1,6 @@
-﻿namespace PlaneTicketReservationSystem.Business.Models
+﻿using System.Collections.Generic;
+
+namespace PlaneTicketReservationSystem.Business.Models
 {
     public class User
     {
@@ -10,6 +12,6 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
-        //public virtual List<BookingEntity> Bookings { get; set; }
+        public List<Booking> Bookings { get; set; }
     }
 }

@@ -9,9 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using PlaneTicketReservationSystem.Business;
 using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
-using PlaneTicketReservationSystem.Business.Services.RoleService;
-using PlaneTicketReservationSystem.Business.Services.UserService;
 using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
 
@@ -66,8 +65,18 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
             });
             services.Configure<AppSettings>(Configuration.GetSection("AuthOptions"));
 
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IAccountService, AccountService>();
+
+            services.AddScoped<IDataService<User>, UserService>();
+            services.AddScoped<IDataService<Role>, RoleService>();
+            services.AddScoped<IDataService<Airplane>, AirplaneService>();
+            services.AddScoped<IDataService<AirplaneType>, AirplaneTypeService>();
+            services.AddScoped<IDataService<Airport>, AirportService>();
+            services.AddScoped<IDataService<Booking>, BookingService>();
+            services.AddScoped<IDataService<City>, CityService>();
+            services.AddScoped<IDataService<Company>, CompanyService>();
+            services.AddScoped<IDataService<Country>, CountryService>();
+            services.AddScoped<IDataService<Flight>, FlightService>();
 
             services.AddScoped<ApiMappingsConfiguration>();
             services.AddScoped<BusinessMappingsConfiguration>();

@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Business.Services.UserService;
+using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels;
@@ -13,13 +14,15 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IDataService<User> _userService;
+        private readonly IAccountService _account;
         private readonly Mapper _userMapper;
         private readonly Mapper _authMapper;
 
-        public UsersController(IUserService userService, ApiMappingsConfiguration conf)
+        public UsersController(IDataService<User> userService, IAccountService account, ApiMappingsConfiguration conf)
         {
             _userService = userService;
+            _account = account;
             _userMapper = new Mapper(conf.UserMapperConfiguration);
             _authMapper = new Mapper(conf.AuthMapperConfiguration);
         }
@@ -27,7 +30,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate(AuthenticateRequest model)
         {
-            var response = _userService.Authenticate(_authMapper.Map<Authenticate>(model));
+            var response = _account.Authenticate(_authMapper.Map<Authenticate>(model));
 
             if (response == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
@@ -41,7 +44,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         //Will use mapping soon
         public IActionResult Get()
         {
-            var users =  _userMapper.Map<UserDetails>(_userService.GetAll());
+            var users =  _userMapper.Map<IEnumerable<UserDetails>>(_userService.GetAll());
             return Ok(users);
         }
 
@@ -63,11 +66,12 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         // POST api/<UsersController>
-        [Authorize]
         [HttpPost("registration")]
-        public void Registration([FromBody] UserRegistration user)
+        public IActionResult Registration([FromBody] UserRegistration user)
         {
             _userService.Post(_userMapper.Map<User>(user));
+
+            return Authenticate(new AuthenticateRequest() {Email = user.Email, Password = user.Password});
         }
 
         // PUT api/<UsersController>/5

@@ -1,15 +1,14 @@
-﻿using PlaneTicketReservationSystem.Business.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Repositories;
 
-namespace PlaneTicketReservationSystem.Business.Services.RoleService
+namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class RoleService : IRoleService
+    public class RoleService : IDataService<Role>
     {
         private readonly RoleRepository _roles;
         private readonly Mapper _roleMapper;
@@ -17,7 +16,7 @@ namespace PlaneTicketReservationSystem.Business.Services.RoleService
         public RoleService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _roles = new RoleRepository(context);
-            _roleMapper = new Mapper(conf.UserMapperConfiguration);
+            _roleMapper = new Mapper(conf.RoleConfiguration);
         }
 
         public void Delete(int id)
