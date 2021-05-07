@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneModels
+﻿namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneModels
 {
     public class AirplaneDetails
     {

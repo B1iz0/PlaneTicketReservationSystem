@@ -1,4 +1,5 @@
-﻿using PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels;
+﻿using PlaneTicketReservationSystem.ReservationSystemApi.Models.FlightModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.BookingModels
 {

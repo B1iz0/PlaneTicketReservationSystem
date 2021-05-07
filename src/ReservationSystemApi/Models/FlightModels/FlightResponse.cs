@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirportModels;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.BookingModels;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.FlightModels
 {

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirportModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.CountryModels;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.CompanyModels
 {
