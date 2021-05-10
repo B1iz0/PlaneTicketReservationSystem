@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Models;
@@ -33,6 +34,8 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Post(User user)
         {
+            if (_users.Find(x => x.Email == user.Email).ToList().Count > 0)
+                throw new Exception("This email is already registered");
             user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
             _users.Create(_userMapper.Map<UserEntity>(user));
         }

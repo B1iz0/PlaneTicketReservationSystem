@@ -1,4 +1,7 @@
-﻿namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels
 {
     public class UserRegistration
     {

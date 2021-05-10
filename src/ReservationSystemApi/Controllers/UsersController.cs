@@ -79,8 +79,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // PUT api/<UsersController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] UserRegistration value)
         {
+            _userService.Update(id, _userMapper.Map<User>(value));
         }
 
         // DELETE api/<UsersController>/5
