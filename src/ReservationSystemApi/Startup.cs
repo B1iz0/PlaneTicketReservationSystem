@@ -62,6 +62,16 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
                     policy.RequireAuthenticatedUser();
                     policy.RequireRole("AdminApp");
                 });
+                opt.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole("Admin", "AdminApp");
+                });
+                opt.AddPolicy("User", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole("User");
+                });
             });
             services.Configure<AppSettings>(Configuration.GetSection("AuthOptions"));
 

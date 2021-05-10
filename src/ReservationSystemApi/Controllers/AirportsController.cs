@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirportModels;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -22,34 +24,46 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // GET: api/<AirportsController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            var response = _airportMapper.Map<IEnumerable<AirportResponse>>(_airportService.GetAll());
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // GET api/<AirportsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return "value";
+            var response = _airportMapper.Map<AirportDetails>(_airportService.GetById(id));
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // POST api/<AirportsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Authorize(Policy = "Admin")]
+        public void Post([FromBody] AirportRegistration value)
         {
+            _airportService.Post(_airportMapper.Map<Airport>(value));
         }
 
         // PUT api/<AirportsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [Authorize(Policy = "Admin")]
+        public void Put(int id, [FromBody] AirportRegistration value)
         {
+            _airportService.Update(id, _airportMapper.Map<Airport>(value));
         }
 
         // DELETE api/<AirportsController>/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Admin")]
         public void Delete(int id)
         {
+            _airportService.Delete(id);
         }
     }
 }

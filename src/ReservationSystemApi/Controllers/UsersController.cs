@@ -45,6 +45,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public IActionResult Get()
         {
             var users =  _userMapper.Map<IEnumerable<UserDetails>>(_userService.GetAll());
+            if (users == null)
+                return BadRequest();
             return Ok(users);
         }
 

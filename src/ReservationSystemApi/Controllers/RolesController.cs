@@ -26,17 +26,23 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET: api/<RolesController>
         [Authorize(Policy = "AdminApp")]
         [HttpGet]
-        public IEnumerable<RoleResponse> Get()
+        public IActionResult Get()
         {
-            return _roleMapper.Map<IEnumerable<RoleResponse>>(_roleService.GetAll());
+            var response = _roleMapper.Map<IEnumerable<RoleResponse>>(_roleService.GetAll());
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // GET api/<RolesController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpGet("{id}")]
-        public RoleResponse Get(int id)
+        public IActionResult Get(int id)
         {
-            return _roleMapper.Map<RoleResponse>(_roleService.GetById(id));
+            var response = _roleMapper.Map<RoleResponse>(_roleService.GetById(id));
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // POST api/<RolesController>

@@ -16,7 +16,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         public RoleService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _roles = new RoleRepository(context);
-            _roleMapper = new Mapper(conf.RoleConfiguration);
+            _roleMapper = new Mapper(conf.AirlineConfiguration);
         }
 
         public void Delete(int id)
@@ -43,7 +43,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, Role role)
         {
-            throw new NotImplementedException();
+            _roles.Update(id, _roleMapper.Map<RoleEntity>(role));
         }
     }
 }

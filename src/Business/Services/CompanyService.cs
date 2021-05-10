@@ -16,7 +16,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         public CompanyService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _companies = new CompanyRepository(context);
-            _companyMapper = new Mapper(conf.CompanyConfiguration);
+            _companyMapper = new Mapper(conf.AirlineConfiguration);
         }
 
         public IEnumerable<Company> GetAll()
@@ -41,7 +41,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, Company item)
         {
-            throw new NotImplementedException();
+            _companies.Update(id, _companyMapper.Map<CompanyEntity>(item));
         }
     }
 }

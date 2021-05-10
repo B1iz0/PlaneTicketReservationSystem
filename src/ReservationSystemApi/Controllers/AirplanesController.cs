@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
@@ -23,20 +24,27 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // GET: api/<AirplanesController>
         [HttpGet]
-        public IEnumerable<AirplaneResponse> Get()
+        public IActionResult Get()
         {
-            return _airplaneMapper.Map<IEnumerable<AirplaneResponse>>(_airplaneService.GetAll());
+            var response = _airplaneMapper.Map<IEnumerable<AirplaneResponse>>(_airplaneService.GetAll());
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // GET api/<AirplanesController>/5
         [HttpGet("{id}")]
-        public AirplaneDetails Get(int id)
+        public IActionResult Get(int id)
         {
-            return _airplaneMapper.Map<AirplaneDetails>(_airplaneService.GetById(id));
+            var response = _airplaneMapper.Map<AirplaneDetails>(_airplaneService.GetById(id));
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // POST api/<AirplanesController>
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public void Post([FromBody] AirplaneRegistration value)
         {
             _airplaneService.Post(_airplaneMapper.Map<Airplane>(value));
@@ -44,6 +52,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // PUT api/<AirplanesController>/5
         [HttpPut("{id}")]
+        [Authorize(Policy = "Admin")]
         public void Put(int id, [FromBody] AirplaneRegistration value)
         {
             _airplaneService.Update(id, _airplaneMapper.Map<Airplane>(value));
@@ -51,6 +60,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // DELETE api/<AirplanesController>/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Admin")]
         public void Delete(int id)
         {
             _airplaneService.Delete(id);

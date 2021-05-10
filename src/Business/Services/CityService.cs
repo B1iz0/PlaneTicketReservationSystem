@@ -16,7 +16,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         public CityService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _cities = new CityRepository(context);
-            _cityMapper = new Mapper(conf.CityConfiguration);
+            _cityMapper = new Mapper(conf.AirlineConfiguration);
         }
         
         public IEnumerable<City> GetAll()
@@ -41,7 +41,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, City item)
         {
-            throw new NotImplementedException();
+            _cities.Update(id, _cityMapper.Map<CityEntity>(item));
         }
     }
 }

@@ -16,7 +16,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         public AirplaneTypeService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _airplaneTypes = new AirplaneTypeRepository(context);
-            _airplaneTypeMapper = new Mapper(conf.AirplaneTypeConfiguration);
+            _airplaneTypeMapper = new Mapper(conf.AirlineConfiguration);
         }
 
         public IEnumerable<AirplaneType> GetAll()
@@ -41,7 +41,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, AirplaneType item)
         {
-            throw new NotImplementedException();
+            _airplaneTypes.Update(id, _airplaneTypeMapper.Map<AirplaneTypeEntity>(item));
         }
     }
 }

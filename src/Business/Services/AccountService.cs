@@ -23,7 +23,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         {
             _users = new UserRepository(context);
             _appSettings = appSettings.Value;
-            _userMapper = new Mapper(conf.UserConfiguration);
+            _userMapper = new Mapper(conf.AirlineConfiguration);
         }
 
         public string Authenticate(Authenticate model)

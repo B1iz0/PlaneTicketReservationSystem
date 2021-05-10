@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.CompanyModels;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -22,34 +24,48 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // GET: api/<CompaniesController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        [Authorize]
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(_companyService.GetAll());
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // GET api/<CompaniesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        [Authorize]
+        public IActionResult Get(int id)
         {
-            return "value";
+            var response = _companyMapper.Map<CompanyResponse>(_companyService.GetById(id));
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // POST api/<CompaniesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Authorize]
+        public void Post([FromBody] CompanyRegistration value)
         {
+            _companyService.Post(_companyMapper.Map<Company>(value));
         }
 
         // PUT api/<CompaniesController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [Authorize]
+        public void Put(int id, [FromBody] CompanyRegistration value)
         {
+            _companyService.Update(id, _companyMapper.Map<Company>(value));
         }
 
         // DELETE api/<CompaniesController>/5
         [HttpDelete("{id}")]
+        [Authorize]
         public void Delete(int id)
         {
+            _companyService.Delete(id);
         }
     }
 }

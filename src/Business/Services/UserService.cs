@@ -17,7 +17,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         public UserService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _users = new UserRepository(context);
-            _userMapper = new Mapper(conf.UserConfiguration);
+            _userMapper = new Mapper(conf.AirlineConfiguration);
         }
 
         public IEnumerable<User> GetAll()
@@ -42,9 +42,9 @@ namespace PlaneTicketReservationSystem.Business.Services
             _users.Delete(id);
         }
 
-        public void Update(int id, User role)
+        public void Update(int id, User user)
         {
-            throw new NotImplementedException();
+            _users.Update(id, _userMapper.Map<UserEntity>(user));
         }
     }
 }

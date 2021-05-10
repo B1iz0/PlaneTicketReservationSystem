@@ -15,12 +15,13 @@ namespace PlaneTicketReservationSystem.Business.Services
         public AirplaneService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _airplanes = new AirplaneRepository(context);
-            _airplaneMapper = new Mapper(conf.AirplaneTypeConfiguration);
+            _airplaneMapper = new Mapper(conf.AirlineConfiguration);
         }
 
         public IEnumerable<Airplane> GetAll()
         {
-            return _airplaneMapper.Map<IEnumerable<Airplane>>(_airplanes.GetAll());
+            var res = _airplanes.GetAll();
+            return _airplaneMapper.Map<IEnumerable<Airplane>>(res);
         }
 
         public Airplane GetById(int id)
@@ -41,7 +42,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, Airplane item)
         {
-            throw new System.NotImplementedException();
+            _airplanes.Update(id, _airplaneMapper.Map<AirplaneEntity>(item));
         }
     }
 }

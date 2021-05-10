@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.CountryModels;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -22,34 +24,48 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // GET: api/<CountriesController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        [Authorize]
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            var response = _countryMapper.Map<IEnumerable<CountryResponse>>(_countryService.GetAll());
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // GET api/<CountriesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        [Authorize]
+        public IActionResult Get(int id)
         {
-            return "value";
+            var response = _countryMapper.Map<CountryResponse>(_countryService.GetById(id));
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // POST api/<CountriesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Authorize]
+        public void Post([FromBody] CountryRegistration value)
         {
+            _countryService.Post(_countryMapper.Map<Country>(value));
         }
 
         // PUT api/<CountriesController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [Authorize]
+        public void Put(int id, [FromBody] CountryRegistration value)
         {
+            _countryService.Update(id, _countryMapper.Map<Country>(value));
         }
 
         // DELETE api/<CountriesController>/5
         [HttpDelete("{id}")]
+        [Authorize]
         public void Delete(int id)
         {
+            _countryService.Delete(id);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         public CountryService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _countries = new CountryRepository(context);
-            _countryMapper = new Mapper(conf.CountryConfiguration);
+            _countryMapper = new Mapper(conf.AirlineConfiguration);
         }
 
         public IEnumerable<Country> GetAll()
@@ -41,7 +41,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, Country item)
         {
-            throw new NotImplementedException();
+            _countries.Update(id, _countryMapper.Map<CountryEntity>(item));
         }
     }
 }

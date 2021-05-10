@@ -38,9 +38,11 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             _db.SaveChanges();
         }
 
-        public void Update(RoleEntity item)
+        public void Update(int id, RoleEntity item)
         {
-            _db.Entry(item).State = EntityState.Modified;
+            if (!_roles.Any(x => x.Id == id)) throw new Exception("No such id");
+            item.Id = id;
+            _roles.Update(item);
             _db.SaveChanges();
         }
 

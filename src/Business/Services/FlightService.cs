@@ -16,7 +16,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         public FlightService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _flights = new FlightRepository(context);
-            _flightMapper = new Mapper(conf.FlightConfiguration);
+            _flightMapper = new Mapper(conf.AirlineConfiguration);
         }
 
         public IEnumerable<Flight> GetAll()
@@ -41,7 +41,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, Flight item)
         {
-            throw new NotImplementedException();
+            _flights.Update(id, _flightMapper.Map<FlightEntity>(item));
         }
     }
 }

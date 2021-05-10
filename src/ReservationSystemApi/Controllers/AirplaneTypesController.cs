@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
@@ -24,34 +25,46 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // GET: api/<AirplaneTypesController>
         [HttpGet]
-        public IEnumerable<AirplaneTypeResponse> Get()
+        public IActionResult Get()
         {
-            return _airplaneTypeMapper.Map<IEnumerable<AirplaneTypeResponse>>(_airplaneTypeService.GetAll());
+            var response = _airplaneTypeMapper.Map<IEnumerable<AirplaneTypeResponse>>(_airplaneTypeService.GetAll());
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // GET api/<AirplaneTypesController>/5
         [HttpGet("{id}")]
-        public AirplaneTypeDetails Get(int id)
+        public IActionResult Get(int id)
         {
-            return _airplaneTypeMapper.Map<AirplaneTypeDetails>(_airplaneTypeService.GetById(id));
+            var response = _airplaneTypeMapper.Map<AirplaneTypeDetails>(_airplaneTypeService.GetById(id));
+            if (response == null)
+                return BadRequest();
+            return Ok(response);
         }
 
         // POST api/<AirplaneTypesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Authorize(Policy = "AdminApp")]
+        public void Post([FromBody] AirplaneTypeRegistration value)
         {
+            _airplaneTypeService.Post(_airplaneTypeMapper.Map<AirplaneType>(value));
         }
 
         // PUT api/<AirplaneTypesController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [Authorize(Policy = "AdminApp")]
+        public void Put(int id, [FromBody] AirplaneTypeRegistration value)
         {
+            _airplaneTypeService.Update(id, _airplaneTypeMapper.Map<AirplaneType>(value));
         }
 
         // DELETE api/<AirplaneTypesController>/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminApp")]
         public void Delete(int id)
         {
+            _airplaneTypeService.Delete(id);
         }
     }
 }
