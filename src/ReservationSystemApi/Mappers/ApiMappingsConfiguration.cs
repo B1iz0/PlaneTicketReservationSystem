@@ -74,6 +74,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mappers
                 x.CreateMap<AirportRegistration, Airport>();
                 x.CreateMap<City, CityResponse>();
                 x.CreateMap<Company, CompanyResponse>();
+                x.CreateMap<Country, CountryResponse>();
                 x.CreateMap<Flight, FlightResponse>();
             });
             BookingMapperConfiguration = new MapperConfiguration(x =>
@@ -100,6 +101,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mappers
                 x.CreateMap<Country, CountryResponse>();
                 x.CreateMap<Airplane, AirplaneResponse>();
                 x.CreateMap<Airport, AirportResponse>();
+                x.CreateMap<City, CityResponse>();
             });
             CountryMapperConfiguration = new MapperConfiguration(x =>
             {

@@ -49,7 +49,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             try
             {
-                var response = _companyMapper.Map<CompanyResponse>(_companyService.GetById(id));
+                var response = _companyMapper.Map<CompanyDetails>(_companyService.GetById(id));
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
