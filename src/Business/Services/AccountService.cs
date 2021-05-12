@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using Microsoft.Extensions.Options;
@@ -9,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
+using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Repositories;
 
 namespace PlaneTicketReservationSystem.Business.Services
@@ -26,7 +28,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             _userMapper = new Mapper(conf.AirlineConfiguration);
         }
 
-        public string Authenticate(Authenticate model)
+        public Authenticate Authenticate(Authenticate model)
         {
             var user = _users.Find(x => x.Email == model.Email && PasswordHasher.CheckHash(model.Password, x.Password))
                 .ToList()
@@ -34,7 +36,10 @@ namespace PlaneTicketReservationSystem.Business.Services
             if (user == null) return null;
             User result = _userMapper.Map<User>(user);
             var token = GenerateJwtToken(result);
-            return token;
+            var refreshToken = GenerateRefreshToken();
+            user.RefreshTokens.Add(_userMapper.Map<RefreshTokenEntity>(refreshToken));
+            _users.Update(user.Id, user);
+            return new Authenticate(_userMapper.Map<User>(user), token, refreshToken.Token);
         }
 
         public string GenerateJwtToken(User user)
@@ -58,6 +63,47 @@ namespace PlaneTicketReservationSystem.Business.Services
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        public RefreshToken GenerateRefreshToken()
+        {
+            using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
+            var randomBytes = new byte[64];
+            rngCryptoServiceProvider.GetBytes(randomBytes);
+            return new RefreshToken
+            {
+                Token = Convert.ToBase64String(randomBytes),
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,
+            };
+        }
+
+        public bool RevokeToken(string token)
+        {
+            var user = _users.Find(u => u.RefreshTokens.Any(t => t.Token == token)).First();
+            if (user == null) return false;
+            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
+            if (!refreshToken.IsActive) return false;
+            refreshToken.Revoked = DateTime.UtcNow;
+            _users.Update(user.Id, user);
+            return true;
+        }
+
+        public Authenticate RefreshToken(string token)
+        {
+            var user = _users.Find(x => x.RefreshTokens.Any(t => t.Token == token)).First();
+            if (user == null) return null;
+            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
+            if (!refreshToken.IsActive) return null;
+            var newRefreshToken = GenerateRefreshToken();
+            refreshToken.Revoked = DateTime.UtcNow;
+            refreshToken.ReplacedByToken = newRefreshToken.Token;
+            user.RefreshTokens.Add(_userMapper.Map<RefreshTokenEntity>(newRefreshToken));
+            _users.Update(user.Id, user);
+
+            var jwtToken = GenerateJwtToken(_userMapper.Map<User>(user));
+
+            return new Authenticate(_userMapper.Map<User>(user), jwtToken, newRefreshToken.Token);
         }
     }
 }

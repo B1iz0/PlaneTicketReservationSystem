@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
@@ -28,13 +29,15 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public User GetById(int id)
         {
+            if (!_users.Find(x => x.Id == id).Any())
+                throw new Exception("No such user");
             User user = _userMapper.Map<User>(_users.Get(id));
             return user;
         }
 
         public void Post(User user)
         {
-            if (_users.Find(x => x.Email == user.Email).ToList().Count > 0)
+            if (_users.Find(x => x.Email == user.Email).Any())
                 throw new Exception("This email is already registered");
             user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
             _users.Create(_userMapper.Map<UserEntity>(user));
@@ -42,11 +45,15 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Delete(int id)
         {
+            if (!_users.Find(x => x.Id == id).Any())
+                throw new Exception("No such user");
             _users.Delete(id);
         }
 
         public void Update(int id, User user)
         {
+            if (!_users.Find(x => x.Id == id).Any())
+                throw new Exception("No such user");
             _users.Update(id, _userMapper.Map<UserEntity>(user));
         }
     }

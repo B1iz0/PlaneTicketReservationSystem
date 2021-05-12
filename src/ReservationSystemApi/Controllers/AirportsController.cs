@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
@@ -26,44 +28,82 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var response = _airportMapper.Map<IEnumerable<AirportResponse>>(_airportService.GetAll());
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _airportMapper.Map<IEnumerable<AirportResponse>>(_airportService.GetAll());
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<AirportsController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var response = _airportMapper.Map<AirportDetails>(_airportService.GetById(id));
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _airportMapper.Map<AirportDetails>(_airportService.GetById(id));
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST api/<AirportsController>
         [HttpPost]
         [Authorize(Policy = "Admin")]
-        public void Post([FromBody] AirportRegistration value)
+        public IActionResult Post([FromBody] AirportRegistration value)
         {
-            _airportService.Post(_airportMapper.Map<Airport>(value));
+            try
+            {
+                _airportService.Post(_airportMapper.Map<Airport>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<AirportsController>/5
         [HttpPut("{id}")]
         [Authorize(Policy = "Admin")]
-        public void Put(int id, [FromBody] AirportRegistration value)
+        public IActionResult Put(int id, [FromBody] AirportRegistration value)
         {
-            _airportService.Update(id, _airportMapper.Map<Airport>(value));
+            try
+            {
+                _airportService.Update(id, _airportMapper.Map<Airport>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<AirportsController>/5
         [HttpDelete("{id}")]
         [Authorize(Policy = "Admin")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _airportService.Delete(id);
+            try
+            {
+                _airportService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

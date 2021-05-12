@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
@@ -27,10 +29,17 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public IActionResult Get()
         {
-            var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(_companyService.GetAll());
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(_companyService.GetAll());
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<CompaniesController>/5
@@ -38,34 +47,65 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public IActionResult Get(int id)
         {
-            var response = _companyMapper.Map<CompanyResponse>(_companyService.GetById(id));
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _companyMapper.Map<CompanyResponse>(_companyService.GetById(id));
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST api/<CompaniesController>
         [HttpPost]
         [Authorize]
-        public void Post([FromBody] CompanyRegistration value)
+        public IActionResult Post([FromBody] CompanyRegistration value)
         {
-            _companyService.Post(_companyMapper.Map<Company>(value));
+            try
+            {
+                _companyService.Post(_companyMapper.Map<Company>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<CompaniesController>/5
         [HttpPut("{id}")]
         [Authorize]
-        public void Put(int id, [FromBody] CompanyRegistration value)
+        public IActionResult Put(int id, [FromBody] CompanyRegistration value)
         {
-            _companyService.Update(id, _companyMapper.Map<Company>(value));
+            try
+            {
+                _companyService.Update(id, _companyMapper.Map<Company>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<CompaniesController>/5
         [HttpDelete("{id}")]
         [Authorize]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _companyService.Delete(id);
+            try
+            {
+                _companyService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

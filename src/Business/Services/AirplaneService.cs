@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
@@ -26,22 +29,29 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public Airplane GetById(int id)
         {
-            Airplane airplane = _airplaneMapper.Map<Airplane>(_airplanes.Get(id));
-            return airplane;
+            if (!_airplanes.Find(x => x.Id == id).Any())
+                throw new Exception($"No such airplane with id: {id}");
+            return _airplaneMapper.Map<Airplane>(_airplanes.Get(id));
         }
 
         public void Post(Airplane item)
         {
+            if (_airplanes.Find(x => x.RegistrationNumber == item.RegistrationNumber).Any())
+                throw new Exception("Such airplane is already exist");
             _airplanes.Create(_airplaneMapper.Map<AirplaneEntity>(item));
         }
 
         public void Delete(int id)
         {
+            if (!_airplanes.Find(x => x.Id == id).Any())
+                throw new Exception("No such airplane");
             _airplanes.Delete(id);
         }
 
         public void Update(int id, Airplane item)
         {
+            if (!_airplanes.Find(x => x.Id == id).Any())
+                throw new Exception("No such airplane");
             _airplanes.Update(id, _airplaneMapper.Map<AirplaneEntity>(item));
         }
     }

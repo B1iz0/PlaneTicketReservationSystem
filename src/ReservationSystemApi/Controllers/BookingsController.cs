@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
@@ -27,10 +29,17 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public IActionResult Get()
         {
-            var response = _bookingMapper.Map<IEnumerable<BookingResponse>>(_bookingService.GetAll());
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _bookingMapper.Map<IEnumerable<BookingResponse>>(_bookingService.GetAll());
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<BookingsController>/5
@@ -38,34 +47,65 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public IActionResult Get(int id)
         {
-            var response = _bookingMapper.Map<BookingDetails>(_bookingService.GetById(id));
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _bookingMapper.Map<BookingDetails>(_bookingService.GetById(id));
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST api/<BookingsController>
         [HttpPost]
         [Authorize]
-        public void Post([FromBody] BookingRegistration value)
+        public IActionResult Post([FromBody] BookingRegistration value)
         {
-            _bookingService.Post(_bookingMapper.Map<Booking>(value));
+            try
+            {
+                _bookingService.Post(_bookingMapper.Map<Booking>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<BookingsController>/5
         [HttpPut("{id}")]
         [Authorize]
-        public void Put(int id, [FromBody] BookingRegistration value)
+        public IActionResult Put(int id, [FromBody] BookingRegistration value)
         {
-            _bookingService.Update(id, _bookingMapper.Map<Booking>(value));
+            try
+            {
+                _bookingService.Update(id, _bookingMapper.Map<Booking>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<BookingsController>/5
         [HttpDelete("{id}")]
         [Authorize]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _bookingService.Delete(id);
+            try
+            {
+                _bookingService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

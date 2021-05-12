@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
@@ -28,10 +30,17 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var response = _roleMapper.Map<IEnumerable<RoleResponse>>(_roleService.GetAll());
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _roleMapper.Map<IEnumerable<RoleResponse>>(_roleService.GetAll());
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<RolesController>/5
@@ -39,34 +48,65 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var response = _roleMapper.Map<RoleResponse>(_roleService.GetById(id));
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _roleMapper.Map<RoleResponse>(_roleService.GetById(id));
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST api/<RolesController>
         [Authorize(Policy = "AdminApp")]
         [HttpPost]
-        public void Post([FromBody] RoleRequest value)
+        public IActionResult Post([FromBody] RoleRequest value)
         {
-            _roleService.Post(_roleMapper.Map<Role>(value));
+            try
+            {
+                _roleService.Post(_roleMapper.Map<Role>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<RolesController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] RoleRequest value)
+        public IActionResult Put(int id, [FromBody] RoleRequest value)
         {
-            _roleService.Update(id, _roleMapper.Map<Role>(value));
+            try
+            {
+                _roleService.Update(id, _roleMapper.Map<Role>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<RolesController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _roleService.Delete(id);
+            try
+            {
+                _roleService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

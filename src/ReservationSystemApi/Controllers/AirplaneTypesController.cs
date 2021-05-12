@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
@@ -27,44 +29,83 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var response = _airplaneTypeMapper.Map<IEnumerable<AirplaneTypeResponse>>(_airplaneTypeService.GetAll());
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _airplaneTypeMapper.Map<IEnumerable<AirplaneTypeResponse>>(_airplaneTypeService.GetAll());
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<AirplaneTypesController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var response = _airplaneTypeMapper.Map<AirplaneTypeDetails>(_airplaneTypeService.GetById(id));
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _airplaneTypeMapper.Map<AirplaneTypeDetails>(_airplaneTypeService.GetById(id));
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST api/<AirplaneTypesController>
         [HttpPost]
         [Authorize(Policy = "AdminApp")]
-        public void Post([FromBody] AirplaneTypeRegistration value)
+        public IActionResult Post([FromBody] AirplaneTypeRegistration value)
         {
-            _airplaneTypeService.Post(_airplaneTypeMapper.Map<AirplaneType>(value));
+            try
+            {
+                _airplaneTypeService.Post(_airplaneTypeMapper.Map<AirplaneType>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<AirplaneTypesController>/5
         [HttpPut("{id}")]
         [Authorize(Policy = "AdminApp")]
-        public void Put(int id, [FromBody] AirplaneTypeRegistration value)
+        public IActionResult Put(int id, [FromBody] AirplaneTypeRegistration value)
         {
-            _airplaneTypeService.Update(id, _airplaneTypeMapper.Map<AirplaneType>(value));
+            try
+            {
+                _airplaneTypeService.Update(id, _airplaneTypeMapper.Map<AirplaneType>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<AirplaneTypesController>/5
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminApp")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _airplaneTypeService.Delete(id);
+            try
+            {
+                _airplaneTypeService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }

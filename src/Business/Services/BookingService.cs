@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
@@ -26,6 +28,8 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public Booking GetById(int id)
         {
+            if (!_bookings.Find(x => x.Id == id).Any())
+                throw new Exception($"No such booking with id: {id}");
             return _bookingMapper.Map<Booking>(_bookings.Get(id));
         }
 
@@ -36,11 +40,15 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Delete(int id)
         {
+            if (!_bookings.Find(x => x.Id == id).Any())
+                throw new Exception($"No such booking with id: {id}");
             _bookings.Delete(id);
         }
 
         public void Update(int id, Booking item)
         {
+            if (!_bookings.Find(x => x.Id == id).Any())
+                throw new Exception($"No such booking with id: {id}");
             _bookings.Update(id, _bookingMapper.Map<BookingEntity>(item));
         }
     }

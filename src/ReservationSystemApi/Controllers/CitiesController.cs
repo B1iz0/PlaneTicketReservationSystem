@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
@@ -27,10 +29,17 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public IActionResult Get()
         {
-            var response = _cityMapper.Map<IEnumerable<CityResponse>>(_cityService.GetAll());
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _cityMapper.Map<IEnumerable<CityResponse>>(_cityService.GetAll());
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<CitiesController>/5
@@ -38,34 +47,65 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public IActionResult Get(int id)
         {
-            var response = _cityMapper.Map<CityDetails>(_cityService.GetById(id));
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _cityMapper.Map<CityDetails>(_cityService.GetById(id));
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST api/<CitiesController>
         [HttpPost]
         [Authorize]
-        public void Post([FromBody] CityRegistration value)
+        public IActionResult Post([FromBody] CityRegistration value)
         {
-            _cityService.Post(_cityMapper.Map<City>(value));
+            try
+            {
+                _cityService.Post(_cityMapper.Map<City>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<CitiesController>/5
         [HttpPut("{id}")]
         [Authorize]
-        public void Put(int id, [FromBody] CityRegistration value)
+        public IActionResult Put(int id, [FromBody] CityRegistration value)
         {
-            _cityService.Update(id, _cityMapper.Map<City>(value));
+            try
+            {
+                _cityService.Update(id, _cityMapper.Map<City>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<CitiesController>/5
         [HttpDelete("{id}")]
         [Authorize]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _cityService.Delete(id);
+            try
+            {
+                _cityService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

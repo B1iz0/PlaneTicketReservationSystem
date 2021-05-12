@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
@@ -26,21 +29,29 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public Airport GetById(int id)
         {
+            if (!_airports.Find(x => x.Id == id).Any())
+                throw new Exception($"No such airport with id: {id}");
             return _airportMapper.Map<Airport>(_airports.Get(id));
         }
 
         public void Post(Airport item)
         {
+            if (_airports.Find(x => x.Name == item.Name).Any())
+                throw new Exception($"Airport {item.Name} is already exist");
             _airports.Create(_airportMapper.Map<AirportEntity>(item));
         }
 
         public void Delete(int id)
         {
+            if (!_airports.Find(x => x.Id == id).Any())
+                throw new Exception($"No such airport with id: {id}");
             _airports.Delete(id);
         }
 
         public void Update(int id, Airport item)
         {
+            if (!_airports.Find(x => x.Id == id).Any())
+                throw new Exception($"No such airport with id: {id}");
             _airports.Update(id, _airportMapper.Map<AirportEntity>(item));
         }
     }

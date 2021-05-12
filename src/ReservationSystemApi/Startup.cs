@@ -33,8 +33,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
             services.AddDbContext<ReservationSystemContext>(opt =>
                 {
                     opt.UseLazyLoadingProxies();
-                    opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-                        b => b.MigrationsAssembly("ReservationSystemApi"));
+                    opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 }
                 );
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

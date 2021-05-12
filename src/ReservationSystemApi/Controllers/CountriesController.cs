@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
@@ -27,10 +29,17 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public IActionResult Get()
         {
-            var response = _countryMapper.Map<IEnumerable<CountryResponse>>(_countryService.GetAll());
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _countryMapper.Map<IEnumerable<CountryResponse>>(_countryService.GetAll());
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<CountriesController>/5
@@ -38,34 +47,66 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public IActionResult Get(int id)
         {
-            var response = _countryMapper.Map<CountryResponse>(_countryService.GetById(id));
-            if (response == null)
-                return BadRequest();
-            return Ok(response);
+            try
+            {
+                var response = _countryMapper.Map<CountryResponse>(_countryService.GetById(id));
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST api/<CountriesController>
         [HttpPost]
         [Authorize]
-        public void Post([FromBody] CountryRegistration value)
+        public IActionResult Post([FromBody] CountryRegistration value)
         {
-            _countryService.Post(_countryMapper.Map<Country>(value));
+            try
+            {
+                _countryService.Post(_countryMapper.Map<Country>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<CountriesController>/5
         [HttpPut("{id}")]
         [Authorize]
-        public void Put(int id, [FromBody] CountryRegistration value)
+        public IActionResult Put(int id, [FromBody] CountryRegistration value)
         {
-            _countryService.Update(id, _countryMapper.Map<Country>(value));
+            try
+            {
+                _countryService.Update(id, _countryMapper.Map<Country>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<CountriesController>/5
         [HttpDelete("{id}")]
         [Authorize]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _countryService.Delete(id);
+            try
+            {
+                _countryService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }

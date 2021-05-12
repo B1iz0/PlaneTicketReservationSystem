@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace PlaneTicketReservationSystem.Business.Services
+namespace PlaneTicketReservationSystem.Business.Helpers
 {
     public interface IDataService<T>
     {

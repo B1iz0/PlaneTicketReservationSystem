@@ -51,7 +51,6 @@ namespace PlaneTicketReservationSystem.Data.Repositories
 
         public void Update(int id, UserEntity item)
         {
-            if (!_users.Any(x => x.Id == id)) throw new Exception("No such id");
             item.Id = id;
             _users.Update(item);
             _db.SaveChanges();
