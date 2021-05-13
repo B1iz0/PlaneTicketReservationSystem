@@ -11,5 +11,6 @@ namespace PlaneTicketReservationSystem.Data.Interfaces
         void Create(T item);
         void Update(int id, T item);
         void Delete(int id);
+        bool IsExisting(int id);
     }
 }

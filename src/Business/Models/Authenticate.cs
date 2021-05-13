@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PlaneTicketReservationSystem.Business.Models
+﻿namespace PlaneTicketReservationSystem.Business.Models
 {
     public class Authenticate
     {
@@ -14,10 +10,7 @@ namespace PlaneTicketReservationSystem.Business.Models
         public string JwtToken { get; set; }
         public string RefreshToken { get; set; }
 
-        public Authenticate()
-        {
-
-        }
+        public Authenticate() { }
 
         public Authenticate(User user, string jwtToken, string refreshToken)
         {

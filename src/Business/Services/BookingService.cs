@@ -47,7 +47,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, Booking item)
         {
-            if (!_bookings.Find(x => x.Id == id).Any())
+            if (!_bookings.IsExisting(id))
                 throw new Exception($"No such booking with id: {id}");
             _bookings.Update(id, _bookingMapper.Map<BookingEntity>(item));
         }

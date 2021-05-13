@@ -6,7 +6,8 @@ namespace PlaneTicketReservationSystem.Business.Helpers
     {
         public Authenticate Authenticate(Authenticate model);
         public Authenticate RefreshToken(string token);
-        bool RevokeToken(string token);
+        public bool RevokeToken(string token);
         public string GenerateJwtToken(User user);
+        public RefreshToken GenerateRefreshToken();
     }
 }

@@ -49,7 +49,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, Company item)
         {
-            if (!_companies.Find(x => x.Id == id).Any())
+            if (!_companies.IsExisting(id))
                 throw new Exception($"No such company with id: {id}");
             _companies.Update(id, _companyMapper.Map<CompanyEntity>(item));
         }

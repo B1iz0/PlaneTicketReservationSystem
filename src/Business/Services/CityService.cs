@@ -49,7 +49,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, City item)
         {
-            if (!_cities.Find(x => x.Id == id).Any())
+            if (!_cities.IsExisting(id))
                 throw new Exception($"No such city with id: {id}");
             _cities.Update(id, _cityMapper.Map<CityEntity>(item));
         }

@@ -55,5 +55,10 @@ namespace PlaneTicketReservationSystem.Data.Repositories
                 _db.SaveChanges();
             }
         }
+
+        public bool IsExisting(int id)
+        {
+            return _flights.Any(x => x.Id == id);
+        }
     }
 }

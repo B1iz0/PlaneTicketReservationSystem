@@ -52,7 +52,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, User user)
         {
-            if (!_users.Find(x => x.Id == id).Any())
+            if (!_users.IsExisting(id))
                 throw new Exception("No such user");
             _users.Update(id, _userMapper.Map<UserEntity>(user));
         }

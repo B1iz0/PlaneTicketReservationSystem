@@ -9,11 +9,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.AirportModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int CityId { get; set; }
-        public virtual CityResponse City { get; set; }
-        public int CompanyId { get; set; }
-        public virtual CompanyResponse Company { get; set; }
-        public virtual List<FlightResponse> ArrivingAirplanes { get; set; }
-        public virtual List<FlightResponse> OutgoingAirplanes { get; set; }
+        public CityResponse City { get; set; }
+        public CompanyResponse Company { get; set; }
+        public List<FlightResponse> ArrivingAirplanes { get; set; }
+        public List<FlightResponse> OutgoingAirplanes { get; set; }
     }
 }

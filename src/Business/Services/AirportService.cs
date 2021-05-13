@@ -50,7 +50,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, Airport item)
         {
-            if (!_airports.Find(x => x.Id == id).Any())
+            if (!_airports.IsExisting(id))
                 throw new Exception($"No such airport with id: {id}");
             _airports.Update(id, _airportMapper.Map<AirportEntity>(item));
         }

@@ -18,34 +18,40 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class AccountService : IAccountService
     {
         private readonly UserRepository _users;
+        private readonly RoleRepository _roles;
         private readonly AppSettings _appSettings;
         private readonly Mapper _userMapper;
 
         public AccountService(IOptions<AppSettings> appSettings, ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _users = new UserRepository(context);
+            _roles = new RoleRepository(context);
             _appSettings = appSettings.Value;
             _userMapper = new Mapper(conf.AirlineConfiguration);
         }
 
         public Authenticate Authenticate(Authenticate model)
         {
-            var user = _users.Find(x => x.Email == model.Email && PasswordHasher.CheckHash(model.Password, x.Password))
+            var userEntity = _users.Find(x => x.Email == model.Email && PasswordHasher.CheckHash(model.Password, x.Password))
                 .ToList()
                 .First();
-            if (user == null) return null;
-            User result = _userMapper.Map<User>(user);
-            var token = GenerateJwtToken(result);
+            if (userEntity == null) return null;
+
+            var user = _userMapper.Map<User>(userEntity);
+            var token = GenerateJwtToken(user);
             var refreshToken = GenerateRefreshToken();
-            user.RefreshTokens.Add(_userMapper.Map<RefreshTokenEntity>(refreshToken));
-            _users.Update(user.Id, user);
-            return new Authenticate(_userMapper.Map<User>(user), token, refreshToken.Token);
+
+            userEntity.RefreshTokens.Add(_userMapper.Map<RefreshTokenEntity>(refreshToken));
+            _users.Update(userEntity.Id, userEntity);
+
+            return new Authenticate(_userMapper.Map<User>(userEntity), token, refreshToken.Token);
         }
 
         public string GenerateJwtToken(User user)
         {
-            var roleName = _users.Get(user.Id).Role.Name;
+            var roleName = _roles.Get(user.RoleId).Name;
             if (roleName == null) return null;
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Key);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -59,7 +65,7 @@ namespace PlaneTicketReservationSystem.Business.Services
                     new Claim("role", roleName)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(_appSettings.LifeTime),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
@@ -73,7 +79,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             return new RefreshToken
             {
                 Token = Convert.ToBase64String(randomBytes),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddMinutes(_appSettings.RefreshTokenLifeTime),
                 Created = DateTime.UtcNow,
             };
         }
@@ -82,8 +88,10 @@ namespace PlaneTicketReservationSystem.Business.Services
         {
             var user = _users.Find(u => u.RefreshTokens.Any(t => t.Token == token)).First();
             if (user == null) return false;
+
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
             if (!refreshToken.IsActive) return false;
+
             refreshToken.Revoked = DateTime.UtcNow;
             _users.Update(user.Id, user);
             return true;
@@ -93,8 +101,10 @@ namespace PlaneTicketReservationSystem.Business.Services
         {
             var user = _users.Find(x => x.RefreshTokens.Any(t => t.Token == token)).First();
             if (user == null) return null;
+
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
             if (!refreshToken.IsActive) return null;
+
             var newRefreshToken = GenerateRefreshToken();
             refreshToken.Revoked = DateTime.UtcNow;
             refreshToken.ReplacedByToken = newRefreshToken.Token;

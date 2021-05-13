@@ -49,6 +49,11 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             return _bookings;
         }
 
+        public bool IsExisting(int id)
+        {
+            return _bookings.Any(x => x.Id == id);
+        }
+
         public void Update(int id, BookingEntity item)
         {
             item.Id = id;

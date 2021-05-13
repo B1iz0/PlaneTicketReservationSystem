@@ -52,7 +52,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, Role role)
         {
-            if (!_roles.Find(x => x.Id == id).Any())
+            if (!_roles.IsExisting(id))
                 throw new Exception($"No such role with id: {id}");
             _roles.Update(id, _roleMapper.Map<RoleEntity>(role));
         }

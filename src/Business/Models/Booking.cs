@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PlaneTicketReservationSystem.Business.Models
+﻿namespace PlaneTicketReservationSystem.Business.Models
 {
     public class Booking
     {

@@ -83,7 +83,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             try
             {
-                var users = _userMapper.Map<IEnumerable<UserDetails>>(_userService.GetAll());
+                var users = _userMapper.Map<IEnumerable<UserResponse>>(_userService.GetAll());
                 if (users == null)
                     return BadRequest();
                 return Ok(users);
@@ -133,9 +133,15 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpPost("registration")]
         public IActionResult Registration([FromBody] UserRegistration user)
         {
-            _userService.Post(_userMapper.Map<User>(user));
-
-            return Authenticate(new AuthenticateRequest() {Email = user.Email, Password = user.Password});
+            try
+            {
+                _userService.Post(_userMapper.Map<User>(user));
+                return Authenticate(new AuthenticateRequest() {Email = user.Email, Password = user.Password});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<UsersController>/5

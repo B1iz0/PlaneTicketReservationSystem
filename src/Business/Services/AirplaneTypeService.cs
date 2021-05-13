@@ -49,7 +49,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public void Update(int id, AirplaneType item)
         {
-            if (!_airplaneTypes.Find(x => x.Id == id).Any())
+            if (!_airplaneTypes.IsExisting(id))
                 throw new Exception($"No such type with id: {id}");
             _airplaneTypes.Update(id, _airplaneTypeMapper.Map<AirplaneTypeEntity>(item));
         }
