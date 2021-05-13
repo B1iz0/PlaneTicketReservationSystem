@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;

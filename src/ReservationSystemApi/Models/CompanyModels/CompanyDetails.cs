@@ -9,7 +9,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.CompanyModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int CountryId { get; set; }
         public CountryResponse Country { get; set; }
         public List<AirplaneResponse> Airplanes { get; set; }
         public List<AirportResponse> Airports { get; set; }

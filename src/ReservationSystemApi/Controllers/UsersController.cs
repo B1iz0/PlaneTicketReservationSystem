@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Business.Services;
-using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
+using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels;
 

@@ -31,8 +31,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         {
             if (!_users.Find(x => x.Id == id).Any())
                 throw new Exception("No such user");
-            User user = _userMapper.Map<User>(_users.Get(id));
-            return user;
+            return _userMapper.Map<User>(_users.Get(id));
         }
 
         public void Post(User user)

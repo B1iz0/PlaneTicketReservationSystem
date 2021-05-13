@@ -23,8 +23,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public IEnumerable<Airplane> GetAll()
         {
-            var res = _airplanes.GetAll();
-            return _airplaneMapper.Map<IEnumerable<Airplane>>(res);
+            return _airplaneMapper.Map<IEnumerable<Airplane>>(_airplanes.GetAll());
         }
 
         public Airplane GetById(int id)

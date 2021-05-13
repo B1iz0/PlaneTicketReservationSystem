@@ -5,7 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
+using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneTypeModels;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers

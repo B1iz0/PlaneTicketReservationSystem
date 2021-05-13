@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -13,7 +12,7 @@ using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.Data;
-using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
+using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi
 {

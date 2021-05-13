@@ -12,7 +12,7 @@ using PlaneTicketReservationSystem.ReservationSystemApi.Models.FlightModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.RoleModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels;
 
-namespace PlaneTicketReservationSystem.ReservationSystemApi.Mappers
+namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
 {
     public class ApiMappingsConfiguration
     {
@@ -58,7 +58,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mappers
             });
             AirplaneMapperConfiguration = new MapperConfiguration(x =>
             {
-                x.CreateMap<Airplane, AirplaneDetails>();
                 x.CreateMap<Airplane, AirplaneResponse>();
                 x.CreateMap<AirplaneRegistration, Airplane>();
                 x.CreateMap<AirplaneType, AirplaneTypeResponse>();
@@ -89,7 +88,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mappers
             });
             BookingMapperConfiguration = new MapperConfiguration(x =>
             {
-                x.CreateMap<Booking, BookingDetails>();
                 x.CreateMap<Booking, BookingResponse>();
                 x.CreateMap<BookingRegistration, Booking>();
                 x.CreateMap<Flight, FlightResponse>();

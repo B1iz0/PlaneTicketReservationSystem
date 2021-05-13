@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
@@ -38,9 +37,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         {
             if (!_roles.Find(x => x.Id == id).Any())
                 throw new Exception($"No such role with id: {id}");
-            Role role = _roleMapper.Map<Role>(_roles.Get(id));
-            if (role == null) return null;
-            return role;
+            return _roleMapper.Map<Role>(_roles.Get(id));
         }
 
         public void Post(Role role)

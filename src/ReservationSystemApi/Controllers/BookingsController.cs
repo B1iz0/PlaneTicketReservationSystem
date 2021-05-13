@@ -5,7 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
+using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.BookingModels;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
@@ -48,7 +48,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             try
             {
-                var response = _bookingMapper.Map<BookingDetails>(_bookingService.GetById(id));
+                var response = _bookingMapper.Map<BookingResponse>(_bookingService.GetById(id));
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
