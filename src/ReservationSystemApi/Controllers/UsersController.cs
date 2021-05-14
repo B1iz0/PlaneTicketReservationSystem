@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Business.Services;
-using PlaneTicketReservationSystem.Business.Services.UserService;
-using PlaneTicketReservationSystem.ReservationSystemApi.Mappers;
+using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels;
-using UserDetails = PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels.UserDetails;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -14,76 +17,173 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
-        private readonly UserMapper _userMapper;
-        private readonly AuthenticateMapper _authMapper;
+        private readonly IDataService<User> _userService;
+        private readonly IAccountService _account;
+        private readonly Mapper _userMapper;
+        private readonly Mapper _authMapper;
 
-        public UsersController(IUserService userService)
+        public UsersController(IDataService<User> userService, IAccountService account, ApiMappingsConfiguration conf)
         {
             _userService = userService;
-            _userMapper = new UserMapper();
-            _authMapper = new AuthenticateMapper();
+            _account = account;
+            _userMapper = new Mapper(conf.UserMapperConfiguration);
+            _authMapper = new Mapper(conf.AuthMapperConfiguration);
         }
 
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(AuthenticateRequest model)
+        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
         {
-            var response = _userService.Authenticate(_authMapper.AuthenticateRequestToAuthenticate(model));
+            var response = await _account.AuthenticateAsync(_authMapper.Map<Authenticate>(model));
 
             if (response == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
+            SetTokenCookie(response.RefreshToken);
+
+            return Ok(_authMapper.Map<AuthenticateResponse>(response));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var response = await _account.RefreshTokenAsync(refreshToken);
+
+            if (response == null)
+                return Unauthorized(new { message = "Invalid token" });
+
+            SetTokenCookie(response.RefreshToken);
+
             return Ok(response);
+        }
+
+        [HttpPost("revoke-token")]
+        public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenRequest model)
+        {
+            // accept token from request body or cookie
+            var token = model.Token ?? Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new { message = "Token is required" });
+
+            var response = await _account.RevokeTokenAsync(token);
+
+            if (!response)
+                return NotFound(new { message = "Token not found" });
+
+            return Ok(new { message = "Token revoked" });
         }
 
         // GET: api/<UsersController>
         [Authorize(Policy = "AdminApp")]
         [HttpGet]
         //Will use mapping soon
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var users = _userService.GetAll();
-            return Ok(users);
+            try
+            {
+                var users = _userMapper.Map<IEnumerable<UserResponse>>(await _userService.GetAllAsync());
+                if (users == null)
+                    return BadRequest();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<UsersController>/5
-        [Authorize]
+        [Authorize(Policy = "AdminApp")]
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var user = _userService.GetById(id);
-            return Ok(user);
+            try
+            {
+                var response = _userMapper.Map<UserDetails>(await _userService.GetByIdAsync(id));
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         // POST api/<UsersController>
         [Authorize(Policy = "AdminApp")]
         [HttpPost()]
-        public void Post([FromBody] UserRegistration user)
+        public async Task<IActionResult> Post([FromBody] UserRegistration user)
         {
-            _userService.Post(_userMapper.UserRegistrationToUser(user));
+            try
+            {
+                await _userService.PostAsync(_userMapper.Map<User>(user));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST api/<UsersController>
-        [Authorize]
         [HttpPost("registration")]
-        public void Registration([FromBody] UserRegistration user)
+        public async Task<IActionResult> Registration([FromBody] UserRegistration user)
         {
-            _userService.Post(_userMapper.UserRegistrationToUser(user));
+            try
+            {
+                await _userService.PostAsync(_userMapper.Map<User>(user));
+                return await Authenticate(new AuthenticateRequest() {Email = user.Email, Password = user.Password});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<UsersController>/5
-        [Authorize]
+        [Authorize(Policy = "AdminApp")]
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] UserRegistration value)
         {
+            try
+            {
+                await _userService.UpdateAsync(id, _userMapper.Map<User>(value));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<UsersController>/5
-        [Authorize]
+        [Authorize(Policy = "AdminApp")]
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _userService.Delete(id);
+            try
+            {
+                await _userService.DeleteAsync(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private void SetTokenCookie(string token)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddMinutes(10)
+            };
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
     }
 }

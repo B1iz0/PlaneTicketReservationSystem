@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
@@ -17,14 +18,14 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             this._db = context;
             _roles = context.Roles;
         }
-        public IEnumerable<RoleEntity> GetAll()
+        public async Task<IEnumerable<RoleEntity>> GetAllAsync()
         {
-            return _roles;
+            return await _roles.ToListAsync();
         }
 
-        public RoleEntity Get(int id)
+        public async Task<RoleEntity> GetAsync(int id)
         {
-            return _roles.Find(id);
+            return await _roles.FindAsync(id);
         }
 
         public IEnumerable<RoleEntity> Find(Func<RoleEntity, bool> predicate)
@@ -32,26 +33,32 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             return _roles.Where(predicate).ToList();
         }
 
-        public void Create(RoleEntity item)
+        public async Task CreateAsync(RoleEntity item)
         {
-            _roles.Add(item);
-            _db.SaveChanges();
+            await _roles.AddAsync(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Update(RoleEntity item)
+        public async Task UpdateAsync(int id, RoleEntity item)
         {
-            _db.Entry(item).State = EntityState.Modified;
-            _db.SaveChanges();
+            item.Id = id;
+            _roles.Update(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            RoleEntity role = _roles.Find(id);
+            RoleEntity role = await _roles.FindAsync(id);
             if (role != null)
             {
                 _roles.Remove(role);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> IsExistingAsync(int id)
+        {
+            return await _roles.AnyAsync(x => x.Id == id);
         }
     }
 }

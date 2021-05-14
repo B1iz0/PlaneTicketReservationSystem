@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
@@ -17,14 +18,14 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             this._db = context;
             _countries = context.Countries;
         }
-        public IEnumerable<CountryEntity> GetAll()
+        public async Task<IEnumerable<CountryEntity>> GetAllAsync()
         {
-            return _countries;
+            return await _countries.ToListAsync();
         }
 
-        public CountryEntity Get(int id)
+        public async Task<CountryEntity> GetAsync(int id)
         {
-            return _countries.Find(id);
+            return await _countries.FindAsync(id);
         }
 
         public IEnumerable<CountryEntity> Find(Func<CountryEntity, bool> predicate)
@@ -32,26 +33,32 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             return _countries.Where(predicate).ToList();
         }
 
-        public void Create(CountryEntity item)
+        public async Task CreateAsync(CountryEntity item)
         {
-            _countries.Add(item);
-            _db.SaveChanges();
+            await _countries.AddAsync(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Update(CountryEntity item)
+        public async Task UpdateAsync(int id, CountryEntity item)
         {
-            _db.Entry(item).State = EntityState.Modified;
-            _db.SaveChanges();
+            item.Id = id;
+            _countries.Update(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            CountryEntity country = _countries.Find(id);
+            CountryEntity country = await _countries.FindAsync(id);
             if (country != null)
             {
                 _countries.Remove(country);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> IsExistingAsync(int id)
+        {
+            return await _countries.AnyAsync(x => x.Id == id);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
@@ -17,14 +18,14 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             this._db = context;
             _companies = context.Companies;
         }
-        public IEnumerable<CompanyEntity> GetAll()
+        public async Task<IEnumerable<CompanyEntity>> GetAllAsync()
         {
-            return _companies;
+            return await _companies.ToListAsync();
         }
 
-        public CompanyEntity Get(int id)
+        public async Task<CompanyEntity> GetAsync(int id)
         {
-            return _companies.Find(id);
+            return await _companies.FindAsync(id);
         }
 
         public IEnumerable<CompanyEntity> Find(Func<CompanyEntity, bool> predicate)
@@ -32,26 +33,32 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             return _companies.Where(predicate).ToList();
         }
 
-        public void Create(CompanyEntity item)
+        public async Task CreateAsync(CompanyEntity item)
         {
-            _companies.Add(item);
-            _db.SaveChanges();
+            await _companies.AddAsync(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Update(CompanyEntity item)
+        public async Task UpdateAsync(int id, CompanyEntity item)
         {
-            _db.Entry(item).State = EntityState.Modified;
-            _db.SaveChanges();
+            item.Id = id;
+            _companies.Update(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            CompanyEntity company = _companies.Find(id);
+            CompanyEntity company = await _companies.FindAsync(id);
             if (company != null)
             {
                 _companies.Remove(company);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> IsExistingAsync(int id)
+        {
+            return await _companies.AnyAsync(x => x.Id == id);
         }
     }
 }

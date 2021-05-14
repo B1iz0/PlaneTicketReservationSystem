@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
@@ -17,19 +18,19 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             this._db = context;
             _cities = context.Cities;
         }
-        public void Create(CityEntity item)
+        public async Task CreateAsync(CityEntity item)
         {
-            _cities.Add(item);
-            _db.SaveChanges();
+            await _cities.AddAsync(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            CityEntity city = _cities.Find(id);
+            CityEntity city = await _cities.FindAsync(id);
             if (city != null)
             {
                 _cities.Remove(city);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
         }
 
@@ -38,20 +39,26 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             return _cities.Where(predicate).ToList();
         }
 
-        public CityEntity Get(int id)
+        public async Task<CityEntity> GetAsync(int id)
         {
-            return _cities.Find(id);
+            return await _cities.FindAsync(id);
         }
 
-        public IEnumerable<CityEntity> GetAll()
+        public async Task<IEnumerable<CityEntity>> GetAllAsync()
         {
-            return _cities;
+            return await _cities.ToListAsync();
         }
 
-        public void Update(CityEntity item)
+        public async Task<bool> IsExistingAsync(int id)
         {
-            _db.Entry(item).State = EntityState.Modified;
-            _db.SaveChanges();
+            return await _cities.AnyAsync(x => x.Id == id);
+        }
+
+        public async Task UpdateAsync(int id, CityEntity item)
+        {
+            item.Id = id;
+            _cities.Update(item);
+            await _db.SaveChangesAsync();
         }
     }
 }
