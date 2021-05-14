@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlaneTicketReservationSystem.Data;
 
 namespace PlaneTicketReservationSystem.Data.Migrations
 {
     [DbContext(typeof(ReservationSystemContext))]
-    partial class ReservationSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20210514125309_CompanyAdmin")]
+    partial class CompanyAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -148,6 +150,9 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("AdminId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
 
@@ -264,7 +269,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -293,7 +298,8 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("CompanyId")
+                        .IsUnique();
 
                     b.HasIndex("RoleId");
 
@@ -303,6 +309,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         new
                         {
                             Id = 1,
+                            CompanyId = 0,
                             Email = "admin",
                             FirstName = "admin",
                             LastName = "admin",
@@ -420,9 +427,10 @@ namespace PlaneTicketReservationSystem.Data.Migrations
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.UserEntity", b =>
                 {
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.CompanyEntity", "Company")
-                        .WithMany("Admins")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .WithOne("Admin")
+                        .HasForeignKey("PlaneTicketReservationSystem.Data.Entities.UserEntity", "CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.RoleEntity", "Role")
                         .WithMany("Users")
@@ -500,7 +508,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.CompanyEntity", b =>
                 {
-                    b.Navigation("Admins");
+                    b.Navigation("Admin");
 
                     b.Navigation("Airplanes");
 

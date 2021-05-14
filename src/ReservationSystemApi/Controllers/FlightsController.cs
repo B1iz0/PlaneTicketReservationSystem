@@ -62,7 +62,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // POST api/<FlightsController>
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Post([FromBody] FlightRegistration value)
         {
             try
@@ -78,7 +78,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // PUT api/<FlightsController>/5
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Put(int id, [FromBody] FlightRegistration value)
         {
             try
@@ -94,7 +94,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // DELETE api/<FlightsController>/5
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try

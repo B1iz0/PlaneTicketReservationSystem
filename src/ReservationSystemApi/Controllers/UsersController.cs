@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -135,6 +138,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             try
             {
+                user.RoleId = 3;
                 await _userService.PostAsync(_userMapper.Map<User>(user));
                 return await Authenticate(new AuthenticateRequest() {Email = user.Email, Password = user.Password});
             }
@@ -145,12 +149,22 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         // PUT api/<UsersController>/5
-        [Authorize(Policy = "AdminApp")]
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UserRegistration value)
         {
             try
             {
+                var role = User.Claims.FirstOrDefault(x =>
+                    x.Type.Equals(ClaimTypes.Role))?.Value;
+                switch (role)
+                {
+                    case null: return BadRequest();
+                    case "Admin": value.RoleId = 2;
+                        break;
+                    case "User": value.RoleId = 3;
+                        break;
+                }
                 await _userService.UpdateAsync(id, _userMapper.Map<User>(value));
                 return Ok();
             }
