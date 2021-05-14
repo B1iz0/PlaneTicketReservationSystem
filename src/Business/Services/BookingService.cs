@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
@@ -21,35 +22,35 @@ namespace PlaneTicketReservationSystem.Business.Services
             _bookingMapper = new Mapper(conf.AirlineConfiguration);
         }
 
-        public IEnumerable<Booking> GetAll()
+        public async Task<IEnumerable<Booking>> GetAllAsync()
         {
-            return _bookingMapper.Map<IEnumerable<Booking>>(_bookings.GetAll());
+            return _bookingMapper.Map<IEnumerable<Booking>>(await _bookings.GetAllAsync());
         }
 
-        public Booking GetById(int id)
+        public async Task<Booking> GetByIdAsync(int id)
         {
             if (!_bookings.Find(x => x.Id == id).Any())
                 throw new Exception($"No such booking with id: {id}");
-            return _bookingMapper.Map<Booking>(_bookings.Get(id));
+            return _bookingMapper.Map<Booking>(await _bookings.GetAsync(id));
         }
 
-        public void Post(Booking item)
+        public async Task PostAsync(Booking item)
         {
-            _bookings.Create(_bookingMapper.Map<BookingEntity>(item));
+            await _bookings.CreateAsync(_bookingMapper.Map<BookingEntity>(item));
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             if (!_bookings.Find(x => x.Id == id).Any())
                 throw new Exception($"No such booking with id: {id}");
-            _bookings.Delete(id);
+            await _bookings.DeleteAsync(id);
         }
 
-        public void Update(int id, Booking item)
+        public async Task UpdateAsync(int id, Booking item)
         {
-            if (!_bookings.IsExisting(id))
+            if (!(await _bookings.IsExistingAsync(id)))
                 throw new Exception($"No such booking with id: {id}");
-            _bookings.Update(id, _bookingMapper.Map<BookingEntity>(item));
+            await _bookings.UpdateAsync(id, _bookingMapper.Map<BookingEntity>(item));
         }
     }
 }

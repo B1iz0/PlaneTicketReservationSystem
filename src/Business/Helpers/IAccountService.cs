@@ -1,13 +1,14 @@
-﻿using PlaneTicketReservationSystem.Business.Models;
+﻿using System.Threading.Tasks;
+using PlaneTicketReservationSystem.Business.Models;
 
 namespace PlaneTicketReservationSystem.Business.Helpers
 {
     public interface IAccountService
     {
-        public Authenticate Authenticate(Authenticate model);
-        public Authenticate RefreshToken(string token);
-        public bool RevokeToken(string token);
-        public string GenerateJwtToken(User user);
+        public Task<Authenticate> AuthenticateAsync(Authenticate model);
+        public Task<Authenticate> RefreshTokenAsync(string token);
+        public Task<bool> RevokeTokenAsync(string token);
+        public Task<string> GenerateJwtTokenAsync(User user);
         public RefreshToken GenerateRefreshToken();
     }
 }

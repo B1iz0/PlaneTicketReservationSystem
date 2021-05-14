@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -30,9 +31,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(AuthenticateRequest model)
+        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
         {
-            var response = _account.Authenticate(_authMapper.Map<Authenticate>(model));
+            var response = await _account.AuthenticateAsync(_authMapper.Map<Authenticate>(model));
 
             if (response == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
@@ -44,10 +45,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        public IActionResult RefreshToken()
+        public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            var response = _account.RefreshToken(refreshToken);
+            var response = await _account.RefreshTokenAsync(refreshToken);
 
             if (response == null)
                 return Unauthorized(new { message = "Invalid token" });
@@ -58,7 +59,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpPost("revoke-token")]
-        public IActionResult RevokeToken([FromBody] RevokeTokenRequest model)
+        public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenRequest model)
         {
             // accept token from request body or cookie
             var token = model.Token ?? Request.Cookies["refreshToken"];
@@ -66,7 +67,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             if (string.IsNullOrEmpty(token))
                 return BadRequest(new { message = "Token is required" });
 
-            var response = _account.RevokeToken(token);
+            var response = await _account.RevokeTokenAsync(token);
 
             if (!response)
                 return NotFound(new { message = "Token not found" });
@@ -78,11 +79,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize(Policy = "AdminApp")]
         [HttpGet]
         //Will use mapping soon
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var users = _userMapper.Map<IEnumerable<UserResponse>>(_userService.GetAll());
+                var users = _userMapper.Map<IEnumerable<UserResponse>>(await _userService.GetAllAsync());
                 if (users == null)
                     return BadRequest();
                 return Ok(users);
@@ -96,11 +97,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET api/<UsersController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var response = _userMapper.Map<UserDetails>(_userService.GetById(id));
+                var response = _userMapper.Map<UserDetails>(await _userService.GetByIdAsync(id));
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
@@ -115,11 +116,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // POST api/<UsersController>
         [Authorize(Policy = "AdminApp")]
         [HttpPost()]
-        public IActionResult Post([FromBody] UserRegistration user)
+        public async Task<IActionResult> Post([FromBody] UserRegistration user)
         {
             try
             {
-                _userService.Post(_userMapper.Map<User>(user));
+                await _userService.PostAsync(_userMapper.Map<User>(user));
                 return Ok();
             }
             catch (Exception ex)
@@ -130,12 +131,12 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // POST api/<UsersController>
         [HttpPost("registration")]
-        public IActionResult Registration([FromBody] UserRegistration user)
+        public async Task<IActionResult> Registration([FromBody] UserRegistration user)
         {
             try
             {
-                _userService.Post(_userMapper.Map<User>(user));
-                return Authenticate(new AuthenticateRequest() {Email = user.Email, Password = user.Password});
+                await _userService.PostAsync(_userMapper.Map<User>(user));
+                return await Authenticate(new AuthenticateRequest() {Email = user.Email, Password = user.Password});
             }
             catch (Exception ex)
             {
@@ -146,11 +147,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // PUT api/<UsersController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UserRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] UserRegistration value)
         {
             try
             {
-                _userService.Update(id, _userMapper.Map<User>(value));
+                await _userService.UpdateAsync(id, _userMapper.Map<User>(value));
                 return Ok();
             }
             catch (Exception ex)
@@ -162,11 +163,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // DELETE api/<UsersController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                _userService.Delete(id);
+                await _userService.DeleteAsync(id);
                 return Ok();
             }
             catch (Exception ex)

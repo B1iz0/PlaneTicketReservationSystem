@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Helpers;
@@ -26,11 +27,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET: api/<CountriesController>
         [HttpGet]
         [Authorize]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var response = _countryMapper.Map<IEnumerable<CountryResponse>>(_countryService.GetAll());
+                var response = _countryMapper.Map<IEnumerable<CountryResponse>>(await _countryService.GetAllAsync());
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
@@ -44,11 +45,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET api/<CountriesController>/5
         [HttpGet("{id}")]
         [Authorize]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var response = _countryMapper.Map<CountryDetails>(_countryService.GetById(id));
+                var response = _countryMapper.Map<CountryDetails>(await _countryService.GetByIdAsync(id));
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
@@ -62,11 +63,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // POST api/<CountriesController>
         [HttpPost]
         [Authorize]
-        public IActionResult Post([FromBody] CountryRegistration value)
+        public async Task<IActionResult> Post([FromBody] CountryRegistration value)
         {
             try
             {
-                _countryService.Post(_countryMapper.Map<Country>(value));
+                await _countryService.PostAsync(_countryMapper.Map<Country>(value));
                 return Ok();
             }
             catch (Exception ex)
@@ -78,11 +79,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // PUT api/<CountriesController>/5
         [HttpPut("{id}")]
         [Authorize]
-        public IActionResult Put(int id, [FromBody] CountryRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] CountryRegistration value)
         {
             try
             {
-                _countryService.Update(id, _countryMapper.Map<Country>(value));
+                await _countryService.UpdateAsync(id, _countryMapper.Map<Country>(value));
                 return Ok();
             }
             catch (Exception ex)
@@ -94,11 +95,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // DELETE api/<CountriesController>/5
         [HttpDelete("{id}")]
         [Authorize]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                _countryService.Delete(id);
+                await _countryService.DeleteAsync(id);
                 return Ok();
             }
             catch (Exception ex)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
@@ -18,19 +19,19 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             _airports = context.Airports;
         }
 
-        public void Create(AirportEntity item)
+        public async Task CreateAsync(AirportEntity item)
         {
-            _airports.Add(item);
-            _db.SaveChanges();
+            await _airports.AddAsync(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            AirportEntity airport = _airports.Find(id);
+            AirportEntity airport = await _airports.FindAsync(id);
             if (airport != null)
             {
                 _airports.Remove(airport);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
         }
 
@@ -39,26 +40,26 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             return _airports.Where(predicate).ToList();
         }
 
-        public AirportEntity Get(int id)
+        public async Task<AirportEntity> GetAsync(int id)
         {
-            return _airports.Find(id);
+            return await _airports.FindAsync(id);
         }
 
-        public IEnumerable<AirportEntity> GetAll()
+        public async Task<IEnumerable<AirportEntity>> GetAllAsync()
         {
-            return _airports;
+            return await _airports.ToListAsync();
         }
 
-        public bool IsExisting(int id)
+        public async Task<bool> IsExistingAsync(int id)
         {
-            return _airports.Any(x => x.Id == id);
+            return await _airports.AnyAsync(x => x.Id == id);
         }
 
-        public void Update(int id, AirportEntity item)
+        public async Task UpdateAsync(int id, AirportEntity item)
         {
             item.Id = id;
             _airports.Update(item);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
     }
 }

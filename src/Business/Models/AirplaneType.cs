@@ -6,6 +6,6 @@ namespace PlaneTicketReservationSystem.Business.Models
     {
         public int Id { get; set; }
         public string TypeName { get; set; }
-        public virtual List<Airplane> Airplanes { get; set; }
+        public List<Airplane> Airplanes { get; set; }
     }
 }

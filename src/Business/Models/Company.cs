@@ -7,8 +7,8 @@ namespace PlaneTicketReservationSystem.Business.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int CountryId { get; set; }
-        public virtual Country Country { get; set; }
-        public virtual List<Airplane> Airplanes { get; set; }
-        public virtual List<Airport> Airports { get; set; }
+        public Country Country { get; set; }
+        public List<Airplane> Airplanes { get; set; }
+        public List<Airport> Airports { get; set; }
     }
 }

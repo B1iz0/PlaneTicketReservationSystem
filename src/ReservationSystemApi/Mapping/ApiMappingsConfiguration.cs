@@ -72,14 +72,16 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<AirplaneType, AirplaneTypeDetails>();
                 x.CreateMap<AirplaneType, AirplaneTypeResponse>();
                 x.CreateMap<AirplaneTypeRegistration, AirplaneType>();
-                x.CreateMap<Airplane, AirplaneResponse>().ForMember(z => z.Company, opt => opt.Ignore());
+                x.CreateMap<Airplane, AirplaneResponse>().ForMember(z => z.Flight, opt => opt.Ignore());
+                x.CreateMap<Company, CompanyResponse>();
+                x.CreateMap<Country, CountryResponse>();
             });
             AirportConfiguration = new MapperConfiguration(x =>
             {
                 x.CreateMap<Airport, AirportDetails>();
                 x.CreateMap<Airport, AirportResponse>();
                 x.CreateMap<AirportRegistration, Airport>();
-                x.CreateMap<Airplane, AirplaneResponse>();
+                x.CreateMap<Airplane, AirplaneResponse>().ForMember(z => z.Flight, opt => opt.Ignore());
                 x.CreateMap<AirplaneType, AirplaneTypeResponse>();
                 x.CreateMap<City, CityResponse>();
                 x.CreateMap<Company, CompanyResponse>();
@@ -116,7 +118,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<Country, CountryResponse>();
                 x.CreateMap<Airplane, AirplaneResponse>().ForMember(z => z.Company, opt => opt.Ignore());
                 x.CreateMap<AirplaneType, AirplaneTypeResponse>();
-                x.CreateMap<Airport, AirportResponse>().ForMember(z => z.Company, opt => opt.Ignore());
+                x.CreateMap<Flight, FlightResponse>().ForMember(z => z.Airplane, opt => opt.Ignore());
+                x.CreateMap<Airport, AirportResponse>();
                 x.CreateMap<City, CityResponse>();
             });
             CountryMapperConfiguration = new MapperConfiguration(x =>
@@ -132,7 +135,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<Flight, FlightDetails>();
                 x.CreateMap<Flight, FlightResponse>();
                 x.CreateMap<FlightRegistration, Flight>();
-                x.CreateMap<Airplane, AirplaneResponse>();
+                x.CreateMap<Airplane, AirplaneResponse>().ForMember(z => z.Flight, opt => opt.Ignore());
                 x.CreateMap<AirplaneType, AirplaneTypeResponse>();
                 x.CreateMap<Company, CompanyResponse>();
                 x.CreateMap<Country, CountryResponse>();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
@@ -21,37 +22,37 @@ namespace PlaneTicketReservationSystem.Business.Services
             _airportMapper = new Mapper(conf.AirlineConfiguration);
         }
 
-        public IEnumerable<Airport> GetAll()
+        public async Task<IEnumerable<Airport>> GetAllAsync()
         {
-            return _airportMapper.Map<IEnumerable<Airport>>(_airports.GetAll());
+            return _airportMapper.Map<IEnumerable<Airport>>(await _airports.GetAllAsync());
         }
 
-        public Airport GetById(int id)
+        public async Task<Airport> GetByIdAsync(int id)
         {
             if (!_airports.Find(x => x.Id == id).Any())
                 throw new Exception($"No such airport with id: {id}");
-            return _airportMapper.Map<Airport>(_airports.Get(id));
+            return _airportMapper.Map<Airport>(await _airports.GetAsync(id));
         }
 
-        public void Post(Airport item)
+        public async Task PostAsync(Airport item)
         {
             if (_airports.Find(x => x.Name == item.Name).Any())
                 throw new Exception($"Airport {item.Name} is already exist");
-            _airports.Create(_airportMapper.Map<AirportEntity>(item));
+            await _airports.CreateAsync(_airportMapper.Map<AirportEntity>(item));
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             if (!_airports.Find(x => x.Id == id).Any())
                 throw new Exception($"No such airport with id: {id}");
-            _airports.Delete(id);
+            await _airports.DeleteAsync(id);
         }
 
-        public void Update(int id, Airport item)
+        public async Task UpdateAsync(int id, Airport item)
         {
-            if (!_airports.IsExisting(id))
+            if (!(await _airports.IsExistingAsync(id)))
                 throw new Exception($"No such airport with id: {id}");
-            _airports.Update(id, _airportMapper.Map<AirportEntity>(item));
+            await _airports.UpdateAsync(id, _airportMapper.Map<AirportEntity>(item));
         }
     }
 }

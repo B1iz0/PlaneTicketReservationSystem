@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Helpers;
@@ -26,11 +27,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET: api/<CompaniesController>
         [HttpGet]
         [Authorize]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(_companyService.GetAll());
+                var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(await _companyService.GetAllAsync());
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
@@ -44,11 +45,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET api/<CompaniesController>/5
         [HttpGet("{id}")]
         [Authorize]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var response = _companyMapper.Map<CompanyDetails>(_companyService.GetById(id));
+                var response = _companyMapper.Map<CompanyDetails>(await _companyService.GetByIdAsync(id));
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
@@ -62,11 +63,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // POST api/<CompaniesController>
         [HttpPost]
         [Authorize]
-        public IActionResult Post([FromBody] CompanyRegistration value)
+        public async Task<IActionResult> Post([FromBody] CompanyRegistration value)
         {
             try
             {
-                _companyService.Post(_companyMapper.Map<Company>(value));
+                await _companyService.PostAsync(_companyMapper.Map<Company>(value));
                 return Ok();
             }
             catch (Exception ex)
@@ -78,11 +79,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // PUT api/<CompaniesController>/5
         [HttpPut("{id}")]
         [Authorize]
-        public IActionResult Put(int id, [FromBody] CompanyRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] CompanyRegistration value)
         {
             try
             {
-                _companyService.Update(id, _companyMapper.Map<Company>(value));
+                await _companyService.UpdateAsync(id, _companyMapper.Map<Company>(value));
                 return Ok();
             }
             catch (Exception ex)
@@ -94,11 +95,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // DELETE api/<CompaniesController>/5
         [HttpDelete("{id}")]
         [Authorize]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                _companyService.Delete(id);
+                await _companyService.DeleteAsync(id);
                 return Ok();
             }
             catch (Exception ex)

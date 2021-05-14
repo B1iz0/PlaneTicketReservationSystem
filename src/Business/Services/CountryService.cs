@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
@@ -21,37 +22,37 @@ namespace PlaneTicketReservationSystem.Business.Services
             _countryMapper = new Mapper(conf.AirlineConfiguration);
         }
 
-        public IEnumerable<Country> GetAll()
+        public async Task<IEnumerable<Country>> GetAllAsync()
         {
-            return _countryMapper.Map<IEnumerable<Country>>(_countries.GetAll());
+            return _countryMapper.Map<IEnumerable<Country>>(await _countries.GetAllAsync());
         }
 
-        public Country GetById(int id)
+        public async Task<Country> GetByIdAsync(int id)
         {
             if (!_countries.Find(x => x.Id == id).Any())
                 throw new Exception($"No such country with id: {id}");
-            return _countryMapper.Map<Country>(_countries.Get(id));
+            return _countryMapper.Map<Country>(await _countries.GetAsync(id));
         }
 
-        public void Post(Country item)
+        public async Task PostAsync(Country item)
         {
             if (_countries.Find(x => x.Name == item.Name).Any())
                 throw new Exception($"Country {item.Name} is already exist");
-            _countries.Create(_countryMapper.Map<CountryEntity>(item));
+            await _countries.CreateAsync(_countryMapper.Map<CountryEntity>(item));
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             if (!_countries.Find(x => x.Id == id).Any())
                 throw new Exception($"No such country with id: {id}");
-            _countries.Delete(id);
+            await _countries.DeleteAsync(id);
         }
 
-        public void Update(int id, Country item)
+        public async Task UpdateAsync(int id, Country item)
         {
-            if (!_countries.IsExisting(id))
+            if (!(await _countries.IsExistingAsync(id)))
                 throw new Exception($"No such country with id: {id}");
-            _countries.Update(id, _countryMapper.Map<CountryEntity>(item));
+            await _countries.UpdateAsync(id, _countryMapper.Map<CountryEntity>(item));
         }
     }
 }

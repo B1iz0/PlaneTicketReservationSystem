@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
@@ -17,14 +18,14 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             this._db = context;
             _airplaneTypes = context.AirplaneTypes;
         }
-        public IEnumerable<AirplaneTypeEntity> GetAll()
+        public async Task<IEnumerable<AirplaneTypeEntity>> GetAllAsync()
         {
-            return _airplaneTypes;
+            return await _airplaneTypes.ToListAsync();
         }
 
-        public AirplaneTypeEntity Get(int id)
+        public async Task<AirplaneTypeEntity> GetAsync(int id)
         {
-            return _airplaneTypes.Find(id);
+            return await _airplaneTypes.FindAsync(id);
         }
 
         public IEnumerable<AirplaneTypeEntity> Find(Func<AirplaneTypeEntity, bool> predicate)
@@ -32,32 +33,32 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             return _airplaneTypes.Where(predicate).ToList();
         }
 
-        public void Create(AirplaneTypeEntity item)
+        public async Task CreateAsync(AirplaneTypeEntity item)
         {
-            _airplaneTypes.Add(item);
-            _db.SaveChanges();
+            await _airplaneTypes.AddAsync(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Update(int id, AirplaneTypeEntity item)
+        public async Task UpdateAsync(int id, AirplaneTypeEntity item)
         {
             item.Id = id;
             _airplaneTypes.Update(item);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            AirplaneTypeEntity type = _airplaneTypes.Find(id);
+            AirplaneTypeEntity type = await _airplaneTypes.FindAsync(id);
             if (type != null)
             {
                 _airplaneTypes.Remove(type);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
         }
 
-        public bool IsExisting(int id)
+        public async Task<bool> IsExistingAsync(int id)
         {
-            return _airplaneTypes.Any(x => x.Id == id);
+            return await _airplaneTypes.AnyAsync(x => x.Id == id);
         }
     }
 }

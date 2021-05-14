@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -30,7 +31,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             _userMapper = new Mapper(conf.AirlineConfiguration);
         }
 
-        public Authenticate Authenticate(Authenticate model)
+        public async Task<Authenticate> AuthenticateAsync(Authenticate model)
         {
             var userEntity = _users.Find(x => x.Email == model.Email && PasswordHasher.CheckHash(model.Password, x.Password))
                 .ToList()
@@ -38,18 +39,18 @@ namespace PlaneTicketReservationSystem.Business.Services
             if (userEntity == null) return null;
 
             var user = _userMapper.Map<User>(userEntity);
-            var token = GenerateJwtToken(user);
+            var token = await GenerateJwtTokenAsync(user);
             var refreshToken = GenerateRefreshToken();
 
             userEntity.RefreshTokens.Add(_userMapper.Map<RefreshTokenEntity>(refreshToken));
-            _users.Update(userEntity.Id, userEntity);
+            await _users.UpdateAsync(userEntity.Id, userEntity);
 
             return new Authenticate(_userMapper.Map<User>(userEntity), token, refreshToken.Token);
         }
 
-        public string GenerateJwtToken(User user)
+        public async Task<string> GenerateJwtTokenAsync(User user)
         {
-            var roleName = _roles.Get(user.RoleId).Name;
+            var roleName = (await _roles.GetAsync(user.RoleId)).Name;
             if (roleName == null) return null;
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -84,7 +85,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             };
         }
 
-        public bool RevokeToken(string token)
+        public async Task<bool> RevokeTokenAsync(string token)
         {
             var user = _users.Find(u => u.RefreshTokens.Any(t => t.Token == token)).First();
             if (user == null) return false;
@@ -93,11 +94,11 @@ namespace PlaneTicketReservationSystem.Business.Services
             if (!refreshToken.IsActive) return false;
 
             refreshToken.Revoked = DateTime.UtcNow;
-            _users.Update(user.Id, user);
+            await _users.UpdateAsync(user.Id, user);
             return true;
         }
 
-        public Authenticate RefreshToken(string token)
+        public async Task<Authenticate> RefreshTokenAsync(string token)
         {
             var user = _users.Find(x => x.RefreshTokens.Any(t => t.Token == token)).First();
             if (user == null) return null;
@@ -109,9 +110,9 @@ namespace PlaneTicketReservationSystem.Business.Services
             refreshToken.Revoked = DateTime.UtcNow;
             refreshToken.ReplacedByToken = newRefreshToken.Token;
             user.RefreshTokens.Add(_userMapper.Map<RefreshTokenEntity>(newRefreshToken));
-            _users.Update(user.Id, user);
+            await _users.UpdateAsync(user.Id, user);
 
-            var jwtToken = GenerateJwtToken(_userMapper.Map<User>(user));
+            var jwtToken = await GenerateJwtTokenAsync(_userMapper.Map<User>(user));
 
             return new Authenticate(_userMapper.Map<User>(user), jwtToken, newRefreshToken.Token);
         }

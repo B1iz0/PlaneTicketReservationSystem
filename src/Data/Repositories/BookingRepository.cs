@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
@@ -18,19 +19,19 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             _bookings = context.Bookings;
         }
 
-        public void Create(BookingEntity item)
+        public async Task CreateAsync(BookingEntity item)
         {
-            _bookings.Add(item);
-            _db.SaveChanges();
+            await _bookings.AddAsync(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            BookingEntity booking = _bookings.Find(id);
+            BookingEntity booking = await _bookings.FindAsync(id);
             if (booking != null)
             {
                 _bookings.Remove(booking);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
         }
 
@@ -39,26 +40,26 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             return _bookings.Where(predicate).ToList();
         }
 
-        public BookingEntity Get(int id)
+        public async Task<BookingEntity> GetAsync(int id)
         {
-            return _bookings.Find(id);
+            return await _bookings.FindAsync(id);
         }
 
-        public IEnumerable<BookingEntity> GetAll()
+        public async Task<IEnumerable<BookingEntity>> GetAllAsync()
         {
-            return _bookings;
+            return await _bookings.ToListAsync();
         }
 
-        public bool IsExisting(int id)
+        public async Task<bool> IsExistingAsync(int id)
         {
-            return _bookings.Any(x => x.Id == id);
+            return await _bookings.AnyAsync(x => x.Id == id);
         }
 
-        public void Update(int id, BookingEntity item)
+        public async Task UpdateAsync(int id, BookingEntity item)
         {
             item.Id = id;
             _bookings.Update(item);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
     }
 }

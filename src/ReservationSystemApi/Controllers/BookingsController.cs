@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Helpers;
@@ -26,11 +27,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET: api/<BookingsController>
         [HttpGet]
         [Authorize]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var response = _bookingMapper.Map<IEnumerable<BookingResponse>>(_bookingService.GetAll());
+                var response = _bookingMapper.Map<IEnumerable<BookingResponse>>(await _bookingService.GetAllAsync());
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
@@ -44,11 +45,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET api/<BookingsController>/5
         [HttpGet("{id}")]
         [Authorize]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var response = _bookingMapper.Map<BookingResponse>(_bookingService.GetById(id));
+                var response = _bookingMapper.Map<BookingResponse>(await _bookingService.GetByIdAsync(id));
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
@@ -62,11 +63,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // POST api/<BookingsController>
         [HttpPost]
         [Authorize]
-        public IActionResult Post([FromBody] BookingRegistration value)
+        public async Task<IActionResult> Post([FromBody] BookingRegistration value)
         {
             try
             {
-                _bookingService.Post(_bookingMapper.Map<Booking>(value));
+                await _bookingService.PostAsync(_bookingMapper.Map<Booking>(value));
                 return Ok();
             }
             catch (Exception ex)
@@ -78,11 +79,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // PUT api/<BookingsController>/5
         [HttpPut("{id}")]
         [Authorize]
-        public IActionResult Put(int id, [FromBody] BookingRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] BookingRegistration value)
         {
             try
             {
-                _bookingService.Update(id, _bookingMapper.Map<Booking>(value));
+                await _bookingService.UpdateAsync(id, _bookingMapper.Map<Booking>(value));
                 return Ok();
             }
             catch (Exception ex)
@@ -94,11 +95,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // DELETE api/<BookingsController>/5
         [HttpDelete("{id}")]
         [Authorize]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                _bookingService.Delete(id);
+                await _bookingService.DeleteAsync(id);
                 return Ok();
             }
             catch (Exception ex)

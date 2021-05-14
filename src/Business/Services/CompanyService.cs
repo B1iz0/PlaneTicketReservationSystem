@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
@@ -21,37 +22,37 @@ namespace PlaneTicketReservationSystem.Business.Services
             _companyMapper = new Mapper(conf.AirlineConfiguration);
         }
 
-        public IEnumerable<Company> GetAll()
+        public async Task<IEnumerable<Company>> GetAllAsync()
         {
-            return _companyMapper.Map<IEnumerable<Company>>(_companies.GetAll());
+            return _companyMapper.Map<IEnumerable<Company>>(await _companies.GetAllAsync());
         }
 
-        public Company GetById(int id)
+        public async Task<Company> GetByIdAsync(int id)
         {
             if (!_companies.Find(x => x.Id == id).Any())
                 throw new Exception($"No such company with id: {id}");
-            return _companyMapper.Map<Company>(_companies.Get(id));
+            return _companyMapper.Map<Company>(await _companies.GetAsync(id));
         }
 
-        public void Post(Company item)
+        public async Task PostAsync(Company item)
         {
             if (_companies.Find(x => x.Name == item.Name).Any())
                 throw new Exception($"Company {item.Name} is already exist");
-            _companies.Create(_companyMapper.Map<CompanyEntity>(item));
+            await _companies.CreateAsync(_companyMapper.Map<CompanyEntity>(item));
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             if (!_companies.Find(x => x.Id == id).Any())
                 throw new Exception($"No such company with id: {id}");
-            _companies.Delete(id);
+            await _companies.DeleteAsync(id);
         }
 
-        public void Update(int id, Company item)
+        public async Task UpdateAsync(int id, Company item)
         {
-            if (!_companies.IsExisting(id))
+            if (!(await _companies.IsExistingAsync(id)))
                 throw new Exception($"No such company with id: {id}");
-            _companies.Update(id, _companyMapper.Map<CompanyEntity>(item));
+            await _companies.UpdateAsync(id, _companyMapper.Map<CompanyEntity>(item));
         }
     }
 }

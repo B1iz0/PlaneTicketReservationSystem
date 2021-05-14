@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
@@ -17,14 +18,14 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             this._db = context;
             _airplanes = _db.Airplanes;
         }
-        public IEnumerable<AirplaneEntity> GetAll()
+        public async Task<IEnumerable<AirplaneEntity>> GetAllAsync()
         {
-            return _airplanes;
+            return await _airplanes.ToListAsync();
         }
 
-        public AirplaneEntity Get(int id)
+        public async Task<AirplaneEntity> GetAsync(int id)
         {
-            return _airplanes.Find(id);
+            return await _airplanes.FindAsync(id);
         }
 
         public IEnumerable<AirplaneEntity> Find(Func<AirplaneEntity, bool> predicate)
@@ -32,32 +33,32 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             return _airplanes.Where(predicate).ToList();
         }
 
-        public void Create(AirplaneEntity item)
+        public async Task CreateAsync(AirplaneEntity item)
         {
-            _airplanes.Add(item);
-            _db.SaveChanges();
+            await _airplanes.AddAsync(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Update(int id, AirplaneEntity item)
+        public async Task UpdateAsync(int id, AirplaneEntity item)
         {
             item.Id = id;
             _airplanes.Update(item);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            AirplaneEntity airplane = _airplanes.Find(id);
+            AirplaneEntity airplane = await _airplanes.FindAsync(id);
             if (airplane != null)
             {
                 _airplanes.Remove(airplane);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
         }
 
-        public bool IsExisting(int id)
+        public async Task<bool> IsExistingAsync(int id)
         {
-            return _airplanes.Any(x => x.Id == id);
+            return await _airplanes.AnyAsync(x => x.Id == id);
         }
     }
 }

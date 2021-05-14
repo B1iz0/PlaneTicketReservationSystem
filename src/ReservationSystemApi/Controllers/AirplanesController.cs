@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Helpers;
@@ -25,11 +26,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // GET: api/<AirplanesController>
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var response = _airplaneMapper.Map<IEnumerable<AirplaneResponse>>(_airplaneService.GetAll());
+                var response = _airplaneMapper.Map<IEnumerable<AirplaneResponse>>(await _airplaneService.GetAllAsync());
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
@@ -42,11 +43,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // GET api/<AirplanesController>/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var response = _airplaneMapper.Map<AirplaneResponse>(_airplaneService.GetById(id));
+                var response = _airplaneMapper.Map<AirplaneResponse>(await _airplaneService.GetByIdAsync(id));
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
@@ -60,11 +61,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // POST api/<AirplanesController>
         [HttpPost]
         [Authorize(Policy = "Admin")]
-        public IActionResult Post([FromBody] AirplaneRegistration value)
+        public async Task<IActionResult> Post([FromBody] AirplaneRegistration value)
         {
             try
             {
-                _airplaneService.Post(_airplaneMapper.Map<Airplane>(value));
+                await _airplaneService.PostAsync(_airplaneMapper.Map<Airplane>(value));
                 return Ok();
             }
             catch (Exception ex)
@@ -76,11 +77,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // PUT api/<AirplanesController>/5
         [HttpPut("{id}")]
         [Authorize(Policy = "Admin")]
-        public IActionResult Put(int id, [FromBody] AirplaneRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] AirplaneRegistration value)
         {
             try
             {
-                _airplaneService.Update(id, _airplaneMapper.Map<Airplane>(value));
+                await _airplaneService.UpdateAsync(id, _airplaneMapper.Map<Airplane>(value));
                 return Ok();
             }
             catch (Exception ex)
@@ -92,11 +93,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // DELETE api/<AirplanesController>/5
         [HttpDelete("{id}")]
         [Authorize(Policy = "Admin")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                _airplaneService.Delete(id);
+                await _airplaneService.DeleteAsync(id);
                 return Ok();
             }
             catch (Exception ex)

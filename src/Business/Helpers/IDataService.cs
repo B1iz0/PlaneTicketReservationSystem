@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PlaneTicketReservationSystem.Business.Helpers
 {
     public interface IDataService<T>
     {
-        IEnumerable<T> GetAll();
-        T GetById(int id);
-        void Post(T item);
-        void Delete(int id);
-        void Update(int id, T item);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetByIdAsync(int id);
+        Task PostAsync(T item);
+        Task DeleteAsync(int id);
+        Task UpdateAsync(int id, T item);
     }
 }

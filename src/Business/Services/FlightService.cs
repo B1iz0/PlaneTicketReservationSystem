@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
@@ -21,37 +22,37 @@ namespace PlaneTicketReservationSystem.Business.Services
             _flightMapper = new Mapper(conf.AirlineConfiguration);
         }
 
-        public IEnumerable<Flight> GetAll()
+        public async Task<IEnumerable<Flight>> GetAllAsync()
         {
-            return _flightMapper.Map<IEnumerable<Flight>>(_flights.GetAll());
+            return _flightMapper.Map<IEnumerable<Flight>>(await _flights.GetAllAsync());
         }
 
-        public Flight GetById(int id)
+        public async Task<Flight> GetByIdAsync(int id)
         {
             if (!_flights.Find(x => x.Id == id).Any())
                 throw new Exception($"No such flight with id: {id}");
-            return _flightMapper.Map<Flight>(_flights.Get(id));
+            return _flightMapper.Map<Flight>(await _flights.GetAsync(id));
         }
 
-        public void Post(Flight item)
+        public async Task PostAsync(Flight item)
         {
             if (_flights.Find(x => x.AirplaneId == item.AirplaneId).Any())
                 throw new Exception($"Flight with airplane id: {item.AirplaneId} is already exist");
-            _flights.Create(_flightMapper.Map<FlightEntity>(item));
+            await _flights.CreateAsync(_flightMapper.Map<FlightEntity>(item));
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             if (!_flights.Find(x => x.Id == id).Any())
                 throw new Exception($"No such flight with id: {id}");
-            _flights.Delete(id);
+            await _flights.DeleteAsync(id);
         }
 
-        public void Update(int id, Flight item)
+        public async Task UpdateAsync(int id, Flight item)
         {
-            if (!_flights.IsExisting(id))
+            if (!(await _flights.IsExistingAsync(id)))
                 throw new Exception($"No such flight with id: {id}");
-            _flights.Update(id, _flightMapper.Map<FlightEntity>(item));
+            await _flights.UpdateAsync(id, _flightMapper.Map<FlightEntity>(item));
         }
     }
 }

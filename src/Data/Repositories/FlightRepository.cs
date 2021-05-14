@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
@@ -18,14 +19,14 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             _flights = context.Flights;
         }
 
-        public IEnumerable<FlightEntity> GetAll()
+        public async Task<IEnumerable<FlightEntity>> GetAllAsync()
         {
-            return _flights;
+            return await _flights.ToListAsync();
         }
 
-        public FlightEntity Get(int id)
+        public async Task<FlightEntity> GetAsync(int id)
         {
-            return _flights.Find(id);
+            return await _flights.FindAsync(id);
         }
 
         public IEnumerable<FlightEntity> Find(Func<FlightEntity, bool> predicate)
@@ -33,32 +34,32 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             return _flights.Where(predicate).ToList();
         }
 
-        public void Create(FlightEntity item)
+        public async Task CreateAsync(FlightEntity item)
         {
-            _flights.Add(item);
-            _db.SaveChanges();
+            await _flights.AddAsync(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Update(int id, FlightEntity item)
+        public async Task UpdateAsync(int id, FlightEntity item)
         {
             item.Id = id;
             _flights.Update(item);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            FlightEntity flight = _flights.Find(id);
+            FlightEntity flight = await _flights.FindAsync(id);
             if (flight != null)
             {
                 _flights.Remove(flight);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
         }
 
-        public bool IsExisting(int id)
+        public async Task<bool> IsExistingAsync(int id)
         {
-            return _flights.Any(x => x.Id == id);
+            return await _flights.AnyAsync(x => x.Id == id);
         }
     }
 }

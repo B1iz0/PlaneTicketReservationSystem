@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
@@ -18,19 +19,19 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             _users = context.Users;
         }
 
-        public void Create(UserEntity item)
+        public async Task CreateAsync(UserEntity item)
         {
-            _users.Add(item);
-            _db.SaveChanges();
+            await _users.AddAsync(item);
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            UserEntity user = _users.Find(id);
+            UserEntity user = await _users.FindAsync(id);
             if (user != null)
             {
                 _users.Remove(user);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
         }
 
@@ -39,26 +40,26 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             return _users.Where(predicate).ToList();
         }
 
-        public UserEntity Get(int id)
+        public async Task<UserEntity> GetAsync(int id)
         {
-            return _users.Find(id);
+            return await _users.FindAsync(id);
         }
 
-        public IEnumerable<UserEntity> GetAll()
+        public async Task<IEnumerable<UserEntity>> GetAllAsync()
         {
-            return _users;
+            return await _users.ToListAsync();
         }
 
-        public bool IsExisting(int id)
+        public async Task<bool> IsExistingAsync(int id)
         {
-            return _users.Any(x => x.Id == id);
+            return await _users.AnyAsync(x => x.Id == id);
         }
 
-        public void Update(int id, UserEntity item)
+        public async Task UpdateAsync(int id, UserEntity item)
         {
             item.Id = id;
             _users.Update(item);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
     }
 }

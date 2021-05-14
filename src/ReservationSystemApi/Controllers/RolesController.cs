@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Helpers;
@@ -27,11 +28,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET: api/<RolesController>
         [Authorize(Policy = "AdminApp")]
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var response = _roleMapper.Map<IEnumerable<RoleResponse>>(_roleService.GetAll());
+                var response = _roleMapper.Map<IEnumerable<RoleResponse>>(await _roleService.GetAllAsync());
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
@@ -45,11 +46,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET api/<RolesController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var response = _roleMapper.Map<RoleResponse>(_roleService.GetById(id));
+                var response = _roleMapper.Map<RoleResponse>(await _roleService.GetByIdAsync(id));
                 if (response == null)
                     return BadRequest();
                 return Ok(response);
@@ -63,11 +64,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // POST api/<RolesController>
         [Authorize(Policy = "AdminApp")]
         [HttpPost]
-        public IActionResult Post([FromBody] RoleRequest value)
+        public async Task<IActionResult> Post([FromBody] RoleRequest value)
         {
             try
             {
-                _roleService.Post(_roleMapper.Map<Role>(value));
+                await _roleService.PostAsync(_roleMapper.Map<Role>(value));
                 return Ok();
             }
             catch (Exception ex)
@@ -79,11 +80,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // PUT api/<RolesController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] RoleRequest value)
+        public async Task<IActionResult> Put(int id, [FromBody] RoleRequest value)
         {
             try
             {
-                _roleService.Update(id, _roleMapper.Map<Role>(value));
+                await _roleService.UpdateAsync(id, _roleMapper.Map<Role>(value));
                 return Ok();
             }
             catch (Exception ex)
@@ -95,11 +96,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // DELETE api/<RolesController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                _roleService.Delete(id);
+                await _roleService.DeleteAsync(id);
                 return Ok();
             }
             catch (Exception ex)

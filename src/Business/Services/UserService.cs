@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
@@ -22,38 +23,38 @@ namespace PlaneTicketReservationSystem.Business.Services
             _userMapper = new Mapper(conf.AirlineConfiguration);
         }
 
-        public IEnumerable<User> GetAll()
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return _userMapper.Map<IEnumerable<User>>(_users.GetAll());
+            return _userMapper.Map<IEnumerable<User>>(await _users.GetAllAsync());
         }
 
-        public User GetById(int id)
+        public async Task<User> GetByIdAsync(int id)
         {
             if (!_users.Find(x => x.Id == id).Any())
                 throw new Exception("No such user");
-            return _userMapper.Map<User>(_users.Get(id));
+            return _userMapper.Map<User>(await _users.GetAsync(id));
         }
 
-        public void Post(User user)
+        public async Task PostAsync(User user)
         {
             if (_users.Find(x => x.Email == user.Email).Any())
                 throw new Exception("This email is already registered");
             user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
-            _users.Create(_userMapper.Map<UserEntity>(user));
+            await _users.CreateAsync(_userMapper.Map<UserEntity>(user));
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             if (!_users.Find(x => x.Id == id).Any())
                 throw new Exception("No such user");
-            _users.Delete(id);
+            await _users.DeleteAsync(id);
         }
 
-        public void Update(int id, User user)
+        public async Task UpdateAsync(int id, User user)
         {
-            if (!_users.IsExisting(id))
+            if (!(await _users.IsExistingAsync(id)))
                 throw new Exception("No such user");
-            _users.Update(id, _userMapper.Map<UserEntity>(user));
+            await _users.UpdateAsync(id, _userMapper.Map<UserEntity>(user));
         }
     }
 }
