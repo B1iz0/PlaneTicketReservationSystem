@@ -62,7 +62,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // POST api/<CountriesController>
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "AdminApp")]
         public async Task<IActionResult> Post([FromBody] CountryRegistration value)
         {
             try
@@ -78,7 +78,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // PUT api/<CountriesController>/5
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Policy = "AdminApp")]
         public async Task<IActionResult> Put(int id, [FromBody] CountryRegistration value)
         {
             try
@@ -94,7 +94,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // DELETE api/<CountriesController>/5
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Policy = "AdminApp")]
         public async Task<IActionResult> Delete(int id)
         {
             try

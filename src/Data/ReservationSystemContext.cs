@@ -222,6 +222,10 @@ namespace PlaneTicketReservationSystem.Data
                 .WithMany(r => r.Users)
                 .HasForeignKey(u => u.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.HasOne<CompanyEntity>(u => u.Company)
+                .WithMany(c => c.Admins)
+                .HasForeignKey(c => c.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Property(u => u.Id)
                 .IsRequired();
             modelBuilder.Property(u => u.Email)

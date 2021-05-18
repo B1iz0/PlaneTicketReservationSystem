@@ -11,6 +11,8 @@ namespace PlaneTicketReservationSystem.Data.Entities
         public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public int? CompanyId { get; set; }
+        public virtual CompanyEntity Company { get; set; }
         public string PhoneNumber { get; set; }
         public virtual List<BookingEntity> Bookings { get; set; }
         public virtual List<RefreshTokenEntity> RefreshTokens { get; set; }

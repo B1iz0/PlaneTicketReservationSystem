@@ -54,6 +54,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         {
             if (!(await _users.IsExistingAsync(id)))
                 throw new Exception("No such user");
+            user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
             await _users.UpdateAsync(id, _userMapper.Map<UserEntity>(user));
         }
     }

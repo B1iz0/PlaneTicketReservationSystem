@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -28,6 +29,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var Password = PasswordHasher.GenerateHash("12345", PasswordHasher.Salt, SHA256.Create());
             services.AddCors();
             services.AddControllers();
             services.AddDbContext<ReservationSystemContext>(opt =>
@@ -65,11 +67,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireRole("Admin", "AdminApp");
-                });
-                opt.AddPolicy("User", policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireRole("User");
                 });
             });
             services.Configure<AppSettings>(Configuration.GetSection("AuthOptions"));

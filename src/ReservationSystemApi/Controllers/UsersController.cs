@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -78,7 +81,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET: api/<UsersController>
         [Authorize(Policy = "AdminApp")]
         [HttpGet]
-        //Will use mapping soon
         public async Task<IActionResult> Get()
         {
             try
@@ -95,7 +97,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         // GET api/<UsersController>/5
-        [Authorize(Policy = "AdminApp")]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -135,6 +137,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             try
             {
+                user.RoleId = 3;
                 await _userService.PostAsync(_userMapper.Map<User>(user));
                 return await Authenticate(new AuthenticateRequest() {Email = user.Email, Password = user.Password});
             }
@@ -145,13 +148,23 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         // PUT api/<UsersController>/5
-        [Authorize(Policy = "AdminApp")]
+        [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] UserRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] UserRegistration user)
         {
             try
             {
-                await _userService.UpdateAsync(id, _userMapper.Map<User>(value));
+                var role = User.Claims.FirstOrDefault(x =>
+                    x.Type.Equals(ClaimTypes.Role))?.Value;
+                switch (role)
+                {
+                    case null: return BadRequest();
+                    case "Admin": user.RoleId = 2;
+                        break;
+                    case "User": user.RoleId = 3;
+                        break;
+                }
+                await _userService.UpdateAsync(id, _userMapper.Map<User>(user));
                 return Ok();
             }
             catch (Exception ex)
