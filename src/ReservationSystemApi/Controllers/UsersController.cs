@@ -81,7 +81,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // GET: api/<UsersController>
         [Authorize(Policy = "AdminApp")]
         [HttpGet]
-        //Will use mapping soon
         public async Task<IActionResult> Get()
         {
             try
@@ -98,7 +97,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         // GET api/<UsersController>/5
-        [Authorize(Policy = "AdminApp")]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -151,7 +150,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         // PUT api/<UsersController>/5
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] UserRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] UserRegistration user)
         {
             try
             {
@@ -160,12 +159,12 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
                 switch (role)
                 {
                     case null: return BadRequest();
-                    case "Admin": value.RoleId = 2;
+                    case "Admin": user.RoleId = 2;
                         break;
-                    case "User": value.RoleId = 3;
+                    case "User": user.RoleId = 3;
                         break;
                 }
-                await _userService.UpdateAsync(id, _userMapper.Map<User>(value));
+                await _userService.UpdateAsync(id, _userMapper.Map<User>(user));
                 return Ok();
             }
             catch (Exception ex)
