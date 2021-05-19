@@ -1,6 +1,9 @@
-﻿using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneTypeModels;
+﻿using System.Collections.Generic;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneTypeModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.CompanyModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.FlightModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.PlaceModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.PriceModels;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneModels
 {
@@ -10,8 +13,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneModel
         public AirplaneTypeResponse AirplaneType { get; set; }
         public CompanyResponse Company { get; set; }
         public FlightResponse Flight { get; set; }
-        public int ModelNumber { get; set; }
-        public short RegistrationNumber { get; set; }
-        public long Capacity { get; set; }
+        public string Model { get; set; }
+        public int RegistrationNumber { get; set; }
+        public int Rows { get; set; }
+        public int Columns { get; set; }
+        public List<PlaceResponse> Places { get; set; }
+        public List<PriceResponse> Prices { get; set; }
     }
 }

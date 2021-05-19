@@ -22,6 +22,9 @@ namespace PlaneTicketReservationSystem.Data
         public DbSet<CityEntity> Cities { get; set; }
         public DbSet<AirportEntity> Airports { get; set; }
         public DbSet<BookingEntity> Bookings { get; set; }
+        public DbSet<PlaceEntity> Places { get; set; }
+        public DbSet<PriceEntity> Prices { get; set; }
+        public DbSet<PlaceTypeEntity> PlaceTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +38,9 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.Entity<FlightEntity>(FlightConfigure);
             modelBuilder.Entity<RoleEntity>(RoleConfigure);
             modelBuilder.Entity<UserEntity>(UserConfigure);
+            modelBuilder.Entity<PlaceEntity>(PlaceConfigure);
+            modelBuilder.Entity<PlaceTypeEntity>(PlaceTypeConfigure);
+            modelBuilder.Entity<PriceEntity>(PriceConfigure);
 
             modelBuilder.Entity<RoleEntity>().HasData(
                 new RoleEntity[]
@@ -74,11 +80,9 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
             modelBuilder.Property(a => a.CompanyId)
                 .IsRequired();
-            modelBuilder.Property(a => a.ModelNumber)
+            modelBuilder.Property(a => a.Rows)
                 .IsRequired();
-            modelBuilder.Property(a => a.RegistrationNumber)
-                .IsRequired();
-            modelBuilder.Property(a => a.Capacity)
+            modelBuilder.Property(a => a.Columns)
                 .IsRequired();
         }
 
@@ -121,11 +125,16 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.HasOne<UserEntity>(b => b.User)
                 .WithMany(u => u.Bookings)
                 .HasForeignKey(b => b.UserId);
+            modelBuilder.HasOne<PlaceEntity>(b => b.Place)
+                .WithOne(p => p.Booking)
+                .HasForeignKey<BookingEntity>(b => b.PlaceId);
             modelBuilder.Property(b => b.Id)
                 .IsRequired();
             modelBuilder.Property(b => b.FlightId)
                 .IsRequired();
             modelBuilder.Property(b => b.UserId)
+                .IsRequired();
+            modelBuilder.Property(b => b.PlaceId)
                 .IsRequired();
         }
 
@@ -240,6 +249,53 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.Property(u => u.LastName)
                 .IsRequired()
                 .HasMaxLength(20);
+        }
+
+        public void PlaceConfigure(EntityTypeBuilder<PlaceEntity> modelBuilder)
+        {
+            modelBuilder.HasKey(p => p.Id);
+            modelBuilder.HasOne<AirplaneEntity>(p => p.Airplane)
+                .WithMany(a => a.Places)
+                .HasForeignKey(p => p.AirplaneId);
+            modelBuilder.HasOne<PlaceTypeEntity>(p => p.PlaceType)
+                .WithMany(p => p.Places)
+                .HasForeignKey(p => p.PlaceTypeId);
+            modelBuilder.HasOne<PriceEntity>(p => p.Price)
+                .WithMany(p => p.Places)
+                .HasForeignKey(p => p.PriceId);
+            modelBuilder.Property(p => p.AirplaneId)
+                .IsRequired();
+            modelBuilder.Property(p => p.PlaceTypeId)
+                .IsRequired();
+            modelBuilder.Property(p => p.Row)
+                .IsRequired();
+            modelBuilder.Property(p => p.Column)
+                .IsRequired();
+        }
+
+        public void PriceConfigure(EntityTypeBuilder<PriceEntity> modelBuilder)
+        {
+            modelBuilder.HasKey(p => p.Id);
+            modelBuilder.HasOne<AirplaneEntity>(p => p.Airplane)
+                .WithMany(a => a.Prices)
+                .HasForeignKey(p => p.AirplaneId);
+            modelBuilder.HasOne<PlaceTypeEntity>(p => p.PlaceType)
+                .WithMany(p => p.Prices)
+                .HasForeignKey(p => p.PlaceTypeId);
+            modelBuilder.Property(p => p.TicketPrice)
+                .IsRequired()
+                .HasColumnType("decimal(10,4)");
+            modelBuilder.Property(p => p.AirplaneId)
+                .IsRequired();
+            modelBuilder.Property(p => p.PlaceTypeId)
+                .IsRequired();
+        }
+
+        public void PlaceTypeConfigure(EntityTypeBuilder<PlaceTypeEntity> modelBuilder)
+        {
+            modelBuilder.HasKey(p => p.Id);
+            modelBuilder.Property(p => p.Name)
+                .IsRequired();
         }
     }
 }

@@ -29,7 +29,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var Password = PasswordHasher.GenerateHash("12345", PasswordHasher.Salt, SHA256.Create());
             services.AddCors();
             services.AddControllers();
             services.AddDbContext<ReservationSystemContext>(opt =>
@@ -83,6 +82,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
             services.AddScoped<IDataService<Company>, CompanyService>();
             services.AddScoped<IDataService<Country>, CountryService>();
             services.AddScoped<IDataService<Flight>, FlightService>();
+            services.AddScoped<PriceService>();
+            services.AddScoped<IDataService<Place>, PlaceService>();
+            services.AddScoped<IDataService<PlaceType>, PlaceTypeService>();
 
             services.AddScoped<ApiMappingsConfiguration>();
             services.AddScoped<BusinessMappingsConfiguration>();
@@ -109,6 +111,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
+
+            app.UseMiddleware<ErrorHandlerMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();

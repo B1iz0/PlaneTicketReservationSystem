@@ -23,6 +23,9 @@ namespace PlaneTicketReservationSystem.Business
                 x.CreateMap<RoleEntity, Role>().ReverseMap();
                 x.CreateMap<UserEntity, User>().ReverseMap();
                 x.CreateMap<RefreshTokenEntity, RefreshToken>().ReverseMap();
+                x.CreateMap<PriceEntity, Price>().ReverseMap();
+                x.CreateMap<PlaceEntity, Place>().ReverseMap();
+                x.CreateMap<PlaceTypeEntity, PlaceType>().ReverseMap();
             });
         }
     }

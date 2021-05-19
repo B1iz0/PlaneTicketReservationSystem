@@ -1,4 +1,5 @@
 ﻿using PlaneTicketReservationSystem.ReservationSystemApi.Models.FlightModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.PlaceModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.BookingModels
@@ -8,5 +9,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.BookingModels
         public int Id { get; set; }
         public FlightResponse Flight { get; set; }
         public UserResponse User { get; set; }
+        public PlaceResponse Place { get; set; }
     }
 }

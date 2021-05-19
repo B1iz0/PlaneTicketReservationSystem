@@ -30,17 +30,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            try
-            {
-                var response = _roleMapper.Map<IEnumerable<RoleResponse>>(await _roleService.GetAllAsync());
-                if (response == null)
-                    return BadRequest();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var response = _roleMapper.Map<IEnumerable<RoleResponse>>(await _roleService.GetAllAsync());
+            if (response == null)
+                throw new NullReferenceException();
+            return Ok(response);
         }
 
         // GET api/<RolesController>/5
@@ -48,17 +41,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                var response = _roleMapper.Map<RoleResponse>(await _roleService.GetByIdAsync(id));
-                if (response == null)
-                    return BadRequest();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var response = _roleMapper.Map<RoleResponse>(await _roleService.GetByIdAsync(id));
+            if (response == null)
+                throw new NullReferenceException();
+            return Ok(response);
         }
 
         // POST api/<RolesController>
@@ -66,15 +52,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] RoleRequest value)
         {
-            try
-            {
-                await _roleService.PostAsync(_roleMapper.Map<Role>(value));
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _roleService.PostAsync(_roleMapper.Map<Role>(value));
+            return Ok();
         }
 
         // PUT api/<RolesController>/5
@@ -82,15 +61,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] RoleRequest value)
         {
-            try
-            {
-                await _roleService.UpdateAsync(id, _roleMapper.Map<Role>(value));
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _roleService.UpdateAsync(id, _roleMapper.Map<Role>(value));
+            return Ok();
         }
 
         // DELETE api/<RolesController>/5
@@ -98,15 +70,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _roleService.DeleteAsync(id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _roleService.DeleteAsync(id);
+            return Ok();
         }
     }
 }

@@ -9,6 +9,9 @@ using PlaneTicketReservationSystem.ReservationSystemApi.Models.CityModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.CompanyModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.CountryModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.FlightModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.PlaceModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.PlaceTypeModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.PriceModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.RoleModels;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels;
 
@@ -27,6 +30,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
         public readonly MapperConfiguration CompanyMapperConfiguration;
         public readonly MapperConfiguration CountryMapperConfiguration;
         public readonly MapperConfiguration FlightMapperConfiguration;
+        public readonly MapperConfiguration PriceMapperConfiguration;
+        public readonly MapperConfiguration PlaceTypeMapperConfiguration;
+        public readonly MapperConfiguration PlaceMapperConfiguration;
 
         public ApiMappingsConfiguration()
         {
@@ -66,6 +72,14 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<Flight, FlightResponse>().ForMember(z => z.Airplane, opt => opt.Ignore());
                 x.CreateMap<Airport, AirportResponse>().ForMember(z => z.Company, opt => opt.Ignore());
                 x.CreateMap<City, CityResponse>();
+                x.CreateMap<Place, PlaceResponse>()
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name))
+                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null))
+                    .ForMember(z => z.TicketPrice, opt => opt.MapFrom(c => c.Price.TicketPrice));
+                x.CreateMap<PlaceType, PlaceTypeResponse>();
+                x.CreateMap<Price, PriceResponse>()
+                    .ForMember(z => z.AirplaneModel, opt => opt.MapFrom(c => c.Airplane.Model))
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name));
             });
             AirplaneTypeMapperConfiguration = new MapperConfiguration(x =>
             {
@@ -100,6 +114,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<Company, CompanyResponse>();
                 x.CreateMap<Country, CountryResponse>();
                 x.CreateMap<User, UserResponse>();
+                x.CreateMap<Place, PlaceResponse>()
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name))
+                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null))
+                    .ForMember(z => z.TicketPrice, opt => opt.MapFrom(c => c.Price.TicketPrice));
             });
             CityMapperConfiguration = new MapperConfiguration(x =>
             {
@@ -143,6 +161,26 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<City, CityResponse>();
                 x.CreateMap<Booking, BookingResponse>().ForMember(z => z.Flight, opt => opt.Ignore());
                 x.CreateMap<User, UserResponse>();
+            });
+            PriceMapperConfiguration = new MapperConfiguration(x =>
+            {
+                x.CreateMap<Price, PriceResponse>()
+                    .ForMember(z => z.AirplaneModel, opt => opt.MapFrom(c => c.Airplane.Model))
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name));
+                x.CreateMap<PriceRegistration, Price>();
+            });
+            PlaceTypeMapperConfiguration = new MapperConfiguration(x =>
+            {
+                x.CreateMap<PlaceType, PlaceTypeResponse>();
+                x.CreateMap<PlaceTypeRegistration, PlaceType>();
+            });
+            PlaceMapperConfiguration = new MapperConfiguration(x =>
+            {
+                x.CreateMap<Place, PlaceResponse>()
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name))
+                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null))
+                    .ForMember(z => z.TicketPrice, opt => opt.MapFrom(c => c.Price.TicketPrice));
+                x.CreateMap<PlaceRegistration, Place>();
             });
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
@@ -30,28 +31,28 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task<Country> GetByIdAsync(int id)
         {
             if (!_countries.Find(x => x.Id == id).Any())
-                throw new Exception($"No such country with id: {id}");
+                throw new ElementNotFoundException($"No such country with id: {id}");
             return _countryMapper.Map<Country>(await _countries.GetAsync(id));
         }
 
         public async Task PostAsync(Country item)
         {
             if (_countries.Find(x => x.Name == item.Name).Any())
-                throw new Exception($"Country {item.Name} is already exist");
+                throw new ElementAlreadyExistException($"Country {item.Name} is already exist");
             await _countries.CreateAsync(_countryMapper.Map<CountryEntity>(item));
         }
 
         public async Task DeleteAsync(int id)
         {
             if (!_countries.Find(x => x.Id == id).Any())
-                throw new Exception($"No such country with id: {id}");
+                throw new ElementNotFoundException($"No such country with id: {id}");
             await _countries.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, Country item)
         {
             if (!(await _countries.IsExistingAsync(id)))
-                throw new Exception($"No such country with id: {id}");
+                throw new ElementNotFoundException($"No such country with id: {id}");
             await _countries.UpdateAsync(id, _countryMapper.Map<CountryEntity>(item));
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace PlaneTicketReservationSystem.Data.Entities
+﻿using System.Collections.Generic;
+
+namespace PlaneTicketReservationSystem.Data.Entities
 {
     public class AirplaneEntity
     {
@@ -9,8 +11,11 @@
         public virtual CompanyEntity Company { get; set; }
         public int? FlightId { get; set; }
         public virtual FlightEntity Flight { get; set; }
-        public int ModelNumber { get; set; }
-        public short RegistrationNumber { get; set; }
-        public long Capacity { get; set; }
+        public string Model { get; set; }
+        public int RegistrationNumber { get; set; }
+        public int Rows { get; set; }
+        public int Columns { get; set; }
+        public virtual List<PlaceEntity> Places { get; set; }
+        public virtual List<PriceEntity> Prices { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
@@ -30,28 +31,28 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task<Airport> GetByIdAsync(int id)
         {
             if (!_airports.Find(x => x.Id == id).Any())
-                throw new Exception($"No such airport with id: {id}");
+                throw new ElementNotFoundException($"No such airport with id: {id}");
             return _airportMapper.Map<Airport>(await _airports.GetAsync(id));
         }
 
         public async Task PostAsync(Airport item)
         {
             if (_airports.Find(x => x.Name == item.Name).Any())
-                throw new Exception($"Airport {item.Name} is already exist");
+                throw new ElementAlreadyExistException($"Airport {item.Name} is already exist");
             await _airports.CreateAsync(_airportMapper.Map<AirportEntity>(item));
         }
 
         public async Task DeleteAsync(int id)
         {
             if (!_airports.Find(x => x.Id == id).Any())
-                throw new Exception($"No such airport with id: {id}");
+                throw new ElementNotFoundException($"No such airport with id: {id}");
             await _airports.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, Airport item)
         {
             if (!(await _airports.IsExistingAsync(id)))
-                throw new Exception($"No such airport with id: {id}");
+                throw new ElementNotFoundException($"No such airport with id: {id}");
             await _airports.UpdateAsync(id, _airportMapper.Map<AirportEntity>(item));
         }
     }
