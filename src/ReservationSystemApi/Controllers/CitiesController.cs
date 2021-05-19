@@ -29,17 +29,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public async Task<IActionResult> Get()
         {
-            try
-            {
-                var response = _cityMapper.Map<IEnumerable<CityResponse>>(await _cityService.GetAllAsync());
-                if (response == null)
-                    return BadRequest();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var response = _cityMapper.Map<IEnumerable<CityResponse>>(await _cityService.GetAllAsync());
+            if (response == null)
+                throw new NullReferenceException();
+            return Ok(response);
         }
 
         // GET api/<CitiesController>/5
@@ -47,17 +40,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                var response = _cityMapper.Map<CityDetails>(await _cityService.GetByIdAsync(id));
-                if (response == null)
-                    return BadRequest();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var response = _cityMapper.Map<CityDetails>(await _cityService.GetByIdAsync(id));
+            if (response == null)
+                throw new NullReferenceException();
+            return Ok(response);
         }
 
         // POST api/<CitiesController>
@@ -65,15 +51,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Post([FromBody] CityRegistration value)
         {
-            try
-            {
-                await _cityService.PostAsync(_cityMapper.Map<City>(value));
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _cityService.PostAsync(_cityMapper.Map<City>(value));
+            return Ok();
         }
 
         // PUT api/<CitiesController>/5
@@ -81,15 +60,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize(Policy = "AdminApp")]
         public async Task<IActionResult> Put(int id, [FromBody] CityRegistration value)
         {
-            try
-            {
-                await _cityService.UpdateAsync(id, _cityMapper.Map<City>(value));
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _cityService.UpdateAsync(id, _cityMapper.Map<City>(value));
+            return Ok();
         }
 
         // DELETE api/<CitiesController>/5
@@ -97,15 +69,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize(Policy = "AdminApp")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _cityService.DeleteAsync(id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _cityService.DeleteAsync(id);
+            return Ok();
         }
     }
 }

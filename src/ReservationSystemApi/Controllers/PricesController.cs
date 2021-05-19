@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
@@ -30,7 +30,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             var response = _priceMapper.Map<IEnumerable<PriceResponse>>(await _priceService.GetAllAsync());
             if (response == null)
-                return BadRequest();
+                throw new NullReferenceException();
             return Ok(response);
         }
 
@@ -40,7 +40,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             var response = _priceMapper.Map<IEnumerable<PriceResponse>>(await _priceService.GetByAirplaneIdAsync(airplaneId));
             if (response == null)
-                return BadRequest();
+                throw new NullReferenceException();
             return Ok(response);
         }
 

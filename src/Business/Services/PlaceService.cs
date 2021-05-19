@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
@@ -30,28 +31,28 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task<Place> GetByIdAsync(int id)
         {
             if (!(await _places.IsExistingAsync(id)))
-                throw new Exception($"No such place with id: {id}");
+                throw new ElementNotFoundException($"No such place with id: {id}");
             return _placeMapper.Map<Place>(await _places.GetAsync(id));
         }
 
         public async Task PostAsync(Place item)
         {
             if (_places.Find(x => x.AirplaneId == item.AirplaneId && x.Row == item.Row && x.Column == item.Column).Any())
-                throw new Exception("Such place is already exist");
+                throw new ElementAlreadyExistException("Such place is already exist");
             await _places.CreateAsync(_placeMapper.Map<PlaceEntity>(item));
         }
 
         public async Task DeleteAsync(int id)
         {
             if (!(await _places.IsExistingAsync(id)))
-                throw new Exception("No such place");
+                throw new ElementNotFoundException("No such place");
             await _places.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, Place item)
         {
             if (!(await _places.IsExistingAsync(id)))
-                throw new Exception("No such place");
+                throw new ElementNotFoundException("No such place");
             await _places.UpdateAsync(id, _placeMapper.Map<PlaceEntity>(item));
         }
     }

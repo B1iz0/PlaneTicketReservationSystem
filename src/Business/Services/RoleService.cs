@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
@@ -25,7 +26,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task DeleteAsync(int id)
         {
             if (!_roles.Find(x => x.Id == id).Any())
-                throw new Exception($"No such role with id: {id}");
+                throw new ElementNotFoundException($"No such role with id: {id}");
             await _roles.DeleteAsync(id);
         }
 
@@ -37,21 +38,21 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task<Role> GetByIdAsync(int id)
         {
             if (!_roles.Find(x => x.Id == id).Any())
-                throw new Exception($"No such role with id: {id}");
+                throw new ElementNotFoundException($"No such role with id: {id}");
             return _roleMapper.Map<Role>(await _roles.GetAsync(id));
         }
 
         public async Task PostAsync(Role role)
         {
             if (_roles.Find(x => x.Name == role.Name).Any())
-                throw new Exception($"Role {role.Name} is already exist");
+                throw new ElementAlreadyExistException($"Role {role.Name} is already exist");
             await _roles.CreateAsync(_roleMapper.Map<RoleEntity>(role));
         }
 
         public async Task UpdateAsync(int id, Role role)
         {
             if (!(await _roles.IsExistingAsync(id)))
-                throw new Exception($"No such role with id: {id}");
+                throw new ElementNotFoundException($"No such role with id: {id}");
             await _roles.UpdateAsync(id, _roleMapper.Map<RoleEntity>(role));
         }
     }

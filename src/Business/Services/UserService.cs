@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
@@ -31,14 +31,14 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task<User> GetByIdAsync(int id)
         {
             if (!_users.Find(x => x.Id == id).Any())
-                throw new Exception("No such user");
+                throw new ElementNotFoundException($"User with id:{id} is not found");
             return _userMapper.Map<User>(await _users.GetAsync(id));
         }
 
         public async Task PostAsync(User user)
         {
             if (_users.Find(x => x.Email == user.Email).Any())
-                throw new Exception("This email is already registered");
+                throw new ElementAlreadyExistException($"User with email: {user.Email} is already registered");
             user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
             await _users.CreateAsync(_userMapper.Map<UserEntity>(user));
         }
@@ -46,14 +46,14 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task DeleteAsync(int id)
         {
             if (!_users.Find(x => x.Id == id).Any())
-                throw new Exception("No such user");
+                throw new ElementNotFoundException($"User with id:{id} is not found");
             await _users.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, User user)
         {
             if (!(await _users.IsExistingAsync(id)))
-                throw new Exception("No such user");
+                throw new ElementNotFoundException($"User with id:{id} is not found");
             user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
             await _users.UpdateAsync(id, _userMapper.Map<UserEntity>(user));
         }

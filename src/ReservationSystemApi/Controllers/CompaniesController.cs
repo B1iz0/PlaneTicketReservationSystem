@@ -29,17 +29,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public async Task<IActionResult> Get()
         {
-            try
-            {
-                var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(await _companyService.GetAllAsync());
-                if (response == null)
-                    return BadRequest();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(await _companyService.GetAllAsync());
+            if (response == null)
+                throw new NullReferenceException();
+            return Ok(response);
         }
 
         // GET api/<CompaniesController>/5
@@ -47,17 +40,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                var response = _companyMapper.Map<CompanyDetails>(await _companyService.GetByIdAsync(id));
-                if (response == null)
-                    return BadRequest();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var response = _companyMapper.Map<CompanyDetails>(await _companyService.GetByIdAsync(id));
+            if (response == null)
+                throw new NullReferenceException();
+            return Ok(response);
         }
 
         // POST api/<CompaniesController>
@@ -65,15 +51,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize(Policy = "AdminApp")]
         public async Task<IActionResult> Post([FromBody] CompanyRegistration value)
         {
-            try
-            {
-                await _companyService.PostAsync(_companyMapper.Map<Company>(value));
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _companyService.PostAsync(_companyMapper.Map<Company>(value));
+            return Ok();
         }
 
         // PUT api/<CompaniesController>/5
@@ -81,15 +60,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Put(int id, [FromBody] CompanyRegistration value)
         {
-            try
-            {
-                await _companyService.UpdateAsync(id, _companyMapper.Map<Company>(value));
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _companyService.UpdateAsync(id, _companyMapper.Map<Company>(value));
+            return Ok();
         }
 
         // DELETE api/<CompaniesController>/5
@@ -97,15 +69,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize(Policy = "AdminApp")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _companyService.DeleteAsync(id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _companyService.DeleteAsync(id);
+            return Ok();
         }
     }
 }

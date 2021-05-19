@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
@@ -30,28 +31,28 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task<Airplane> GetByIdAsync(int id)
         {
             if (!_airplanes.Find(x => x.Id == id).Any())
-                throw new Exception($"No such airplane with id: {id}");
+                throw new ElementNotFoundException($"Airplane with id:{id} is not found");
             return _airplaneMapper.Map<Airplane>(await _airplanes.GetAsync(id));
         }
 
         public async Task PostAsync(Airplane item)
         {
             if (_airplanes.Find(x => x.RegistrationNumber == item.RegistrationNumber).Any())
-                throw new Exception("Such airplane is already exist");
+                throw new ElementAlreadyExistException($"Airplane with registration number:{item.RegistrationNumber} is already exist");
             await _airplanes.CreateAsync(_airplaneMapper.Map<AirplaneEntity>(item));
         }
 
         public async Task DeleteAsync(int id)
         {
             if (!_airplanes.Find(x => x.Id == id).Any())
-                throw new Exception("No such airplane");
+                throw new ElementNotFoundException($"Airplane with id:{id} is not found");
             await _airplanes.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, Airplane item)
         {
             if (!(await _airplanes.IsExistingAsync(id)))
-                throw new Exception("No such airplane");
+                throw new ElementNotFoundException($"Airplane with id:{id} is not found");
             await _airplanes.UpdateAsync(id, _airplaneMapper.Map<AirplaneEntity>(item));
         }
     }

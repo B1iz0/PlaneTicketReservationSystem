@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
@@ -30,7 +31,7 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task<Booking> GetByIdAsync(int id)
         {
             if (!_bookings.Find(x => x.Id == id).Any())
-                throw new Exception($"No such booking with id: {id}");
+                throw new ElementNotFoundException($"No such booking with id: {id}");
             return _bookingMapper.Map<Booking>(await _bookings.GetAsync(id));
         }
 
@@ -42,14 +43,14 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task DeleteAsync(int id)
         {
             if (!_bookings.Find(x => x.Id == id).Any())
-                throw new Exception($"No such booking with id: {id}");
+                throw new ElementNotFoundException($"No such booking with id: {id}");
             await _bookings.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, Booking item)
         {
             if (!(await _bookings.IsExistingAsync(id)))
-                throw new Exception($"No such booking with id: {id}");
+                throw new ElementNotFoundException($"No such booking with id: {id}");
             await _bookings.UpdateAsync(id, _bookingMapper.Map<BookingEntity>(item));
         }
     }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -83,17 +82,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            try
-            {
-                var users = _userMapper.Map<IEnumerable<UserResponse>>(await _userService.GetAllAsync());
-                if (users == null)
-                    return BadRequest();
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var users = _userMapper.Map<IEnumerable<UserResponse>>(await _userService.GetAllAsync());
+            if (users == null)
+                throw new NullReferenceException();
+            return Ok(users);
         }
 
         // GET api/<UsersController>/5
@@ -101,18 +93,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                var response = _userMapper.Map<UserDetails>(await _userService.GetByIdAsync(id));
-                if (response == null)
-                    return BadRequest();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            
+            var response = _userMapper.Map<UserDetails>(await _userService.GetByIdAsync(id));
+            if (response == null)
+                throw new NullReferenceException();
+            return Ok(response);
         }
 
         // POST api/<UsersController>
@@ -120,31 +104,17 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpPost()]
         public async Task<IActionResult> Post([FromBody] UserRegistration user)
         {
-            try
-            {
-                await _userService.PostAsync(_userMapper.Map<User>(user));
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _userService.PostAsync(_userMapper.Map<User>(user));
+            return Ok();
         }
 
         // POST api/<UsersController>
         [HttpPost("registration")]
         public async Task<IActionResult> Registration([FromBody] UserRegistration user)
         {
-            try
-            {
-                user.RoleId = 3;
-                await _userService.PostAsync(_userMapper.Map<User>(user));
-                return await Authenticate(new AuthenticateRequest() {Email = user.Email, Password = user.Password});
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            user.RoleId = 3;
+            await _userService.PostAsync(_userMapper.Map<User>(user));
+            return await Authenticate(new AuthenticateRequest() { Email = user.Email, Password = user.Password });
         }
 
         // PUT api/<UsersController>/5
@@ -152,25 +122,20 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UserRegistration user)
         {
-            try
+            var role = User.Claims.FirstOrDefault(x =>
+                x.Type.Equals(ClaimTypes.Role))?.Value;
+            switch (role)
             {
-                var role = User.Claims.FirstOrDefault(x =>
-                    x.Type.Equals(ClaimTypes.Role))?.Value;
-                switch (role)
-                {
-                    case null: return BadRequest();
-                    case "Admin": user.RoleId = 2;
-                        break;
-                    case "User": user.RoleId = 3;
-                        break;
-                }
-                await _userService.UpdateAsync(id, _userMapper.Map<User>(user));
-                return Ok();
+                case null: return BadRequest();
+                case "Admin":
+                    user.RoleId = 2;
+                    break;
+                case "User":
+                    user.RoleId = 3;
+                    break;
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _userService.UpdateAsync(id, _userMapper.Map<User>(user));
+            return Ok();
         }
 
         // DELETE api/<UsersController>/5
@@ -178,15 +143,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _userService.DeleteAsync(id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _userService.DeleteAsync(id);
+            return Ok();
         }
 
         private void SetTokenCookie(string token)

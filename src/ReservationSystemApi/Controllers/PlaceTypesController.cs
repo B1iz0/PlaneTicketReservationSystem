@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -29,7 +30,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             var response = _placeTypeMapper.Map<IEnumerable<PlaceTypeResponse>>(await _placeTypeService.GetAllAsync());
             if (response == null)
-                return BadRequest();
+                throw new NullReferenceException();
             return Ok(response);
         }
 
@@ -39,7 +40,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             var response = _placeTypeMapper.Map<PlaceTypeResponse>(await _placeTypeService.GetByIdAsync(id));
             if (response == null)
-                return BadRequest();
+                throw new NullReferenceException();
             return Ok(response);
         }
 
