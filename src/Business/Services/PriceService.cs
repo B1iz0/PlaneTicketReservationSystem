@@ -14,11 +14,13 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class PriceService : IDataService<Price>
     {
         private readonly PriceRepository _prices;
+        private readonly AirplaneRepository _airplanes;
         private readonly Mapper _pricesMapper;
 
         public PriceService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
         {
             _prices = new PriceRepository(context);
+            _airplanes = new AirplaneRepository(context);
             _pricesMapper = new Mapper(conf.AirlineConfiguration);
         }
 
@@ -32,6 +34,13 @@ namespace PlaneTicketReservationSystem.Business.Services
             if (!(await _prices.IsExistingAsync(id)))
                 throw new Exception($"No such price with id: {id}");
             return _pricesMapper.Map<Price>(await _prices.GetAsync(id));
+        }
+
+        public async Task<IEnumerable<Price>> GetByAirplaneIdAsync(int airplaneId)
+        {
+            if (!(await _airplanes.IsExistingAsync(airplaneId)))
+                throw new Exception($"No such airplane with id: {airplaneId}");
+            return _pricesMapper.Map<IEnumerable<Price>>(_prices.Find(x => x.AirplaneId == airplaneId));
         }
 
         public async Task PostAsync(Price item)

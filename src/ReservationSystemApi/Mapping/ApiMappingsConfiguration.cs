@@ -32,6 +32,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
         public readonly MapperConfiguration FlightMapperConfiguration;
         public readonly MapperConfiguration PriceMapperConfiguration;
         public readonly MapperConfiguration PlaceTypeMapperConfiguration;
+        public readonly MapperConfiguration PlaceMapperConfiguration;
 
         public ApiMappingsConfiguration()
         {
@@ -164,12 +165,22 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
             PriceMapperConfiguration = new MapperConfiguration(x =>
             {
                 x.CreateMap<Price, PriceResponse>()
-                    .ForMember(z => z.AirplaneModel, opt => opt.MapFrom(c => c.Airplane.Model));
+                    .ForMember(z => z.AirplaneModel, opt => opt.MapFrom(c => c.Airplane.Model))
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name));
                 x.CreateMap<PriceRegistration, Price>();
             });
             PlaceTypeMapperConfiguration = new MapperConfiguration(x =>
             {
-
+                x.CreateMap<PlaceType, PlaceTypeResponse>();
+                x.CreateMap<PlaceTypeRegistration, PlaceType>();
+            });
+            PlaceMapperConfiguration = new MapperConfiguration(x =>
+            {
+                x.CreateMap<Place, PlaceResponse>()
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name))
+                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null))
+                    .ForMember(z => z.TicketPrice, opt => opt.MapFrom(c => c.Price.TicketPrice));
+                x.CreateMap<PlaceRegistration, Place>();
             });
         }
     }
