@@ -29,7 +29,15 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("ApiCorsPolicy", builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
             services.AddControllers();
             services.AddDbContext<ReservationSystemContext>(opt =>
                 {
@@ -106,6 +114,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("ApiCorsPolicy");
 
             app.UseCors(x => x
                 .AllowAnyOrigin()
