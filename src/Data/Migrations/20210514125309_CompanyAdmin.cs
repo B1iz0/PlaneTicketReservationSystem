@@ -10,8 +10,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 name: "CompanyId",
                 table: "Users",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "AdminId",
