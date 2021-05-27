@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -42,6 +43,16 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             if (response == null)
                 throw new NullReferenceException();
             return Ok(response);
+        }
+
+        // GET api/<FlightsController>/count
+        [HttpGet("count")]
+        public async Task<IActionResult> GetCount()
+        {
+            var response = _flightMapper.Map<IEnumerable<FlightResponse>>(await _flightService.GetAllAsync());
+            if (response == null)
+                throw new NullReferenceException();
+            return Ok(response.Count());
         }
 
         // POST api/<FlightsController>
