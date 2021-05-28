@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -16,20 +15,19 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
-        private readonly IDataService<Flight> _flightService;
+        private readonly IFlightService _flightService;
         private readonly Mapper _flightMapper;
 
-        public FlightsController(IDataService<Flight> service, ApiMappingsConfiguration conf)
+        public FlightsController(IFlightService service, ApiMappingsConfiguration conf)
         {
             _flightService = service;
             _flightMapper = new Mapper(conf.FlightMapperConfiguration);
         }
 
-        // GET: api/<FlightsController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get(string departureCity, string arrivalCity, int offset, int limit = 16)
         {
-            var response = _flightMapper.Map<IEnumerable<FlightResponse>>(await _flightService.GetAllAsync());
+            var response = _flightMapper.Map<IEnumerable<FlightResponse>>(_flightService.GetFilteredFlights(offset, limit, departureCity, arrivalCity));
             if (response == null)
                 throw new NullReferenceException();
             return Ok(response);
@@ -47,12 +45,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // GET api/<FlightsController>/count
         [HttpGet("count")]
-        public async Task<IActionResult> GetCount()
+        public IActionResult GetCount(string departureCity, string arrivalCity)
         {
-            var response = _flightMapper.Map<IEnumerable<FlightResponse>>(await _flightService.GetAllAsync());
-            if (response == null)
-                throw new NullReferenceException();
-            return Ok(response.Count());
+            var response = _flightService.GetFilteredFlightsCount(departureCity, arrivalCity);
+            return Ok(response);
         }
 
         // POST api/<FlightsController>

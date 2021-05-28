@@ -12,7 +12,7 @@ using PlaneTicketReservationSystem.Data.Repositories;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class FlightService : IDataService<Flight>
+    public class FlightService : IFlightService
     {
         private readonly FlightRepository _flights;
         private readonly Mapper _flightMapper;
@@ -26,6 +26,19 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task<IEnumerable<Flight>> GetAllAsync()
         {
             return _flightMapper.Map<IEnumerable<Flight>>(await _flights.GetAllAsync());
+        }
+
+        public IEnumerable<Flight> GetFilteredFlights(int offset, int limit, string departureCity, string arrivalCity)
+        {
+            var result = _flights.FindWithLimitAndOffset(x => (string.IsNullOrEmpty(departureCity) || x.From.City.Name == departureCity)
+                                                                    && (string.IsNullOrEmpty(arrivalCity) || x.To.City.Name == arrivalCity), offset, limit);
+            return _flightMapper.Map<IEnumerable<Flight>>(result);
+        }
+
+        public int GetFilteredFlightsCount(string departureCity, string arrivalCity)
+        {
+            return _flights.Find(x => (string.IsNullOrEmpty(departureCity) || x.From.City.Name == departureCity)
+                                      && (string.IsNullOrEmpty(arrivalCity) || x.To.City.Name == arrivalCity)).Count();
         }
 
         public async Task<Flight> GetByIdAsync(int id)

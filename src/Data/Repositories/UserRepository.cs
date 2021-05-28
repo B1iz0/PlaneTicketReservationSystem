@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
@@ -35,9 +36,14 @@ namespace PlaneTicketReservationSystem.Data.Repositories
             }
         }
 
-        public IEnumerable<UserEntity> Find(Func<UserEntity, bool> predicate)
+        public IQueryable<UserEntity> Find(Expression<Func<UserEntity, bool>> predicate)
         {
-            return _users.Where(predicate).ToList();
+            return _users.Where(predicate);
+        }
+
+        public IQueryable<UserEntity> FindWithLimitAndOffset(Expression<Func<UserEntity, bool>> predicate, int offset, int limit)
+        {
+            return _users.Where(predicate).Skip(offset).Take(limit);
         }
 
         public async Task<UserEntity> GetAsync(int id)
