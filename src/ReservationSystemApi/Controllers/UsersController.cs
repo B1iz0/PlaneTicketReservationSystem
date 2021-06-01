@@ -47,9 +47,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken()
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest model)
         {
-            var refreshToken = Request.Cookies["refreshToken"];
+            var refreshToken = model.RefreshToken;
             var response = await _account.RefreshTokenAsync(refreshToken);
 
             if (response == null)

@@ -26,7 +26,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // GET: api/<CitiesController>
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> Get()
         {
             var response = _cityMapper.Map<IEnumerable<CityResponse>>(await _cityService.GetAllAsync());
@@ -37,7 +36,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         // GET api/<CitiesController>/5
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<IActionResult> Get(int id)
         {
             var response = _cityMapper.Map<CityDetails>(await _cityService.GetByIdAsync(id));
