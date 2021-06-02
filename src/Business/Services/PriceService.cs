@@ -27,41 +27,59 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<IEnumerable<Price>> GetAllAsync()
         {
-            return _pricesMapper.Map<IEnumerable<Price>>(await _prices.GetAllAsync());
+            var prices = _pricesMapper.Map<IEnumerable<Price>>(await _prices.GetAllAsync());
+            return prices;
         }
 
         public async Task<Price> GetByIdAsync(int id)
         {
-            if (!(await _prices.IsExistingAsync(id)))
+            bool isPriceExisting = await _prices.IsExistingAsync(id);
+            if (!isPriceExisting)
+            {
                 throw new ElementNotFoundException($"No such price with id: {id}");
-            return _pricesMapper.Map<Price>(await _prices.GetAsync(id));
+            }
+            var price = _pricesMapper.Map<Price>(await _prices.GetAsync(id));
+            return price;
         }
 
         public async Task<IEnumerable<Price>> GetByAirplaneIdAsync(int airplaneId)
         {
-            if (!(await _airplanes.IsExistingAsync(airplaneId)))
+            bool isAirplaneExisting = await _airplanes.IsExistingAsync(airplaneId);
+            if (!isAirplaneExisting)
+            {
                 throw new ElementNotFoundException($"No such airplane with id: {airplaneId}");
-            return _pricesMapper.Map<IEnumerable<Price>>(_prices.Find(x => x.AirplaneId == airplaneId));
+            }
+            var pricesForAirplane = _pricesMapper.Map<IEnumerable<Price>>(_prices.Find(x => x.AirplaneId == airplaneId));
+            return pricesForAirplane;
         }
 
         public async Task PostAsync(Price item)
         {
-            if (_prices.Find(x => x.AirplaneId == item.AirplaneId && x.PlaceTypeId == item.PlaceTypeId).Any())
+            bool isPriceExisting = _prices.Find(x => x.AirplaneId == item.AirplaneId && x.PlaceTypeId == item.PlaceTypeId).Any();
+            if (isPriceExisting)
+            {
                 throw new ElementAlreadyExistException("Such price is already exist");
+            }
             await _prices.CreateAsync(_pricesMapper.Map<PriceEntity>(item));
         }
 
         public async Task DeleteAsync(int id)
         {
-            if (!(await _prices.IsExistingAsync(id)))
+            bool isPriceExisting = await _prices.IsExistingAsync(id);
+            if (!isPriceExisting)
+            {
                 throw new ElementNotFoundException("No such price");
+            }
             await _prices.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, Price item)
         {
-            if (!(await _prices.IsExistingAsync(id)))
+            bool isPriceExisting = await _prices.IsExistingAsync(id);
+            if (!isPriceExisting)
+            {
                 throw new ElementNotFoundException("No such price");
+            }
             await _prices.UpdateAsync(id, _pricesMapper.Map<PriceEntity>(item));
         }
     }

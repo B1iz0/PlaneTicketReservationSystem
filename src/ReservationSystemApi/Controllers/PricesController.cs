@@ -24,27 +24,28 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             _priceMapper = new Mapper(conf.PriceMapperConfiguration);
         }
 
-        // GET: api/<PricesController>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var response = _priceMapper.Map<IEnumerable<PriceResponse>>(await _priceService.GetAllAsync());
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // GET api/<PricesController>/5
         [HttpGet("{airplaneId}")]
         public async Task<IActionResult> Get(int airplaneId)
         {
             var response = _priceMapper.Map<IEnumerable<PriceResponse>>(await _priceService.GetByAirplaneIdAsync(airplaneId));
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // POST api/<PricesController>
         [Authorize(Policy = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PriceRegistration value)
@@ -53,7 +54,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // PUT api/<PricesController>/5
         [Authorize(Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] PriceRegistration value)
@@ -62,7 +62,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // DELETE api/<PricesController>/5
         [Authorize(Policy = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

@@ -29,21 +29,23 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             var response = _flightMapper.Map<IEnumerable<FlightResponse>>(_flightService.GetFilteredFlights(offset, limit, departureCity, arrivalCity));
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // GET api/<FlightsController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var response = _flightMapper.Map<FlightDetails>(await _flightService.GetByIdAsync(id));
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // GET api/<FlightsController>/count
         [HttpGet("count")]
         public IActionResult GetCount(string departureCity, string arrivalCity)
         {
@@ -51,7 +53,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok(response);
         }
 
-        // POST api/<FlightsController>
         [HttpPost]
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Post([FromBody] FlightRegistration value)
@@ -60,7 +61,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // PUT api/<FlightsController>/5
         [HttpPut("{id}")]
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Put(int id, [FromBody] FlightRegistration value)
@@ -69,7 +69,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // DELETE api/<FlightsController>/5
         [HttpDelete("{id}")]
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int id)

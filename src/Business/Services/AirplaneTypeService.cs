@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.VisualBasic;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
@@ -25,34 +25,49 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<IEnumerable<AirplaneType>> GetAllAsync()
         {
-            return _airplaneTypeMapper.Map<IEnumerable<AirplaneType>>(await _airplaneTypes.GetAllAsync());
+            var airplaneTypes = _airplaneTypeMapper.Map<IEnumerable<AirplaneType>>(await _airplaneTypes.GetAllAsync());
+            return airplaneTypes;
         }
 
         public async Task<AirplaneType> GetByIdAsync(int id)
         {
-            if (!_airplaneTypes.Find(x => x.Id == id).Any())
+            bool isTypeExisting = await _airplaneTypes.IsExistingAsync(id);
+            if (!isTypeExisting)
+            {
                 throw new ElementNotFoundException($"No such type with id: {id}");
-            return _airplaneTypeMapper.Map<AirplaneType>(await _airplaneTypes.GetAsync(id));
+            }
+
+            var airplaneType = _airplaneTypeMapper.Map<AirplaneType>(await _airplaneTypes.GetAsync(id));
+            return airplaneType;
         }
 
         public async Task PostAsync(AirplaneType item)
         {
-            if (_airplaneTypes.Find(x => x.TypeName == item.TypeName).Any())
+            bool isTypeExisting = _airplaneTypes.Find(x => x.TypeName == item.TypeName).Any();
+            if (isTypeExisting)
+            {
                 throw new ElementAlreadyExistException($"Type {item.TypeName} is already exist");
+            }
             await _airplaneTypes.CreateAsync(_airplaneTypeMapper.Map<AirplaneTypeEntity>(item));
         }
 
         public async Task DeleteAsync(int id)
         {
-            if (!_airplaneTypes.Find(x => x.Id == id).Any())
+            bool isTypeExisting = await _airplaneTypes.IsExistingAsync(id);
+            if (!isTypeExisting)
+            {
                 throw new ElementNotFoundException($"No such type with id: {id}");
+            }
             await _airplaneTypes.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, AirplaneType item)
         {
-            if (!(await _airplaneTypes.IsExistingAsync(id)))
+            bool isTypeExisting = await _airplaneTypes.IsExistingAsync(id);
+            if (!isTypeExisting)
+            {
                 throw new ElementNotFoundException($"No such type with id: {id}");
+            }
             await _airplaneTypes.UpdateAsync(id, _airplaneTypeMapper.Map<AirplaneTypeEntity>(item));
         }
     }

@@ -24,27 +24,28 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             _placeTypeMapper = new Mapper(conf.PlaceTypeMapperConfiguration);
         }
 
-        // GET: api/<PlaceTypesController>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var response = _placeTypeMapper.Map<IEnumerable<PlaceTypeResponse>>(await _placeTypeService.GetAllAsync());
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // GET api/<PlaceTypesController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var response = _placeTypeMapper.Map<PlaceTypeResponse>(await _placeTypeService.GetByIdAsync(id));
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // POST api/<PlaceTypesController>
         [Authorize(Policy = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PlaceTypeRegistration value)
@@ -53,7 +54,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // PUT api/<PlaceTypesController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] PlaceTypeRegistration value)
@@ -62,7 +62,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // DELETE api/<PlaceTypesController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

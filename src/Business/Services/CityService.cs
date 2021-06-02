@@ -25,34 +25,49 @@ namespace PlaneTicketReservationSystem.Business.Services
         
         public async Task<IEnumerable<City>> GetAllAsync()
         {
-            return _cityMapper.Map<IEnumerable<City>>(await _cities.GetAllAsync());
+            var cities = _cityMapper.Map<IEnumerable<City>>(await _cities.GetAllAsync());
+            return cities;
         }
 
         public async Task<City> GetByIdAsync(int id)
         {
-            if (!_cities.Find(x => x.Id == id).Any())
+            bool isCityExisting = await _cities.IsExistingAsync(id);
+            if (!isCityExisting)
+            {
                 throw new ElementNotFoundException($"No such city with id: {id}");
-            return _cityMapper.Map<City>(await _cities.GetAsync(id));
+            }
+
+            var city = _cityMapper.Map<City>(await _cities.GetAsync(id));
+            return city;
         }
 
         public async Task PostAsync(City item)
         {
-            if (_cities.Find(x => x.Name == item.Name).Any())
+            bool isCityExisting = _cities.Find(x => x.Name == item.Name).Any();
+            if (isCityExisting)
+            {
                 throw new ElementAlreadyExistException($"City {item.Name} is already exist");
+            }
             await _cities.CreateAsync(_cityMapper.Map<CityEntity>(item));
         }
 
         public async Task DeleteAsync(int id)
         {
-            if (!_cities.Find(x => x.Id == id).Any())
+            bool isCityExisting = await _cities.IsExistingAsync(id);
+            if (!isCityExisting)
+            {
                 throw new ElementNotFoundException($"No such city with id: {id}");
+            }
             await _cities.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, City item)
         {
-            if (!(await _cities.IsExistingAsync(id)))
+            bool isCityExisting = await _cities.IsExistingAsync(id);
+            if (!isCityExisting)
+            {
                 throw new ElementNotFoundException($"No such city with id: {id}");
+            }
             await _cities.UpdateAsync(id, _cityMapper.Map<CityEntity>(item));
         }
     }

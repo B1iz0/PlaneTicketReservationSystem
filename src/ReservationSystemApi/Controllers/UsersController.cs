@@ -38,7 +38,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             var response = await _account.AuthenticateAsync(_authMapper.Map<Authenticate>(model));
 
             if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+            {
+                return BadRequest(new {message = "Username or password is incorrect"});
+            }
 
             SetTokenCookie(response.RefreshToken);
 
@@ -53,7 +55,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             var response = await _account.RefreshTokenAsync(refreshToken);
 
             if (response == null)
-                return Unauthorized(new { message = "Invalid token" });
+            {
+                return Unauthorized(new {message = "Invalid token"});
+            }
 
             SetTokenCookie(response.RefreshToken);
 
@@ -63,43 +67,47 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpPost("revoke-token")]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenRequest model)
         {
-            // accept token from request body or cookie
             var token = model.Token ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
-                return BadRequest(new { message = "Token is required" });
+            {
+                return BadRequest(new {message = "Token is required"});
+            }
 
             var response = await _account.RevokeTokenAsync(token);
 
             if (!response)
-                return NotFound(new { message = "Token not found" });
+            {
+                return NotFound(new {message = "Token not found"});
+            }
 
             return Ok(new { message = "Token revoked" });
         }
 
-        // GET: api/<UsersController>
         [Authorize(Policy = "AdminApp")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var users = _userMapper.Map<IEnumerable<UserResponse>>(await _userService.GetAllAsync());
             if (users == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(users);
         }
 
-        // GET api/<UsersController>/5
         [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var response = _userMapper.Map<UserDetails>(await _userService.GetByIdAsync(id));
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // POST api/<UsersController>
         [Authorize(Policy = "AdminApp")]
         [HttpPost()]
         public async Task<IActionResult> Post([FromBody] UserRegistration user)
@@ -108,16 +116,15 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // POST api/<UsersController>
         [HttpPost("registration")]
         public async Task<IActionResult> Registration([FromBody] UserRegistration user)
         {
             user.RoleId = 3;
             await _userService.PostAsync(_userMapper.Map<User>(user));
-            return await Authenticate(new AuthenticateRequest() { Email = user.Email, Password = user.Password });
+            IActionResult registrationResult = await Authenticate(new AuthenticateRequest() { Email = user.Email, Password = user.Password });
+            return registrationResult;
         }
 
-        // PUT api/<UsersController>/5
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UserRegistration user)
@@ -138,7 +145,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // DELETE api/<UsersController>/5
         [Authorize(Policy = "AdminApp")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

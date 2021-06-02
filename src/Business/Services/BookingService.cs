@@ -25,14 +25,20 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<IEnumerable<Booking>> GetAllAsync()
         {
-            return _bookingMapper.Map<IEnumerable<Booking>>(await _bookings.GetAllAsync());
+            var bookings = _bookingMapper.Map<IEnumerable<Booking>>(await _bookings.GetAllAsync());
+            return bookings;
         }
 
         public async Task<Booking> GetByIdAsync(int id)
         {
-            if (!_bookings.Find(x => x.Id == id).Any())
+            bool isBookingExisting = await _bookings.IsExistingAsync(id);
+            if (!isBookingExisting)
+            {
                 throw new ElementNotFoundException($"No such booking with id: {id}");
-            return _bookingMapper.Map<Booking>(await _bookings.GetAsync(id));
+            }
+
+            var booking = _bookingMapper.Map<Booking>(await _bookings.GetAsync(id));
+            return booking;
         }
 
         public async Task PostAsync(Booking item)
@@ -42,15 +48,21 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task DeleteAsync(int id)
         {
-            if (!_bookings.Find(x => x.Id == id).Any())
+            bool isBookingExisting = await _bookings.IsExistingAsync(id);
+            if (!isBookingExisting)
+            {
                 throw new ElementNotFoundException($"No such booking with id: {id}");
+            }
             await _bookings.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, Booking item)
         {
-            if (!(await _bookings.IsExistingAsync(id)))
+            bool isBookingExisting = await _bookings.IsExistingAsync(id);
+            if (!isBookingExisting)
+            {
                 throw new ElementNotFoundException($"No such booking with id: {id}");
+            }
             await _bookings.UpdateAsync(id, _bookingMapper.Map<BookingEntity>(item));
         }
     }

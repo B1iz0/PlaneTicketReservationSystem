@@ -7,9 +7,15 @@ namespace PlaneTicketReservationSystem.Data
 {
     public class ReservationSystemContext : DbContext
     {
+        private const int AdminAppRoleId = 1;
+        private const int AdminRoleId = 2;
+        private const int UserRoleId = 1;
+        private const int AdminId = 1;
+
         public ReservationSystemContext(DbContextOptions<ReservationSystemContext> options)
             : base(options)
         {
+            
         }
 
         public DbSet<RoleEntity> Roles { get; set; }
@@ -45,21 +51,21 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.Entity<RoleEntity>().HasData(
                 new RoleEntity[]
                 {
-                    new RoleEntity() {Id = 1, Name = "AdminApp"},
-                    new RoleEntity() {Id = 2, Name = "Admin"},
-                    new RoleEntity() {Id = 3, Name = "User"}
+                    new RoleEntity() {Id = AdminAppRoleId, Name = "AdminApp"},
+                    new RoleEntity() {Id = AdminRoleId, Name = "Admin"},
+                    new RoleEntity() {Id = UserRoleId, Name = "User"}
                 });
             modelBuilder.Entity<UserEntity>().HasData(
                 new UserEntity[]
                 {
                     new UserEntity()
                     {
-                        Id = 1,
+                        Id = AdminId,
                         Email = "admin",
-                        Password = PasswordHasher.GenerateHash("12345", PasswordHasher.Salt, SHA256.Create()),
+                        Password = PasswordHasher.GenerateHash("dima2002", PasswordHasher.Salt, SHA256.Create()),
                         FirstName = "admin",
                         LastName = "admin",
-                        RoleId = 1
+                        RoleId = AdminAppRoleId
                     }
                 });
         }

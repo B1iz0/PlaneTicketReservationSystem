@@ -24,29 +24,30 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             _bookingMapper = new Mapper(conf.BookingMapperConfiguration);
         }
 
-        // GET: api/<BookingsController>
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Get()
         {
             var response = _bookingMapper.Map<IEnumerable<BookingResponse>>(await _bookingService.GetAllAsync());
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // GET api/<BookingsController>/5
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> Get(int id)
         {
             var response = _bookingMapper.Map<BookingResponse>(await _bookingService.GetByIdAsync(id));
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // POST api/<BookingsController>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Post([FromBody] BookingRegistration value)
@@ -55,7 +56,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // PUT api/<BookingsController>/5
         [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> Put(int id, [FromBody] BookingRegistration value)
@@ -64,7 +64,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // DELETE api/<BookingsController>/5
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> Delete(int id)

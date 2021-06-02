@@ -25,34 +25,48 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task DeleteAsync(int id)
         {
-            if (!_roles.Find(x => x.Id == id).Any())
+            bool isRoleExisting = await _roles.IsExistingAsync(id);
+            if (!isRoleExisting)
+            {
                 throw new ElementNotFoundException($"No such role with id: {id}");
+            }
             await _roles.DeleteAsync(id);
         }
 
         public async Task<IEnumerable<Role>> GetAllAsync()
         {
-            return _roleMapper.Map<IEnumerable<Role>>(await _roles.GetAllAsync());
+            var roles = _roleMapper.Map<IEnumerable<Role>>(await _roles.GetAllAsync());
+            return roles;
         }
 
         public async Task<Role> GetByIdAsync(int id)
         {
-            if (!_roles.Find(x => x.Id == id).Any())
+            bool isRoleExisting = await _roles.IsExistingAsync(id);
+            if (!isRoleExisting)
+            {
                 throw new ElementNotFoundException($"No such role with id: {id}");
-            return _roleMapper.Map<Role>(await _roles.GetAsync(id));
+            }
+            var role = _roleMapper.Map<Role>(await _roles.GetAsync(id));
+            return role;
         }
 
         public async Task PostAsync(Role role)
         {
-            if (_roles.Find(x => x.Name == role.Name).Any())
+            bool isRoleExisting = _roles.Find(x => x.Name == role.Name).Any();
+            if (isRoleExisting)
+            {
                 throw new ElementAlreadyExistException($"Role {role.Name} is already exist");
+            }
             await _roles.CreateAsync(_roleMapper.Map<RoleEntity>(role));
         }
 
         public async Task UpdateAsync(int id, Role role)
         {
-            if (!(await _roles.IsExistingAsync(id)))
+            bool isRoleExisting = await _roles.IsExistingAsync(id);
+            if (!isRoleExisting)
+            {
                 throw new ElementNotFoundException($"No such role with id: {id}");
+            }
             await _roles.UpdateAsync(id, _roleMapper.Map<RoleEntity>(role));
         }
     }

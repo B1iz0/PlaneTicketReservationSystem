@@ -25,47 +25,63 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<IEnumerable<Flight>> GetAllAsync()
         {
-            return _flightMapper.Map<IEnumerable<Flight>>(await _flights.GetAllAsync());
+            var flights = _flightMapper.Map<IEnumerable<Flight>>(await _flights.GetAllAsync());
+            return flights;
         }
 
         public IEnumerable<Flight> GetFilteredFlights(int offset, int limit, string departureCity, string arrivalCity)
         {
             var result = _flights.FindWithLimitAndOffset(x => (string.IsNullOrEmpty(departureCity) || x.From.City.Name == departureCity)
                                                                     && (string.IsNullOrEmpty(arrivalCity) || x.To.City.Name == arrivalCity), offset, limit);
-            return _flightMapper.Map<IEnumerable<Flight>>(result);
+            var flight = _flightMapper.Map<IEnumerable<Flight>>(result);
+            return flight;
         }
 
         public int GetFilteredFlightsCount(string departureCity, string arrivalCity)
         {
-            return _flights.Find(x => (string.IsNullOrEmpty(departureCity) || x.From.City.Name == departureCity)
-                                      && (string.IsNullOrEmpty(arrivalCity) || x.To.City.Name == arrivalCity)).Count();
+            int count = _flights.Find(x => (string.IsNullOrEmpty(departureCity) || x.From.City.Name == departureCity)
+                                           && (string.IsNullOrEmpty(arrivalCity) || x.To.City.Name == arrivalCity)).Count();
+            return count;
         }
 
         public async Task<Flight> GetByIdAsync(int id)
         {
-            if (!_flights.Find(x => x.Id == id).Any())
+            bool isFlightExisting = await _flights.IsExistingAsync(id);
+            if (!isFlightExisting)
+            {
                 throw new ElementNotFoundException($"No such flight with id: {id}");
-            return _flightMapper.Map<Flight>(await _flights.GetAsync(id));
+            }
+            var flight = _flightMapper.Map<Flight>(await _flights.GetAsync(id));
+            return flight;
         }
 
         public async Task PostAsync(Flight item)
         {
-            if (_flights.Find(x => x.AirplaneId == item.AirplaneId).Any())
+            bool isFlightExisting = _flights.Find(x => x.AirplaneId == item.AirplaneId).Any();
+            if (isFlightExisting)
+            {
                 throw new ElementAlreadyExistException($"Flight with airplane id: {item.AirplaneId} is already exist");
+            }
             await _flights.CreateAsync(_flightMapper.Map<FlightEntity>(item));
         }
 
         public async Task DeleteAsync(int id)
         {
-            if (!_flights.Find(x => x.Id == id).Any())
+            bool isFlightExisting = await _flights.IsExistingAsync(id);
+            if (!isFlightExisting)
+            {
                 throw new ElementNotFoundException($"No such flight with id: {id}");
+            }
             await _flights.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, Flight item)
         {
-            if (!(await _flights.IsExistingAsync(id)))
+            bool isFlightExisting = await _flights.IsExistingAsync(id);
+            if (!isFlightExisting)
+            {
                 throw new ElementNotFoundException($"No such flight with id: {id}");
+            }
             await _flights.UpdateAsync(id, _flightMapper.Map<FlightEntity>(item));
         }
     }

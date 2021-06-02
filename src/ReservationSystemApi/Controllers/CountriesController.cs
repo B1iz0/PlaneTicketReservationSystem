@@ -24,27 +24,28 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             _countryMapper = new Mapper(conf.CountryMapperConfiguration);
         }
 
-        // GET: api/<CountriesController>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var response = _countryMapper.Map<IEnumerable<CountryResponse>>(await _countryService.GetAllAsync());
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // GET api/<CountriesController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var response = _countryMapper.Map<CountryDetails>(await _countryService.GetByIdAsync(id));
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // POST api/<CountriesController>
         [HttpPost]
         [Authorize(Policy = "AdminApp")]
         public async Task<IActionResult> Post([FromBody] CountryRegistration value)
@@ -53,7 +54,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // PUT api/<CountriesController>/5
         [HttpPut("{id}")]
         [Authorize(Policy = "AdminApp")]
         public async Task<IActionResult> Put(int id, [FromBody] CountryRegistration value)
@@ -62,7 +62,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // DELETE api/<CountriesController>/5
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminApp")]
         public async Task<IActionResult> Delete(int id)

@@ -24,27 +24,28 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             _airplaneMapper = new Mapper(conf.AirplaneMapperConfiguration);
         }
 
-        // GET: api/<AirplanesController>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var response = _airplaneMapper.Map<IEnumerable<AirplaneResponse>>(await _airplaneService.GetAllAsync());
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // GET api/<AirplanesController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var response = _airplaneMapper.Map<AirplaneResponse>(await _airplaneService.GetByIdAsync(id));
             if (response == null)
+            {
                 throw new NullReferenceException();
+            }
             return Ok(response);
         }
 
-        // POST api/<AirplanesController>
         [HttpPost]
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Post([FromBody] AirplaneRegistration value)
@@ -53,7 +54,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // PUT api/<AirplanesController>/5
         [HttpPut("{id}")]
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Put(int id, [FromBody] AirplaneRegistration value)
@@ -62,7 +62,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        // DELETE api/<AirplanesController>/5
         [HttpDelete("{id}")]
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int id)
