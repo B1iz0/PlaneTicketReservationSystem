@@ -7,8 +7,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.BookingModels
     public class BookingResponse
     {
         public int Id { get; set; }
+
         public FlightResponse Flight { get; set; }
+
         public UserResponse User { get; set; }
+
         public PlaceResponse Place { get; set; }
     }
 }

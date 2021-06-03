@@ -10,14 +10,23 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneModel
     public class AirplaneResponse
     {
         public int Id { get; set; }
+
         public AirplaneTypeResponse AirplaneType { get; set; }
+
         public CompanyResponse Company { get; set; }
+
         public FlightResponse Flight { get; set; }
+
         public string Model { get; set; }
+
         public int RegistrationNumber { get; set; }
+
         public int Rows { get; set; }
+
         public int Columns { get; set; }
+
         public List<PlaceResponse> Places { get; set; }
+
         public List<PriceResponse> Prices { get; set; }
     }
 }

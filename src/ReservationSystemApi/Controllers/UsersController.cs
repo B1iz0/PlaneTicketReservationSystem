@@ -20,8 +20,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IDataService<User> _userService;
+
         private readonly IAccountService _account;
+
         private readonly Mapper _userMapper;
+
         private readonly Mapper _authMapper;
 
         public UsersController(IDataService<User> userService, IAccountService account, ApiMappingsConfiguration conf)

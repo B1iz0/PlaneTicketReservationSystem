@@ -15,6 +15,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class CompanyService : IDataService<Company>
     {
         private readonly CompanyRepository _companies;
+
         private readonly Mapper _companyMapper;
 
         public CompanyService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -68,7 +69,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException($"No such company with id: {id}");
             }
-            await _companies.UpdateAsync(id, _companyMapper.Map<CompanyEntity>(item));
+            item.Id = id;
+            await _companies.UpdateAsync(_companyMapper.Map<CompanyEntity>(item));
         }
     }
 }

@@ -15,6 +15,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class PlaceTypeService : IDataService<PlaceType>
     {
         private readonly PlaceTypeRepository _placeTypes;
+
         private readonly Mapper _placeTypeMapper;
 
         public PlaceTypeService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -67,7 +68,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException("No such place type");
             }
-            await _placeTypes.UpdateAsync(id, _placeTypeMapper.Map<PlaceTypeEntity>(item));
+            item.Id = id;
+            await _placeTypes.UpdateAsync(_placeTypeMapper.Map<PlaceTypeEntity>(item));
         }
     }
 }

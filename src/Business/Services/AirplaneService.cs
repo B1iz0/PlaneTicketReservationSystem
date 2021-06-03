@@ -14,6 +14,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class AirplaneService : IDataService<Airplane>
     {
         private readonly AirplaneRepository _airplanes;
+
         private readonly Mapper _airplaneMapper;
 
         public AirplaneService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -66,7 +67,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException($"Airplane with id:{id} is not found");
             }
-            await _airplanes.UpdateAsync(id, _airplaneMapper.Map<AirplaneEntity>(item));
+            item.Id = id;
+            await _airplanes.UpdateAsync(_airplaneMapper.Map<AirplaneEntity>(item));
         }
     }
 }

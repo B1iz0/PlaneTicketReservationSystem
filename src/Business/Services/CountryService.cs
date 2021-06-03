@@ -15,6 +15,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class CountryService : IDataService<Country>
     {
         private readonly CountryRepository _countries;
+
         private readonly Mapper _countryMapper;
 
         public CountryService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -68,7 +69,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException($"No such country with id: {id}");
             }
-            await _countries.UpdateAsync(id, _countryMapper.Map<CountryEntity>(item));
+            item.Id = id;
+            await _countries.UpdateAsync(_countryMapper.Map<CountryEntity>(item));
         }
     }
 }

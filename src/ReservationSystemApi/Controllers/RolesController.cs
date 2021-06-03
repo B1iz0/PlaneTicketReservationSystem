@@ -17,6 +17,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     public class RolesController : ControllerBase
     {
         private readonly IDataService<Role> _roleService;
+
         private readonly Mapper _roleMapper;
 
         public RolesController(IDataService<Role> roleService, ApiMappingsConfiguration conf)

@@ -16,6 +16,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     public class AirplaneTypesController : ControllerBase
     {
         private readonly IDataService<AirplaneType> _airplaneTypeService;
+
         private readonly Mapper _airplaneTypeMapper;
 
         public AirplaneTypesController(IDataService<AirplaneType> service, ApiMappingsConfiguration conf)

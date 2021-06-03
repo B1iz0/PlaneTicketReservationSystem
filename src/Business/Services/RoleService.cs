@@ -15,6 +15,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class RoleService : IDataService<Role>
     {
         private readonly RoleRepository _roles;
+
         private readonly Mapper _roleMapper;
 
         public RoleService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -67,7 +68,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException($"No such role with id: {id}");
             }
-            await _roles.UpdateAsync(id, _roleMapper.Map<RoleEntity>(role));
+            role.Id = id;
+            await _roles.UpdateAsync(_roleMapper.Map<RoleEntity>(role));
         }
     }
 }

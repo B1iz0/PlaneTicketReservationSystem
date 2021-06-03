@@ -1,71 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
-using PlaneTicketReservationSystem.Data.Interfaces;
+using PlaneTicketReservationSystem.Data.Repositories.BaseRepository;
 
 namespace PlaneTicketReservationSystem.Data.Repositories
 {
-    public class BookingRepository : IRepository<BookingEntity>
+    public class BookingRepository : BaseRepository<BookingEntity>
     {
         private readonly ReservationSystemContext _db;
+
         private readonly DbSet<BookingEntity> _bookings;
 
-        public BookingRepository(ReservationSystemContext context)
+        public BookingRepository(ReservationSystemContext context) : base(context, context.Bookings)
         {
-            this._db = context;
+            _db = context;
             _bookings = context.Bookings;
-        }
-
-        public async Task CreateAsync(BookingEntity item)
-        {
-            await _bookings.AddAsync(item);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            BookingEntity booking = await _bookings.FindAsync(id);
-            if (booking != null)
-            {
-                _bookings.Remove(booking);
-                await _db.SaveChangesAsync();
-            }
-        }
-
-        public IQueryable<BookingEntity> Find(Expression<Func<BookingEntity, bool>> predicate)
-        {
-            return _bookings.Where(predicate);
-        }
-
-        public IQueryable<BookingEntity> FindWithLimitAndOffset(Expression<Func<BookingEntity, bool>> predicate, int offset, int limit)
-        {
-            return _bookings.Where(predicate).Skip(offset).Take(limit);
-        }
-
-        public async Task<BookingEntity> GetAsync(int id)
-        {
-            return await _bookings.FindAsync(id);
-        }
-
-        public async Task<IEnumerable<BookingEntity>> GetAllAsync()
-        {
-            return await _bookings.ToListAsync();
-        }
-
-        public async Task<bool> IsExistingAsync(int id)
-        {
-            return await _bookings.AnyAsync(x => x.Id == id);
-        }
-
-        public async Task UpdateAsync(int id, BookingEntity item)
-        {
-            item.Id = id;
-            _bookings.Update(item);
-            await _db.SaveChangesAsync();
         }
     }
 }

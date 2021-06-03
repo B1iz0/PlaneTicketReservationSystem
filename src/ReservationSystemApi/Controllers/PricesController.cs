@@ -16,6 +16,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     public class PricesController : ControllerBase
     {
         private readonly PriceService _priceService;
+
         private readonly Mapper _priceMapper;
 
         public PricesController(PriceService priceService, ApiMappingsConfiguration conf)

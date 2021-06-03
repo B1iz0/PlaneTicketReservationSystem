@@ -15,6 +15,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class AirplaneTypeService : IDataService<AirplaneType>
     {
         private readonly AirplaneTypeRepository _airplaneTypes;
+
         private readonly Mapper _airplaneTypeMapper;
 
         public AirplaneTypeService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -68,7 +69,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException($"No such type with id: {id}");
             }
-            await _airplaneTypes.UpdateAsync(id, _airplaneTypeMapper.Map<AirplaneTypeEntity>(item));
+            item.Id = id;
+            await _airplaneTypes.UpdateAsync(_airplaneTypeMapper.Map<AirplaneTypeEntity>(item));
         }
     }
 }

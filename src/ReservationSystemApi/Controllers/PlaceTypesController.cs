@@ -16,6 +16,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     public class PlaceTypesController : ControllerBase
     {
         private readonly IDataService<PlaceType> _placeTypeService;
+
         private readonly Mapper _placeTypeMapper;
 
         public PlaceTypesController(IDataService<PlaceType> placeTypeService, ApiMappingsConfiguration conf)

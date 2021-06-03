@@ -15,6 +15,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class BookingService : IDataService<Booking>
     {
         private readonly BookingRepository _bookings;
+
         private readonly Mapper _bookingMapper;
 
         public BookingService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -63,7 +64,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException($"No such booking with id: {id}");
             }
-            await _bookings.UpdateAsync(id, _bookingMapper.Map<BookingEntity>(item));
+            item.Id = id;
+            await _bookings.UpdateAsync(_bookingMapper.Map<BookingEntity>(item));
         }
     }
 }

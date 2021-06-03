@@ -6,7 +6,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneTypeM
     public class AirplaneTypeDetails
     {
         public int Id { get; set; }
+
         public string TypeName { get; set; }
+
         public List<AirplaneResponse> Airplanes { get; set; }
     }
 }

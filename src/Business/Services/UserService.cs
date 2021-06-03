@@ -15,6 +15,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class UserService : IDataService<User>
     {
         private readonly UserRepository _users;
+
         private readonly Mapper _userMapper;
 
         public UserService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -68,8 +69,9 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException($"User with id:{id} is not found");
             }
+            user.Id = id;
             user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
-            await _users.UpdateAsync(id, _userMapper.Map<UserEntity>(user));
+            await _users.UpdateAsync(_userMapper.Map<UserEntity>(user));
         }
     }
 }

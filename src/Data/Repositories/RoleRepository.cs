@@ -1,69 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
-using PlaneTicketReservationSystem.Data.Interfaces;
+using PlaneTicketReservationSystem.Data.Repositories.BaseRepository;
 
 namespace PlaneTicketReservationSystem.Data.Repositories
 {
-    public class RoleRepository : IRepository<RoleEntity>
+    public class RoleRepository : BaseRepository<RoleEntity>
     {
         private readonly ReservationSystemContext _db;
+
         private readonly DbSet<RoleEntity> _roles;
 
-        public RoleRepository(ReservationSystemContext context)
+        public RoleRepository(ReservationSystemContext context) : base(context, context.Roles)
         {
-            this._db = context;
+            _db = context;
             _roles = context.Roles;
-        }
-        public async Task<IEnumerable<RoleEntity>> GetAllAsync()
-        {
-            return await _roles.ToListAsync();
-        }
-
-        public async Task<RoleEntity> GetAsync(int id)
-        {
-            return await _roles.FindAsync(id);
-        }
-
-        public IQueryable<RoleEntity> Find(Expression<Func<RoleEntity, bool>> predicate)
-        {
-            return _roles.Where(predicate);
-        }
-        public IQueryable<RoleEntity> FindWithLimitAndOffset(Expression<Func<RoleEntity, bool>> predicate, int offset, int limit)
-        {
-            return _roles.Where(predicate).Skip(offset).Take(limit);
-        }
-
-        public async Task CreateAsync(RoleEntity item)
-        {
-            await _roles.AddAsync(item);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task UpdateAsync(int id, RoleEntity item)
-        {
-            item.Id = id;
-            _roles.Update(item);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            RoleEntity role = await _roles.FindAsync(id);
-            if (role != null)
-            {
-                _roles.Remove(role);
-                await _db.SaveChangesAsync();
-            }
-        }
-
-        public async Task<bool> IsExistingAsync(int id)
-        {
-            return await _roles.AnyAsync(x => x.Id == id);
         }
     }
 }

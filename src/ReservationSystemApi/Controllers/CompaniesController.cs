@@ -16,6 +16,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     public class CompaniesController : ControllerBase
     {
         private readonly IDataService<Company> _companyService;
+
         private readonly Mapper _companyMapper;
 
         public CompaniesController(IDataService<Company> service, ApiMappingsConfiguration conf)

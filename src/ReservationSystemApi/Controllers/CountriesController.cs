@@ -16,6 +16,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     public class CountriesController : ControllerBase
     {
         private readonly IDataService<Country> _countryService;
+
         private readonly Mapper _countryMapper;
 
         public CountriesController(IDataService<Country> service, ApiMappingsConfiguration conf)

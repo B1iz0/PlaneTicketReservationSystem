@@ -15,6 +15,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class FlightService : IFlightService
     {
         private readonly FlightRepository _flights;
+
         private readonly Mapper _flightMapper;
 
         public FlightService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -82,7 +83,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException($"No such flight with id: {id}");
             }
-            await _flights.UpdateAsync(id, _flightMapper.Map<FlightEntity>(item));
+            item.Id = id;
+            await _flights.UpdateAsync(_flightMapper.Map<FlightEntity>(item));
         }
     }
 }

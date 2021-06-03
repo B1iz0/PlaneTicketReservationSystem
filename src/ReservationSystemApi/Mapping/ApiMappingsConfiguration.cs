@@ -20,18 +20,31 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
     public class ApiMappingsConfiguration
     {
         public readonly MapperConfiguration UserMapperConfiguration;
+
         public readonly MapperConfiguration AuthMapperConfiguration;
+
         public readonly MapperConfiguration RoleMapperConfiguration;
+
         public readonly MapperConfiguration AirplaneMapperConfiguration;
+
         public readonly MapperConfiguration AirplaneTypeMapperConfiguration;
+
         public readonly MapperConfiguration AirportConfiguration;
+
         public readonly MapperConfiguration BookingMapperConfiguration;
+
         public readonly MapperConfiguration CityMapperConfiguration;
+
         public readonly MapperConfiguration CompanyMapperConfiguration;
+
         public readonly MapperConfiguration CountryMapperConfiguration;
+
         public readonly MapperConfiguration FlightMapperConfiguration;
+
         public readonly MapperConfiguration PriceMapperConfiguration;
+
         public readonly MapperConfiguration PlaceTypeMapperConfiguration;
+
         public readonly MapperConfiguration PlaceMapperConfiguration;
 
         public ApiMappingsConfiguration()

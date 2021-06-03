@@ -21,8 +21,11 @@ namespace PlaneTicketReservationSystem.Business.Services
         private const int RefreshTokenBytesAmount = 64;
 
         private readonly UserRepository _users;
+
         private readonly RoleRepository _roles;
+
         private readonly AppSettings _appSettings;
+
         private readonly Mapper _userMapper;
 
         public AccountService(IOptions<AppSettings> appSettings, ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -57,7 +60,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             var refreshToken = GenerateRefreshToken();
 
             userEntity.RefreshTokens.Add(_userMapper.Map<RefreshTokenEntity>(refreshToken));
-            await _users.UpdateAsync(userEntity.Id, userEntity);
+            await _users.UpdateAsync(userEntity);
 
             var authenticateResponse = new Authenticate(_userMapper.Map<User>(userEntity), token, refreshToken.Token);
             return authenticateResponse;
@@ -120,7 +123,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             }
 
             refreshToken.Revoked = DateTime.UtcNow;
-            await _users.UpdateAsync(user.Id, user);
+            await _users.UpdateAsync(user);
             return true;
         }
 
@@ -141,7 +144,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             refreshToken.Revoked = DateTime.UtcNow;
             refreshToken.ReplacedByToken = newRefreshToken.Token;
             user.RefreshTokens.Add(_userMapper.Map<RefreshTokenEntity>(newRefreshToken));
-            await _users.UpdateAsync(user.Id, user);
+            await _users.UpdateAsync(user);
 
             var jwtToken = await GenerateJwtTokenAsync(_userMapper.Map<User>(user));
 

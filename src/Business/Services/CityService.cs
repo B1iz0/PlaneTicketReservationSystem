@@ -15,6 +15,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class CityService : IDataService<City>
     {
         private readonly CityRepository _cities;
+
         private readonly Mapper _cityMapper;
 
         public CityService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -68,7 +69,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException($"No such city with id: {id}");
             }
-            await _cities.UpdateAsync(id, _cityMapper.Map<CityEntity>(item));
+            item.Id = id;
+            await _cities.UpdateAsync(_cityMapper.Map<CityEntity>(item));
         }
     }
 }

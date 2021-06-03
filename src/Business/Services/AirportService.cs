@@ -15,6 +15,7 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class AirportService : IDataService<Airport>
     {
         private readonly AirportRepository _airports;
+
         private readonly Mapper _airportMapper;
 
         public AirportService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -68,7 +69,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException($"No such airport with id: {id}");
             }
-            await _airports.UpdateAsync(id, _airportMapper.Map<AirportEntity>(item));
+            item.Id = id;
+            await _airports.UpdateAsync(_airportMapper.Map<AirportEntity>(item));
         }
     }
 }

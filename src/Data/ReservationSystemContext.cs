@@ -8,8 +8,11 @@ namespace PlaneTicketReservationSystem.Data
     public class ReservationSystemContext : DbContext
     {
         private const int AdminAppRoleId = 1;
+
         private const int AdminRoleId = 2;
-        private const int UserRoleId = 1;
+
+        private const int UserRoleId = 3;
+
         private const int AdminId = 1;
 
         public ReservationSystemContext(DbContextOptions<ReservationSystemContext> options)
@@ -19,17 +22,29 @@ namespace PlaneTicketReservationSystem.Data
         }
 
         public DbSet<RoleEntity> Roles { get; set; }
+
         public DbSet<UserEntity> Users { get; set; }
+
         public DbSet<AirplaneTypeEntity> AirplaneTypes { get; set; }
+
         public DbSet<CompanyEntity> Companies { get; set; }
+
         public DbSet<AirplaneEntity> Airplanes { get; set; }
+
         public DbSet<FlightEntity> Flights { get; set; }
+
         public DbSet<CountryEntity> Countries { get; set; }
+
         public DbSet<CityEntity> Cities { get; set; }
+
         public DbSet<AirportEntity> Airports { get; set; }
+
         public DbSet<BookingEntity> Bookings { get; set; }
+
         public DbSet<PlaceEntity> Places { get; set; }
+
         public DbSet<PriceEntity> Prices { get; set; }
+
         public DbSet<PlaceTypeEntity> PlaceTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -15,7 +15,9 @@ namespace PlaneTicketReservationSystem.Business.Services
     public class PriceService : IDataService<Price>
     {
         private readonly PriceRepository _prices;
+
         private readonly AirplaneRepository _airplanes;
+
         private readonly Mapper _pricesMapper;
 
         public PriceService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
@@ -80,7 +82,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementNotFoundException("No such price");
             }
-            await _prices.UpdateAsync(id, _pricesMapper.Map<PriceEntity>(item));
+            item.Id = id;
+            await _prices.UpdateAsync(_pricesMapper.Map<PriceEntity>(item));
         }
     }
 }
