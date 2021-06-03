@@ -42,8 +42,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
                 {
                     opt.UseLazyLoadingProxies();
                     opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                }
-                );
+                });
+            services.AddScoped<ContextInitializer>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {
@@ -103,6 +104,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
             {
                 var context = serviceScope.ServiceProvider.GetService<ReservationSystemContext>();
                 context?.Database.Migrate();
+
+                var contextInitializer = serviceScope.ServiceProvider.GetService<ContextInitializer>();
+                contextInitializer?.InitializeContext();
             }
 
             if (env.IsDevelopment())

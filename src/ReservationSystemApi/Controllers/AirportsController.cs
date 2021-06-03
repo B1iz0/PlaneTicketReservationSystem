@@ -29,10 +29,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public async Task<IActionResult> Get()
         {
             var response = _airportMapper.Map<IEnumerable<AirportResponse>>(await _airportService.GetAllAsync());
-            if (response == null)
-            {
-                throw new NullReferenceException();
-            }
             return Ok(response);
         }
 
@@ -40,10 +36,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var response = _airportMapper.Map<AirportDetails>(await _airportService.GetByIdAsync(id));
-            if (response == null)
-            {
-                throw new NullReferenceException();
-            }
             return Ok(response);
         }
 

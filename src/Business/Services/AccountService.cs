@@ -38,21 +38,16 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<Authenticate> AuthenticateAsync(Authenticate model)
         {
-            var userEntities = _users.Find(x => x.Email == model.Email).ToList();
-            if (!userEntities.Any())
+            var userEntity = await _users.GetByEmailAsync(model.Email);
+            if (userEntity == null)
             {
                 throw new Exception("User with such email doesn't exist.");
             }
 
-            bool isPasswordConfirmed = PasswordHasher.CheckHash(model.Password, userEntities.First().Password);
+            bool isPasswordConfirmed = PasswordHasher.CheckHash(model.Password, userEntity.Password);
             if (!isPasswordConfirmed)
             {
                 throw new Exception("Password is not correct.");
-            }
-            var userEntity = userEntities.First();
-            if (userEntity == null)
-            {
-                return null;
             }
 
             var user = _userMapper.Map<User>(userEntity);

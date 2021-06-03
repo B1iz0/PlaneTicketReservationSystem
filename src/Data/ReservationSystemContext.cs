@@ -7,14 +7,6 @@ namespace PlaneTicketReservationSystem.Data
 {
     public class ReservationSystemContext : DbContext
     {
-        private const int AdminAppRoleId = 1;
-
-        private const int AdminRoleId = 2;
-
-        private const int UserRoleId = 3;
-
-        private const int AdminId = 1;
-
         public ReservationSystemContext(DbContextOptions<ReservationSystemContext> options)
             : base(options)
         {
@@ -62,27 +54,6 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.Entity<PlaceEntity>(PlaceConfigure);
             modelBuilder.Entity<PlaceTypeEntity>(PlaceTypeConfigure);
             modelBuilder.Entity<PriceEntity>(PriceConfigure);
-
-            modelBuilder.Entity<RoleEntity>().HasData(
-                new RoleEntity[]
-                {
-                    new RoleEntity() {Id = AdminAppRoleId, Name = "AdminApp"},
-                    new RoleEntity() {Id = AdminRoleId, Name = "Admin"},
-                    new RoleEntity() {Id = UserRoleId, Name = "User"}
-                });
-            modelBuilder.Entity<UserEntity>().HasData(
-                new UserEntity[]
-                {
-                    new UserEntity()
-                    {
-                        Id = AdminId,
-                        Email = "admin",
-                        Password = PasswordHasher.GenerateHash("dima2002", PasswordHasher.Salt, SHA256.Create()),
-                        FirstName = "admin",
-                        LastName = "admin",
-                        RoleId = AdminAppRoleId
-                    }
-                });
         }
 
         public void AirplaneConfigure(EntityTypeBuilder<AirplaneEntity> modelBuilder)

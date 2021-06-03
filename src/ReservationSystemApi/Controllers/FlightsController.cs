@@ -29,10 +29,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public IActionResult Get(string departureCity, string arrivalCity, int offset, int limit = 16)
         {
             var response = _flightMapper.Map<IEnumerable<FlightResponse>>(_flightService.GetFilteredFlights(offset, limit, departureCity, arrivalCity));
-            if (response == null)
-            {
-                throw new NullReferenceException();
-            }
             return Ok(response);
         }
 
@@ -40,10 +36,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var response = _flightMapper.Map<FlightDetails>(await _flightService.GetByIdAsync(id));
-            if (response == null)
-            {
-                throw new NullReferenceException();
-            }
             return Ok(response);
         }
 
