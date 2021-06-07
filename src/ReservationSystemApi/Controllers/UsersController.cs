@@ -19,7 +19,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IDataService<User> _userService;
+        private readonly IUserService _userService;
 
         private readonly IAccountService _account;
 
@@ -27,7 +27,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         private readonly Mapper _authMapper;
 
-        public UsersController(IDataService<User> userService, IAccountService account, ApiMappingsConfiguration conf)
+        public UsersController(IUserService userService, IAccountService account, ApiMappingsConfiguration conf)
         {
             _userService = userService;
             _account = account;
@@ -89,14 +89,18 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [Authorize(Policy = "AdminApp")]
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get(int offset, int limit, string email, string firstName, string lastName)
         {
-            var users = _userMapper.Map<IEnumerable<UserResponse>>(await _userService.GetAllAsync());
-            if (users == null)
-            {
-                throw new NullReferenceException();
-            }
+            var users = _userMapper.Map<IEnumerable<UserResponse>>(_userService.GetFilteredUsers(offset, limit, email, firstName, lastName));
             return Ok(users);
+        }
+
+        [Authorize(Policy = "AdminApp")]
+        [HttpGet("count")]
+        public IActionResult GetCount(string email, string firstName, string lastName)
+        {
+            var response = _userService.GetFilteredUsersCount(email, firstName, lastName);
+            return Ok(response);
         }
 
         [Authorize]

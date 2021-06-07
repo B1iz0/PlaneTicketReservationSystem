@@ -12,7 +12,7 @@ using PlaneTicketReservationSystem.Data.Repositories;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class UserService : IDataService<User>
+    public class UserService : IUserService
     {
         private readonly UserRepository _users;
 
@@ -28,6 +28,23 @@ namespace PlaneTicketReservationSystem.Business.Services
         {
             var users = _userMapper.Map<IEnumerable<User>>(await _users.GetAllAsync());
             return users;
+        }
+
+        public IEnumerable<User> GetFilteredUsers(int offset, int limit, string email, string firstName, string lastName)
+        {
+            var result = _users.FindWithLimitAndOffset(x => (string.IsNullOrEmpty(email) || x.Email.Contains(email))
+                                                              && (string.IsNullOrEmpty(firstName) || x.FirstName.Contains(firstName))
+                                                                && (string.IsNullOrEmpty(lastName) || x.LastName.Contains(lastName)), offset, limit);
+            var flight = _userMapper.Map<IEnumerable<User>>(result);
+            return flight;
+        }
+
+        public int GetFilteredUsersCount(string email, string firstName, string lastName)
+        {
+            int count = _users.Find(x => (string.IsNullOrEmpty(email) || x.Email.Contains(email))
+                                           && (string.IsNullOrEmpty(firstName) || x.FirstName.Contains(firstName))
+                                           && (string.IsNullOrEmpty(lastName) || x.LastName.Contains(lastName))).Count();
+            return count;
         }
 
         public async Task<User> GetByIdAsync(int id)
