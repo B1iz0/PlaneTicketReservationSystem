@@ -15,20 +15,27 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class CompaniesController : ControllerBase
     {
-        private readonly IDataService<Company> _companyService;
+        private readonly ICompanyService _companyService;
 
         private readonly Mapper _companyMapper;
 
-        public CompaniesController(IDataService<Company> service, ApiMappingsConfiguration conf)
+        public CompaniesController(ICompanyService service, ApiMappingsConfiguration conf)
         {
             _companyService = service;
             _companyMapper = new Mapper(conf.CompanyMapperConfiguration);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get(string companyName, string countryName, int offset, int limit)
         {
-            var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(await _companyService.GetAllAsync());
+            var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(_companyService.GetFilteredCompanies(offset, limit, companyName, countryName));
+            return Ok(response);
+        }
+
+        [HttpGet("count")]
+        public IActionResult GetCount(string companyName, string countryName)
+        {
+            int response = _companyService.GetFilteredCompaniesCount(companyName, countryName);
             return Ok(response);
         }
 

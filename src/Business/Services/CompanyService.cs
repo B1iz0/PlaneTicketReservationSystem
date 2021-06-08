@@ -12,7 +12,7 @@ using PlaneTicketReservationSystem.Data.Repositories;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class CompanyService : IDataService<Company>
+    public class CompanyService : ICompanyService
     {
         private readonly CompanyRepository _companies;
 
@@ -71,6 +71,25 @@ namespace PlaneTicketReservationSystem.Business.Services
             }
             item.Id = id;
             await _companies.UpdateAsync(_companyMapper.Map<CompanyEntity>(item));
+        }
+
+        public IEnumerable<Company> GetFilteredCompanies(int offset, int limit, string companyName, string countryName)
+        {
+            IQueryable<CompanyEntity> result = _companies.FindWithLimitAndOffset(c =>
+                (string.IsNullOrEmpty(companyName) || c.Name.Contains(companyName))
+                && (string.IsNullOrEmpty(countryName) || c.Country.Name.Contains(countryName)),
+                offset, limit);
+
+            var companies = _companyMapper.Map<IEnumerable<Company>>(result);
+            return companies;
+        }
+
+        public int GetFilteredCompaniesCount(string companyName, string countryName)
+        {
+            var companies = _companies.Find(c => (string.IsNullOrEmpty(companyName) || c.Name.Contains(companyName))
+                                                 && (string.IsNullOrEmpty(countryName) || c.Country.Name.Contains(countryName)));
+            int count = companies.Count();
+            return count;
         }
     }
 }
