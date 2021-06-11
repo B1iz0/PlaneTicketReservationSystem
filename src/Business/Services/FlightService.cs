@@ -78,11 +78,11 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task UpdateAsync(int id, Flight item)
         {
-            bool isFlightExisting = await _flights.IsExistingAsync(id);
-            if (!isFlightExisting)
-            {
-                throw new ElementNotFoundException($"No such flight with id: {id}");
-            }
+            //bool isFlightExisting = await _flights.IsExistingAsync(id);
+            //if (!isFlightExisting)
+            //{
+            //    throw new ElementNotFoundException($"No such flight with id: {id}");
+            //}
             item.Id = id;
             await _flights.UpdateAsync(_flightMapper.Map<FlightEntity>(item));
         }

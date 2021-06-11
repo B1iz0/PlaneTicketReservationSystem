@@ -58,8 +58,7 @@ namespace PlaneTicketReservationSystem.Data.Repositories.BaseRepository
 
         public async Task<bool> IsExistingAsync(int id)
         {
-            T item = await GetAsync(id);
-            bool isItemExisting = (item != null);
+            bool isItemExisting = (await GetAsync(id) != null);
             return isItemExisting;
         }
 

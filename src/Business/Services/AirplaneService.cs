@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
@@ -11,7 +13,7 @@ using PlaneTicketReservationSystem.Data.Repositories;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class AirplaneService : IDataService<Airplane>
+    public class AirplaneService : IAirplaneService
     {
         private readonly AirplaneRepository _airplanes;
 
@@ -69,6 +71,32 @@ namespace PlaneTicketReservationSystem.Business.Services
             }
             item.Id = id;
             await _airplanes.UpdateAsync(_airplaneMapper.Map<AirplaneEntity>(item));
+        }
+
+        public IEnumerable<Airplane> GetFreeAirplanes()
+        {
+            var freeAirplanes = _airplaneMapper.Map<IEnumerable<Airplane>>(_airplanes.GetFreeAirplanes());
+            return freeAirplanes;
+        }
+
+        public IEnumerable<Airplane> GetFilteredAirplanes(int offset, int limit, string airplaneType, string company, string model)
+        {
+            Expression<Func<AirplaneEntity, bool>> predicate = a =>
+                (string.IsNullOrEmpty(airplaneType) || a.AirplaneType.TypeName.Contains(airplaneType))
+                && (string.IsNullOrEmpty(company) || a.Company.Name.Contains(company))
+                && (string.IsNullOrEmpty(model) || a.Model.Contains(model));
+            var airplanes = _airplaneMapper.Map<IEnumerable<Airplane>>(_airplanes.FindWithLimitAndOffset(predicate, offset, limit));
+            return airplanes;
+        }
+
+        public int GetFilteredAirplanesCount(string airplaneType, string company, string model)
+        {
+            Expression<Func<AirplaneEntity, bool>> predicate = a =>
+                (string.IsNullOrEmpty(airplaneType) || a.AirplaneType.TypeName.Contains(airplaneType))
+                && (string.IsNullOrEmpty(company) || a.Company.Name.Contains(company))
+                && (string.IsNullOrEmpty(model) || a.Model.Contains(model));
+            int count = _airplanes.Find(predicate).Count();
+            return count;
         }
     }
 }

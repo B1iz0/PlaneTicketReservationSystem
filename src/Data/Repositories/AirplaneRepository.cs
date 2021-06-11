@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Repositories.BaseRepository;
 
@@ -14,6 +15,11 @@ namespace PlaneTicketReservationSystem.Data.Repositories
         {
             _db = context;
             _airplanes = _db.Airplanes;
+        }
+
+        public IQueryable<AirplaneEntity> GetFreeAirplanes()
+        {
+            return _airplanes.Where(a => a.Flight == null);
         }
     }
 }

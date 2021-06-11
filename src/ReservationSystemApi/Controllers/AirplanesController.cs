@@ -15,20 +15,34 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class AirplanesController : ControllerBase
     {
-        private readonly IDataService<Airplane> _airplaneService;
+        private readonly IAirplaneService _airplaneService;
 
         private readonly Mapper _airplaneMapper;
 
-        public AirplanesController(IDataService<Airplane> service, ApiMappingsConfiguration conf)
+        public AirplanesController(IAirplaneService service, ApiMappingsConfiguration conf)
         {
             _airplaneService = service;
             _airplaneMapper = new Mapper(conf.AirplaneMapperConfiguration);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get(string airplaneType, string company, string model, int offset, int limit)
         {
-            var response = _airplaneMapper.Map<IEnumerable<AirplaneResponse>>(await _airplaneService.GetAllAsync());
+            var response = _airplaneMapper.Map<IEnumerable<AirplaneResponse>>(_airplaneService.GetFilteredAirplanes(offset, limit, airplaneType, company, model));
+            return Ok(response);
+        }
+
+        [HttpGet("count")]
+        public IActionResult GetCount(string airplaneType, string company, string model)
+        {
+            var response = _airplaneService.GetFilteredAirplanesCount(airplaneType, company, model);
+            return Ok(response);
+        }
+
+        [HttpGet("free")]
+        public IActionResult GetFreeAirplanes()
+        {
+            var response = _airplaneMapper.Map<IEnumerable<AirplaneResponse>>(_airplaneService.GetFreeAirplanes());
             return Ok(response);
         }
 

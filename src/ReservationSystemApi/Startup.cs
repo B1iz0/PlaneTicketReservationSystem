@@ -82,7 +82,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IDataService<Role>, RoleService>();
-            services.AddScoped<IDataService<Airplane>, AirplaneService>();
+            services.AddScoped<IAirplaneService, AirplaneService>();
             services.AddScoped<IDataService<AirplaneType>, AirplaneTypeService>();
             services.AddScoped<IDataService<Airport>, AirportService>();
             services.AddScoped<IDataService<Booking>, BookingService>();
