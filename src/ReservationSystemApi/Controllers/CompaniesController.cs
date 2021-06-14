@@ -25,6 +25,13 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             _companyMapper = new Mapper(conf.CompanyMapperConfiguration);
         }
 
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(await _companyService.GetAllAsync());
+            return Ok(response);
+        }
+
         [HttpGet]
         public IActionResult Get(string companyName, string countryName, int offset, int limit)
         {

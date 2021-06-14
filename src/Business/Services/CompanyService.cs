@@ -75,7 +75,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public IEnumerable<Company> GetFilteredCompanies(int offset, int limit, string companyName, string countryName)
         {
-            IQueryable<CompanyEntity> result = _companies.FindWithLimitAndOffset(c =>
+            IEnumerable<CompanyEntity> result = _companies.FindWithLimitAndOffset(c =>
                 (string.IsNullOrEmpty(companyName) || c.Name.Contains(companyName))
                 && (string.IsNullOrEmpty(countryName) || c.Country.Name.Contains(countryName)),
                 offset, limit);

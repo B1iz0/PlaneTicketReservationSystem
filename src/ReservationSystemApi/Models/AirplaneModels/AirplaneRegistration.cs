@@ -6,10 +6,12 @@
 
         public int CompanyId { get; set; }
 
-        public int ModelNUmber { get; set; }
+        public string Model { get; set; }
 
-        public short RegistrationNumber { get; set; }
+        public int RegistrationNumber { get; set; }
 
-        public long Capacity { get; set; }
+        public int Rows { get; set; }
+
+        public int Columns { get; set; }
     }
 }
