@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlaneTicketReservationSystem.Data.Entities;
 
@@ -56,13 +55,13 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.Entity<PriceEntity>(PriceConfigure);
         }
 
-        public void AirplaneConfigure(EntityTypeBuilder<AirplaneEntity> modelBuilder)
+        private static void AirplaneConfigure(EntityTypeBuilder<AirplaneEntity> modelBuilder)
         {
             modelBuilder.HasKey(a => a.Id);
-            modelBuilder.HasOne<CompanyEntity>(a => a.Company)
+            modelBuilder.HasOne(a => a.Company)
                 .WithMany(c => c.Airplanes)
                 .HasForeignKey(a => a.CompanyId);
-            modelBuilder.HasOne<AirplaneTypeEntity>(a => a.AirplaneType)
+            modelBuilder.HasOne(a => a.AirplaneType)
                 .WithMany(at => at.Airplanes)
                 .HasForeignKey(a => a.AirplaneTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -78,7 +77,7 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
         }
 
-        public void AirplaneTypeConfigure(EntityTypeBuilder<AirplaneTypeEntity> modelBuilder)
+        private static void AirplaneTypeConfigure(EntityTypeBuilder<AirplaneTypeEntity> modelBuilder)
         {
             modelBuilder.HasKey(a => a.Id);
             modelBuilder.Property(a => a.Id)
@@ -88,13 +87,13 @@ namespace PlaneTicketReservationSystem.Data
                 .HasMaxLength(15);
         }
 
-        public void AirportConfigure(EntityTypeBuilder<AirportEntity> modelBuilder)
+        private static void AirportConfigure(EntityTypeBuilder<AirportEntity> modelBuilder)
         {
             modelBuilder.HasKey(a => a.Id);
-            modelBuilder.HasOne<CompanyEntity>(a => a.Company)
+            modelBuilder.HasOne(a => a.Company)
                 .WithMany(c => c.Airports)
                 .HasForeignKey(a => a.CompanyId);
-            modelBuilder.HasOne<CityEntity>(a => a.City)
+            modelBuilder.HasOne(a => a.City)
                 .WithMany(c => c.Airports)
                 .HasForeignKey(a => a.CityId);
             modelBuilder.Property(a => a.Id)
@@ -108,16 +107,16 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
         }
 
-        public void BookingConfigure(EntityTypeBuilder<BookingEntity> modelBuilder)
+        private static void BookingConfigure(EntityTypeBuilder<BookingEntity> modelBuilder)
         {
             modelBuilder.HasKey(b => b.Id);
-            modelBuilder.HasOne<FlightEntity>(b => b.Flight)
+            modelBuilder.HasOne(b => b.Flight)
                 .WithMany(f => f.Bookings)
                 .HasForeignKey(b => b.FlightId);
-            modelBuilder.HasOne<UserEntity>(b => b.User)
+            modelBuilder.HasOne(b => b.User)
                 .WithMany(u => u.Bookings)
                 .HasForeignKey(b => b.UserId);
-            modelBuilder.HasOne<PlaceEntity>(b => b.Place)
+            modelBuilder.HasOne(b => b.Place)
                 .WithOne(p => p.Booking)
                 .HasForeignKey<BookingEntity>(b => b.PlaceId);
             modelBuilder.Property(b => b.Id)
@@ -130,10 +129,10 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
         }
 
-        public void CityConfigure(EntityTypeBuilder<CityEntity> modelBuilder)
+        private static void CityConfigure(EntityTypeBuilder<CityEntity> modelBuilder)
         {
             modelBuilder.HasKey(c => c.Id);
-            modelBuilder.HasOne<CountryEntity>(c => c.Country)
+            modelBuilder.HasOne(c => c.Country)
                 .WithMany(c => c.Cities)
                 .HasForeignKey(c => c.CountryId);
             modelBuilder.Property(c => c.Id)
@@ -145,10 +144,10 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
         }
 
-        public void CompanyConfigure(EntityTypeBuilder<CompanyEntity> modelBuilder)
+        private static void CompanyConfigure(EntityTypeBuilder<CompanyEntity> modelBuilder)
         {
             modelBuilder.HasKey(c => c.Id);
-            modelBuilder.HasOne<CountryEntity>(c => c.Country)
+            modelBuilder.HasOne(c => c.Country)
                 .WithMany(c => c.Companies)
                 .HasForeignKey(c => c.CountryId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -161,7 +160,7 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
         }
 
-        public void CountryConfigure(EntityTypeBuilder<CountryEntity> modelBuilder)
+        private static void CountryConfigure(EntityTypeBuilder<CountryEntity> modelBuilder)
         {
             modelBuilder.HasKey(c => c.Id);
             modelBuilder.Property(c => c.Id)
@@ -171,18 +170,18 @@ namespace PlaneTicketReservationSystem.Data
                 .HasMaxLength(20);
         }
 
-        public void FlightConfigure(EntityTypeBuilder<FlightEntity> modelBuilder)
+        private static void FlightConfigure(EntityTypeBuilder<FlightEntity> modelBuilder)
         {
             modelBuilder.HasKey(f => f.Id);
-            modelBuilder.HasOne<AirplaneEntity>(f => f.Airplane)
+            modelBuilder.HasOne(f => f.Airplane)
                 .WithOne(a => a.Flight)
                 .HasForeignKey<FlightEntity>(f => f.AirplaneId)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.HasOne<AirportEntity>(f => f.From)
+            modelBuilder.HasOne(f => f.From)
                 .WithMany(a => a.OutgoingAirplanes)
                 .HasForeignKey(f => f.FromId)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.HasOne<AirportEntity>(f => f.To)
+            modelBuilder.HasOne(f => f.To)
                 .WithMany(a => a.ArrivingAirplanes)
                 .HasForeignKey(f => f.ToId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -206,7 +205,7 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
         }
 
-        public void RoleConfigure(EntityTypeBuilder<RoleEntity> modelBuilder)
+        private static void RoleConfigure(EntityTypeBuilder<RoleEntity> modelBuilder)
         {
             modelBuilder.HasKey(r => r.Id);
             modelBuilder.Property(r => r.Id)
@@ -216,14 +215,14 @@ namespace PlaneTicketReservationSystem.Data
                 .HasMaxLength(20);
         }
 
-        public void UserConfigure(EntityTypeBuilder<UserEntity> modelBuilder)
+        private static void UserConfigure(EntityTypeBuilder<UserEntity> modelBuilder)
         {
             modelBuilder.HasKey(u => u.Id);
-            modelBuilder.HasOne<RoleEntity>(u => u.Role)
+            modelBuilder.HasOne(u => u.Role)
                 .WithMany(r => r.Users)
                 .HasForeignKey(u => u.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.HasOne<CompanyEntity>(u => u.Company)
+            modelBuilder.HasOne(u => u.Company)
                 .WithMany(c => c.Admins)
                 .HasForeignKey(c => c.CompanyId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -243,16 +242,16 @@ namespace PlaneTicketReservationSystem.Data
                 .HasMaxLength(20);
         }
 
-        public void PlaceConfigure(EntityTypeBuilder<PlaceEntity> modelBuilder)
+        private static void PlaceConfigure(EntityTypeBuilder<PlaceEntity> modelBuilder)
         {
             modelBuilder.HasKey(p => p.Id);
-            modelBuilder.HasOne<AirplaneEntity>(p => p.Airplane)
+            modelBuilder.HasOne(p => p.Airplane)
                 .WithMany(a => a.Places)
                 .HasForeignKey(p => p.AirplaneId);
-            modelBuilder.HasOne<PlaceTypeEntity>(p => p.PlaceType)
+            modelBuilder.HasOne(p => p.PlaceType)
                 .WithMany(p => p.Places)
                 .HasForeignKey(p => p.PlaceTypeId);
-            modelBuilder.HasOne<PriceEntity>(p => p.Price)
+            modelBuilder.HasOne(p => p.Price)
                 .WithMany(p => p.Places)
                 .HasForeignKey(p => p.PriceId);
             modelBuilder.Property(p => p.AirplaneId)
@@ -265,13 +264,13 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
         }
 
-        public void PriceConfigure(EntityTypeBuilder<PriceEntity> modelBuilder)
+        private static void PriceConfigure(EntityTypeBuilder<PriceEntity> modelBuilder)
         {
             modelBuilder.HasKey(p => p.Id);
-            modelBuilder.HasOne<AirplaneEntity>(p => p.Airplane)
+            modelBuilder.HasOne(p => p.Airplane)
                 .WithMany(a => a.Prices)
                 .HasForeignKey(p => p.AirplaneId);
-            modelBuilder.HasOne<PlaceTypeEntity>(p => p.PlaceType)
+            modelBuilder.HasOne(p => p.PlaceType)
                 .WithMany(p => p.Prices)
                 .HasForeignKey(p => p.PlaceTypeId);
             modelBuilder.Property(p => p.TicketPrice)
@@ -283,7 +282,7 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
         }
 
-        public void PlaceTypeConfigure(EntityTypeBuilder<PlaceTypeEntity> modelBuilder)
+        private static void PlaceTypeConfigure(EntityTypeBuilder<PlaceTypeEntity> modelBuilder)
         {
             modelBuilder.HasKey(p => p.Id);
             modelBuilder.Property(p => p.Name)

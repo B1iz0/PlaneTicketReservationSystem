@@ -57,11 +57,16 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<Role, RoleResponse>().ForMember(r => r.Users, opt => opt.Ignore());
                 x.CreateMap<Booking, BookingResponse>().ForMember(b => b.User, opt => opt.Ignore());
                 x.CreateMap<Flight, FlightResponse>();
-                x.CreateMap<Airplane, AirplaneResponse>();
+                x.CreateMap<Airplane, AirplaneResponse>().ForMember(z => z.Flight, opt => opt.Ignore());
                 x.CreateMap<AirplaneType, AirplaneTypeResponse>();
                 x.CreateMap<Airport, AirportResponse>().ForMember(z => z.Company, opt => opt.Ignore());
                 x.CreateMap<City, CityResponse>();
+                x.CreateMap<Country, CountryResponse>();
                 x.CreateMap<Company, CompanyResponse>().ForMember(z => z.Country, opt => opt.Ignore());
+                x.CreateMap<Place, PlaceResponse>();
+                x.CreateMap<Price, PriceResponse>()
+                    .ForMember(z => z.AirplaneModel, opt => opt.MapFrom(model => model.Airplane.Model))
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(model => model.PlaceType.Name));
             });
             AuthMapperConfiguration = new MapperConfiguration(x =>
             {
@@ -170,6 +175,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<AirplaneType, AirplaneTypeResponse>();
                 x.CreateMap<Company, CompanyResponse>();
                 x.CreateMap<Country, CountryResponse>();
+                x.CreateMap<Place, PlaceResponse>();
+                x.CreateMap<Price, PriceResponse>()
+                    .ForMember(z => z.AirplaneModel, opt => opt.MapFrom(model => model.Airplane.Model))
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(model => model.PlaceType.Name));
                 x.CreateMap<Airport, AirportResponse>();
                 x.CreateMap<City, CityResponse>();
                 x.CreateMap<Booking, BookingResponse>().ForMember(z => z.Flight, opt => opt.Ignore());
