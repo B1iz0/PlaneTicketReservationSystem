@@ -1,10 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirportModels;
@@ -15,11 +14,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class AirportsController : ControllerBase
     {
-        private readonly IDataService<Airport> _airportService;
+        private readonly IAirportService _airportService;
 
         private readonly Mapper _airportMapper;
 
-        public AirportsController(IDataService<Airport> service, ApiMappingsConfiguration conf)
+        public AirportsController(IAirportService service, ApiMappingsConfiguration conf)
         {
             _airportService = service;
             _airportMapper = new Mapper(conf.AirportConfiguration);

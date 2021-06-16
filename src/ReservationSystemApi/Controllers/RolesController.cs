@@ -1,10 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.RoleModels;
@@ -16,11 +15,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class RolesController : ControllerBase
     {
-        private readonly IDataService<Role> _roleService;
+        private readonly IRoleService _roleService;
 
         private readonly Mapper _roleMapper;
 
-        public RolesController(IDataService<Role> roleService, ApiMappingsConfiguration conf)
+        public RolesController(IRoleService roleService, ApiMappingsConfiguration conf)
         {
             _roleService = roleService;
             _roleMapper = new Mapper(conf.RoleMapperConfiguration);

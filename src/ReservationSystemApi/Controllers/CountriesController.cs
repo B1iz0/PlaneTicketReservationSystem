@@ -1,10 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.CountryModels;
@@ -15,11 +14,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class CountriesController : ControllerBase
     {
-        private readonly IDataService<Country> _countryService;
+        private readonly ICountryService _countryService;
 
         private readonly Mapper _countryMapper;
 
-        public CountriesController(IDataService<Country> service, ApiMappingsConfiguration conf)
+        public CountriesController(ICountryService service, ApiMappingsConfiguration conf)
         {
             _countryService = service;
             _countryMapper = new Mapper(conf.CountryMapperConfiguration);

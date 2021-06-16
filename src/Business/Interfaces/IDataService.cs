@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PlaneTicketReservationSystem.Business.Helpers
+namespace PlaneTicketReservationSystem.Business.Interfaces
 {
     public interface IDataService<T>
     {

@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
@@ -101,25 +102,6 @@ namespace PlaneTicketReservationSystem.Business.Services
                 Created = DateTime.UtcNow,
             };
             return refreshTokenResponse;
-        }
-
-        public async Task<bool> RevokeTokenAsync(string token)
-        {
-            var user = _users.Find(u => u.RefreshTokens.Any(t => t.Token == token)).First();
-            if (user == null)
-            {
-                return false;
-            }
-
-            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
-            if (!refreshToken.IsActive)
-            {
-                return false;
-            }
-
-            refreshToken.Revoked = DateTime.UtcNow;
-            await _users.UpdateAsync(user);
-            return true;
         }
 
         public async Task<Authenticate> RefreshTokenAsync(string token)

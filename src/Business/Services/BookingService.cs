@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
@@ -12,7 +10,7 @@ using PlaneTicketReservationSystem.Data.Repositories;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class BookingService : IDataService<Booking>
+    public class BookingService : IBookingService
     {
         private readonly BookingRepository _bookings;
 

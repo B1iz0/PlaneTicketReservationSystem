@@ -71,7 +71,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
             AuthMapperConfiguration = new MapperConfiguration(x =>
             {
                 x.CreateMap<AuthenticateRequest, Authenticate>();
-                x.CreateMap<RevokeTokenRequest, RevokeToken>();
                 x.CreateMap<Authenticate, AuthenticateResponse>();
             });
             RoleMapperConfiguration = new MapperConfiguration(x =>

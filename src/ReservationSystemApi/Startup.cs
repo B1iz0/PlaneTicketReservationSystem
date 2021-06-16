@@ -8,10 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using PlaneTicketReservationSystem.Business;
-using PlaneTicketReservationSystem.Business.Helpers;
-using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.Data;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi
@@ -44,6 +42,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
                     opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 });
             services.AddScoped<ContextInitializer>();
+            services.AddRepositoryServices();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
@@ -76,23 +75,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
                     policy.RequireRole("Admin", "AdminApp");
                 });
             });
-            services.Configure<AppSettings>(Configuration.GetSection("AuthOptions"));
 
-            services.AddScoped<IAccountService, AccountService>();
-
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IDataService<Role>, RoleService>();
-            services.AddScoped<IAirplaneService, AirplaneService>();
-            services.AddScoped<IDataService<AirplaneType>, AirplaneTypeService>();
-            services.AddScoped<IDataService<Airport>, AirportService>();
-            services.AddScoped<IDataService<Booking>, BookingService>();
-            services.AddScoped<IDataService<City>, CityService>();
-            services.AddScoped<ICompanyService, CompanyService>();
-            services.AddScoped<IDataService<Country>, CountryService>();
-            services.AddScoped<IFlightService, FlightService>();
-            services.AddScoped<PriceService>();
-            services.AddScoped<IDataService<Place>, PlaceService>();
-            services.AddScoped<IDataService<PlaceType>, PlaceTypeService>();
+            services.AddConfigurationServices(Configuration);
+            services.AddBusinessServices();
 
             services.AddScoped<ApiMappingsConfiguration>();
             services.AddScoped<BusinessMappingsConfiguration>();

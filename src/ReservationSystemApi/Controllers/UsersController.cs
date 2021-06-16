@@ -7,7 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models;
@@ -65,26 +65,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             SetTokenCookie(response.RefreshToken);
 
             return Ok(response);
-        }
-
-        [HttpPost("revoke-token")]
-        public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenRequest model)
-        {
-            var token = model.Token ?? Request.Cookies["refreshToken"];
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return BadRequest(new {message = "Token is required"});
-            }
-
-            var response = await _account.RevokeTokenAsync(token);
-
-            if (!response)
-            {
-                return NotFound(new {message = "Token not found"});
-            }
-
-            return Ok(new { message = "Token revoked" });
         }
 
         [Authorize(Policy = "AdminApp")]

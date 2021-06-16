@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using PlaneTicketReservationSystem.Business.Models;
 
-namespace PlaneTicketReservationSystem.Business.Helpers
+namespace PlaneTicketReservationSystem.Business.Interfaces
 {
     public interface IFlightService : IDataService<Flight>
     {

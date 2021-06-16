@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.PriceModels;
 
@@ -15,11 +14,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class PricesController : ControllerBase
     {
-        private readonly PriceService _priceService;
+        private readonly IPriceService _priceService;
 
         private readonly Mapper _priceMapper;
 
-        public PricesController(PriceService priceService, ApiMappingsConfiguration conf)
+        public PricesController(IPriceService priceService, ApiMappingsConfiguration conf)
         {
             _priceService = priceService;
             _priceMapper = new Mapper(conf.PriceMapperConfiguration);

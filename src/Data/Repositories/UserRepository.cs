@@ -1,25 +1,20 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
+using PlaneTicketReservationSystem.Data.Interfaces;
 using PlaneTicketReservationSystem.Data.Repositories.BaseRepository;
 
 namespace PlaneTicketReservationSystem.Data.Repositories
 {
-    public class UserRepository : BaseRepository<UserEntity>
+    public class UserRepository : BaseRepository<UserEntity>, IUserRepository
     {
-        private readonly ReservationSystemContext _db;
-
-        private readonly DbSet<UserEntity> _users;
-
         public UserRepository(ReservationSystemContext context) : base(context, context.Users)
         {
-            _db = context;
-            _users = context.Users;
         }
 
         public async Task<UserEntity> GetByEmailAsync(string email)
         {
-            return await _users.FirstOrDefaultAsync(u => u.Email == email);
+            return await DbSet.FirstOrDefaultAsync(user => user.Email == email);
         }
     }
 }

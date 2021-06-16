@@ -2,10 +2,10 @@
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Serilog;
 using Microsoft.AspNetCore.Http;
+using Serilog;
 
-namespace PlaneTicketReservationSystem.ReservationSystemApi
+namespace PlaneTicketReservationSystem.ReservationSystemApi.Helpers
 {
     public class ErrorHandlerMiddleware
     {
@@ -30,7 +30,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
                 logger.Error(error, error.Message);
 
                 response.StatusCode = (int) HttpStatusCode.BadRequest;
-                var result = JsonSerializer.Serialize(new { message = error?.Message });
+                var result = JsonSerializer.Serialize(new { message = error.Message });
                 await response.WriteAsync(result);
             }
         }

@@ -1,19 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PlaneTicketReservationSystem.Data.Entities;
+﻿using PlaneTicketReservationSystem.Data.Entities;
+using PlaneTicketReservationSystem.Data.Interfaces;
 using PlaneTicketReservationSystem.Data.Repositories.BaseRepository;
 
 namespace PlaneTicketReservationSystem.Data.Repositories
 {
-    public class PriceRepository : BaseRepository<PriceEntity>
+    public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
     {
-        private readonly ReservationSystemContext _db;
-
-        private readonly DbSet<PriceEntity> _prices;
-
         public PriceRepository(ReservationSystemContext context) : base(context, context.Prices)
         {
-            _db = context;
-            _prices = _db.Prices;
         }
     }
 }

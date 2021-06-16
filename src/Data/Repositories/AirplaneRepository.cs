@@ -1,25 +1,19 @@
 ﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using PlaneTicketReservationSystem.Data.Entities;
+using PlaneTicketReservationSystem.Data.Interfaces;
 using PlaneTicketReservationSystem.Data.Repositories.BaseRepository;
 
 namespace PlaneTicketReservationSystem.Data.Repositories
 {
-    public class AirplaneRepository : BaseRepository<AirplaneEntity>
+    public class AirplaneRepository : BaseRepository<AirplaneEntity>, IAirplaneRepository
     {
-        private readonly ReservationSystemContext _db;
-
-        private readonly DbSet<AirplaneEntity> _airplanes;
-
         public AirplaneRepository(ReservationSystemContext context) : base(context, context.Airplanes)
         {
-            _db = context;
-            _airplanes = _db.Airplanes;
         }
 
         public IQueryable<AirplaneEntity> GetFreeAirplanes()
         {
-            return _airplanes.Where(a => a.Flight == null);
+            return DbSet.Where(airplane => airplane.Flight == null);
         }
     }
 }
