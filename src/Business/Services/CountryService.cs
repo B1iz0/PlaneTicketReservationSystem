@@ -5,21 +5,20 @@ using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
-using PlaneTicketReservationSystem.Data.Repositories;
+using PlaneTicketReservationSystem.Data.Interfaces;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
     public class CountryService : ICountryService
     {
-        private readonly CountryRepository _countries;
+        private readonly ICountryRepository _countries;
 
         private readonly Mapper _countryMapper;
 
-        public CountryService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
+        public CountryService(ICountryRepository countries, BusinessMappingsConfiguration conf)
         {
-            _countries = new CountryRepository(context);
+            _countries = countries;
             _countryMapper = new Mapper(conf.AirlineConfiguration);
         }
 

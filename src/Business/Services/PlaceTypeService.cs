@@ -5,21 +5,20 @@ using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
-using PlaneTicketReservationSystem.Data.Repositories;
+using PlaneTicketReservationSystem.Data.Interfaces;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
     public class PlaceTypeService : IPlaceTypeService
     {
-        private readonly PlaceTypeRepository _placeTypes;
+        private readonly IPlaceTypeRepository _placeTypes;
 
         private readonly Mapper _placeTypeMapper;
 
-        public PlaceTypeService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
+        public PlaceTypeService(IPlaceTypeRepository placeTypes, BusinessMappingsConfiguration conf)
         {
-            _placeTypes = new PlaceTypeRepository(context);
+            _placeTypes = placeTypes;
             _placeTypeMapper = new Mapper(conf.AirlineConfiguration);
         }
 

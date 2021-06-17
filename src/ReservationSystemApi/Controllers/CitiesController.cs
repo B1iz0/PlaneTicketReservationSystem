@@ -31,13 +31,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var response = _cityMapper.Map<CityDetails>(await _cityService.GetByIdAsync(id));
-            return Ok(response);
-        }
-
         [HttpPost]
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Post([FromBody] CityRegistration value)
@@ -51,14 +44,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] CityRegistration value)
         {
             await _cityService.UpdateAsync(id, _cityMapper.Map<City>(value));
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _cityService.DeleteAsync(id);
             return Ok();
         }
     }

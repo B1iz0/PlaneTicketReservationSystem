@@ -8,19 +8,22 @@ using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
-using PlaneTicketReservationSystem.Data.Repositories;
+using PlaneTicketReservationSystem.Data.Interfaces;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserRepository _users;
+        private readonly IPasswordProvider _passwordProvider;
+
+        private readonly IUserRepository _users;
 
         private readonly Mapper _userMapper;
 
-        public UserService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
+        public UserService(IPasswordProvider passwordProvider, IUserRepository users, BusinessMappingsConfiguration conf)
         {
-            _users = new UserRepository(context);
+            _passwordProvider = passwordProvider;
+            _users = users;
             _userMapper = new Mapper(conf.AirlineConfiguration);
         }
 
@@ -65,7 +68,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementAlreadyExistException($"User with email: {user.Email} is already registered");
             }
-            user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
+            user.Password = _passwordProvider.GenerateHash(user.Password, SHA256.Create());
             await _users.CreateAsync(_userMapper.Map<UserEntity>(user));
         }
 
@@ -87,7 +90,7 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException($"User with id:{id} is not found");
             }
             user.Id = id;
-            user.Password = PasswordHasher.GenerateHash(user.Password, PasswordHasher.Salt, SHA256.Create());
+            user.Password = _passwordProvider.GenerateHash(user.Password, SHA256.Create());
             await _users.UpdateAsync(_userMapper.Map<UserEntity>(user));
         }
     }

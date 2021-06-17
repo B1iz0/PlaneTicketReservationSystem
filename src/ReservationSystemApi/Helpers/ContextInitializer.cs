@@ -9,12 +9,15 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Helpers
 {
     public class ContextInitializer
     {
+        private readonly IPasswordProvider _passwordProvider;
+
         private readonly ReservationSystemContext _db;
 
         private readonly AdminAppOptions _adminOptions;
 
-        public ContextInitializer(IOptions<AdminAppOptions> adminOptions, ReservationSystemContext context)
+        public ContextInitializer(IPasswordProvider passwordProvider, IOptions<AdminAppOptions> adminOptions, ReservationSystemContext context)
         {
+            _passwordProvider = passwordProvider;
             _db = context;
             _adminOptions = adminOptions.Value;
         }
@@ -64,7 +67,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Helpers
                     new UserEntity
                     {
                         Email = _adminOptions.Email,
-                        Password = PasswordHasher.GenerateHash(_adminOptions.Password, PasswordHasher.Salt, SHA256.Create()),
+                        Password = _passwordProvider.GenerateHash(_adminOptions.Password, SHA256.Create()),
                         FirstName = _adminOptions.FirstName,
                         LastName = _adminOptions.LastName,
                         RoleId = 1

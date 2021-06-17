@@ -24,13 +24,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             _priceMapper = new Mapper(conf.PriceMapperConfiguration);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            var response = _priceMapper.Map<IEnumerable<PriceResponse>>(await _priceService.GetAllAsync());
-            return Ok(response);
-        }
-
         [HttpGet("{airplaneId}")]
         public async Task<IActionResult> Get(int airplaneId)
         {
@@ -51,14 +44,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] PriceRegistration value)
         {
             await _priceService.UpdateAsync(id, _priceMapper.Map<Price>(value));
-            return Ok();
-        }
-
-        [Authorize(Policy = "Admin")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _priceService.DeleteAsync(id);
             return Ok();
         }
     }

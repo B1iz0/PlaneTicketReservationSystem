@@ -1,7 +1,8 @@
-﻿using PlaneTicketReservationSystem.Business.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Services;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace PlaneTicketReservationSystem.ReservationSystemApi.Infrastructure
 {
     public static class BusinessServiceCollection
     {
@@ -19,7 +20,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IPlaceService, PlaceService>();
             services.AddScoped<IPlaceTypeService, PlaceTypeService>();
             services.AddScoped<IPriceService, PriceService>();
-            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
 
             return services;

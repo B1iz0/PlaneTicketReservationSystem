@@ -31,13 +31,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var response = _placeTypeMapper.Map<PlaceTypeResponse>(await _placeTypeService.GetByIdAsync(id));
-            return Ok(response);
-        }
-
         [Authorize(Policy = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PlaceTypeRegistration value)
@@ -51,14 +44,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] PlaceTypeRegistration value)
         {
             await _placeTypeService.UpdateAsync(id, _placeTypeMapper.Map<PlaceType>(value));
-            return Ok();
-        }
-
-        [Authorize(Policy = "AdminApp")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _placeTypeService.DeleteAsync(id);
             return Ok();
         }
     }

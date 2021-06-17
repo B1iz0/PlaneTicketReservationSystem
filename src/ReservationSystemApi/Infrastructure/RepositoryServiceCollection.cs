@@ -1,7 +1,8 @@
-﻿using PlaneTicketReservationSystem.Data.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using PlaneTicketReservationSystem.Data.Interfaces;
 using PlaneTicketReservationSystem.Data.Repositories;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace PlaneTicketReservationSystem.ReservationSystemApi.Infrastructure
 {
     public static class RepositoryServiceCollection
     {

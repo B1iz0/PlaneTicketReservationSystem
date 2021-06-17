@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
@@ -23,13 +20,16 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         private readonly IAccountService _account;
 
+        private readonly ITokenProvider _tokenProvider;
+
         private readonly Mapper _userMapper;
 
         private readonly Mapper _authMapper;
 
-        public UsersController(IUserService userService, IAccountService account, ApiMappingsConfiguration conf)
+        public UsersController(IUserService userService, ITokenProvider tokenProvider, IAccountService account, ApiMappingsConfiguration conf)
         {
             _userService = userService;
+            _tokenProvider = tokenProvider;
             _account = account;
             _userMapper = new Mapper(conf.UserMapperConfiguration);
             _authMapper = new Mapper(conf.AuthMapperConfiguration);
@@ -45,8 +45,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
                 return BadRequest(new {message = "Username or password is incorrect"});
             }
 
-            SetTokenCookie(response.RefreshToken);
-
             return Ok(_authMapper.Map<AuthenticateResponse>(response));
         }
 
@@ -55,14 +53,12 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest model)
         {
             var refreshToken = model.RefreshToken;
-            var response = await _account.RefreshTokenAsync(refreshToken);
+            var response = await _tokenProvider.RefreshTokenAsync(refreshToken);
 
             if (response == null)
             {
                 return Unauthorized(new {message = "Invalid token"});
             }
-
-            SetTokenCookie(response.RefreshToken);
 
             return Ok(response);
         }
@@ -116,18 +112,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UserRegistration user)
         {
-            var role = User.Claims.FirstOrDefault(x =>
-                x.Type.Equals(ClaimTypes.Role))?.Value;
-            switch (role)
-            {
-                case null: return BadRequest();
-                case "Admin":
-                    user.RoleId = 2;
-                    break;
-                case "User":
-                    user.RoleId = 3;
-                    break;
-            }
             await _userService.UpdateAsync(id, _userMapper.Map<User>(user));
             return Ok();
         }
@@ -138,16 +122,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             await _userService.DeleteAsync(id);
             return Ok();
-        }
-
-        private void SetTokenCookie(string token)
-        {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddMinutes(10)
-            };
-            Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
     }
 }

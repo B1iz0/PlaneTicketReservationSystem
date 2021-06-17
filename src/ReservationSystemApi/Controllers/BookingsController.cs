@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -24,14 +23,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             _bookingMapper = new Mapper(conf.BookingMapperConfiguration);
         }
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Get()
-        {
-            var response = _bookingMapper.Map<IEnumerable<BookingResponse>>(await _bookingService.GetAllAsync());
-            return Ok(response);
-        }
-
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> Get(int id)
@@ -45,14 +36,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public async Task<IActionResult> Post([FromBody] BookingRegistration value)
         {
             await _bookingService.PostAsync(_bookingMapper.Map<Booking>(value));
-            return Ok();
-        }
-
-        [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> Put(int id, [FromBody] BookingRegistration value)
-        {
-            await _bookingService.UpdateAsync(id, _bookingMapper.Map<Booking>(value));
             return Ok();
         }
 

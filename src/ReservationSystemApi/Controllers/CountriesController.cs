@@ -25,16 +25,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             var response = _countryMapper.Map<IEnumerable<CountryResponse>>(await _countryService.GetAllAsync());
-            return Ok(response);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var response = _countryMapper.Map<CountryDetails>(await _countryService.GetByIdAsync(id));
             return Ok(response);
         }
 
@@ -51,14 +44,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] CountryRegistration value)
         {
             await _countryService.UpdateAsync(id, _countryMapper.Map<Country>(value));
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _countryService.DeleteAsync(id);
             return Ok();
         }
     }
