@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using PlaneTicketReservationSystem.Business.Constants;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
 
@@ -40,7 +41,9 @@ namespace PlaneTicketReservationSystem.Business.Helpers
                 return null;
             }
 
-            var roleName = (await _roles.GetAsync(user.RoleId)).Name;
+            var role = await _roles.GetAsync(user.RoleId);
+
+            var roleName = role?.Name;
             if (roleName == null)
             {
                 return null;
@@ -54,9 +57,9 @@ namespace PlaneTicketReservationSystem.Business.Helpers
                 Issuer = _tokenSettings.Issuer,
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim("id", user.Id.ToString()),
-                    new Claim("email", user.Email),
-                    new Claim("role", roleName)
+                    new Claim(Claims.Id, user.Id.ToString()),
+                    new Claim(Claims.Email, user.Email),
+                    new Claim(Claims.Role, roleName)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(_tokenSettings.LifeTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

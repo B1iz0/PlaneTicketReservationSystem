@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
 using PlaneTicketReservationSystem.Business;
+using PlaneTicketReservationSystem.Business.Constants;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data.Entities;
@@ -14,44 +17,61 @@ namespace Business.Tests
 {
     public class TokenProviderTests
     {
-        private readonly Mock<IOptions<TokenSettings>> _mockTokenSettings = new Mock<IOptions<TokenSettings>>();
+        private static Mock<IOptions<TokenSettings>> _mockTokenSettings;
 
-        private readonly Mock<IRoleRepository> _mockRoleRepository = new Mock<IRoleRepository>();
+        private static Mock<IRoleRepository> _mockRoleRepository;
 
-        private readonly Mock<IUserRepository> _mockUserRepository = new Mock<IUserRepository>();
+        private static Mock<IUserRepository> _mockUserRepository;
 
-        private readonly Mock<BusinessMappingsConfiguration> _mockMapperConf = new Mock<BusinessMappingsConfiguration>();
+        private static Mock<BusinessMappingsConfiguration> _mockMapperConf;
 
-        public static IEnumerable<object[]> TestData
-            => new [] {
-                new object[] { new User { Id = 1, Email = "test@mail.ru", FirstName = "testFirstName", LastName = "testLAstName", Password = "1234", RoleId = 1 } },
-                new object[] { new User() }
-            };
+        private static TokenSettings _tokenSettings;
+
+        public TokenProviderTests()
+        {
+            InitConfiguration();
+        }
+
+        private static void InitConfiguration()
+        {
+            _mockTokenSettings = new Mock<IOptions<TokenSettings>>();
+            _mockRoleRepository = new Mock<IRoleRepository>();
+            _mockUserRepository = new Mock<IUserRepository>();
+            _mockMapperConf = new Mock<BusinessMappingsConfiguration>();
+            _tokenSettings = new TokenSettings();
+
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.test.json")
+                .Build();
+
+            config.GetSection("AuthOptions").Bind(_tokenSettings);
+        }
 
         [Theory]
-        [MemberData(nameof(TestData))]
+        [ClassData(typeof(TokenProviderUsersTestData))]
         public async void GenerateJwtTokenTest(User user)
         {
             // Arrange
-            var tokenSettings = new TokenSettings { Issuer = "AuthServer", Audience = "AuthClient", Key = "DxT9ZNTwWxs4H6ic3LPpVVHsMyW4sPde", LifeTime = 1};
-            _mockRoleRepository.Setup(rep => rep.GetAsync(user.RoleId)).Returns(GetTestRole(user.RoleId));
-            _mockTokenSettings.Setup(m => m.Value).Returns(tokenSettings);
+            _mockRoleRepository.Setup(rep => rep.GetAsync(user.RoleId)).Returns(GetTestRole(user));
+            _mockTokenSettings.Setup(m => m.Value).Returns(_tokenSettings);
             var tokenProvider = new TokenProvider(_mockTokenSettings.Object, _mockUserRepository.Object, _mockRoleRepository.Object, _mockMapperConf.Object);
 
             // Act
             var result = await tokenProvider.GenerateJwtTokenAsync(user);
 
             // Assert
-            var tokenResult = Assert.IsType<string>(result);
+            //Assert.IsType(expected, result);
         }
 
-        private static async Task<RoleEntity> GetTestRole(int roleId)
+        private static async Task<RoleEntity> GetTestRole(User user)
         {
+            int roleId = user.RoleId;
+
             var roles = new List<RoleEntity>
             {
-                new RoleEntity {Id = 1, Name = "AdminApp"},
-                new RoleEntity {Id = 2, Name = "Admin"},
-                new RoleEntity {Id = 3, Name = "User"},
+                new RoleEntity {Id = ApiRoles.AdminAppId, Name = ApiRoles.AdminApp},
+                new RoleEntity {Id = ApiRoles.AdminId, Name = ApiRoles.Admin},
+                new RoleEntity {Id = ApiRoles.UserId, Name = ApiRoles.User},
             };
 
             var roleResult = await Task.Run(() => roles.FirstOrDefault(role => role.Id == roleId));
