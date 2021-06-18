@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -49,7 +48,7 @@ namespace Business.Tests
 
         [Theory]
         [ClassData(typeof(TokenProviderUsersTestData))]
-        public async void GenerateJwtTokenTest(User user)
+        public async void GenerateJwtToken_InputFulfilledUsers_ReturnString(User user)
         {
             // Arrange
             _mockRoleRepository.Setup(rep => rep.GetAsync(user.RoleId)).Returns(GetTestRole(user));
@@ -60,13 +59,22 @@ namespace Business.Tests
             var result = await tokenProvider.GenerateJwtTokenAsync(user);
 
             // Assert
-            //Assert.IsType(expected, result);
+            Assert.IsType<string>(result);
         }
 
-        public static User test = new User() { };
+        public static IEnumerable<object[]> UsersWithoutRoleId
+        {
+            get
+            {
+                return new[]
+                {
+                    new object[] { new User {} },
+                };
+            }
+        }
 
         [Theory]
-        [InlineData(null)]
+        [MemberData(nameof(UsersWithoutRoleId))]
         public async void GenerateJwtToken_InputRoleId0_ReturnNull(User user)
         {
             // Arrange
