@@ -24,14 +24,14 @@ namespace PlaneTicketReservationSystem.Business.Helpers
 
         private readonly IUserRepository _users;
 
-        private readonly Mapper _userMapper;
+        private readonly IMapper _userMapper;
 
-        public TokenProvider(IOptions<TokenSettings> tokenSettings, IUserRepository users, IRoleRepository roles, BusinessMappingsConfiguration conf)
+        public TokenProvider(IOptions<TokenSettings> tokenSettings, IUserRepository users, IRoleRepository roles, IMapper mapper)
         {
             _tokenSettings = tokenSettings.Value;
             _roles = roles;
             _users = users;
-            _userMapper = new Mapper(conf.AirlineConfiguration);
+            _userMapper = mapper;
         }
 
         public async Task<string> GenerateJwtTokenAsync(User user)

@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using PlaneTicketReservationSystem.Business.Constants;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
@@ -80,13 +81,18 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [Authorize]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("myself")]
+        public async Task<IActionResult> Get()
         {
-            var response = _userMapper.Map<UserDetails>(await _userService.GetByIdAsync(id));
+            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == Claims.Id);
+            if (userId == null)
+            {
+                return BadRequest("Server problems");
+            }
+            var response = _userMapper.Map<UserDetails>(await _userService.GetByIdAsync(int.Parse(userId.Value)));
             if (response == null)
             {
-                throw new NullReferenceException();
+                return BadRequest();
             }
             return Ok(response);
         }

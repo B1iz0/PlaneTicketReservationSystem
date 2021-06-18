@@ -17,18 +17,18 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         private readonly ITokenProvider _tokenProvider;
 
-        private readonly Mapper _userMapper;
+        private readonly IMapper _userMapper;
 
         public AccountService(
             IPasswordProvider passwordProvider, 
             IUserRepository users,
             ITokenProvider tokenProvider,
-            BusinessMappingsConfiguration conf)
+            IMapper mapper)
         {
             _passwordProvider = passwordProvider;
             _users = users;
             _tokenProvider = tokenProvider;
-            _userMapper = new Mapper(conf.AirlineConfiguration);
+            _userMapper = mapper;
         }
 
         public async Task<Authenticate> AuthenticateAsync(Authenticate model)

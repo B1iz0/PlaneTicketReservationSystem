@@ -18,13 +18,13 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         private readonly IUserRepository _users;
 
-        private readonly Mapper _userMapper;
+        private readonly IMapper _userMapper;
 
-        public UserService(IPasswordProvider passwordProvider, IUserRepository users, BusinessMappingsConfiguration conf)
+        public UserService(IPasswordProvider passwordProvider, IUserRepository users, IMapper mapper)
         {
             _passwordProvider = passwordProvider;
             _users = users;
-            _userMapper = new Mapper(conf.AirlineConfiguration);
+            _userMapper = mapper;
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()

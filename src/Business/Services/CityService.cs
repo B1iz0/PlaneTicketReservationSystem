@@ -14,12 +14,12 @@ namespace PlaneTicketReservationSystem.Business.Services
     {
         private readonly ICityRepository _cities;
 
-        private readonly Mapper _cityMapper;
+        private readonly IMapper _cityMapper;
 
-        public CityService(ICityRepository cities, BusinessMappingsConfiguration conf)
+        public CityService(ICityRepository cities, IMapper mapper)
         {
             _cities = cities;
-            _cityMapper = new Mapper(conf.AirlineConfiguration);
+            _cityMapper = mapper;
         }
         
         public async Task<IEnumerable<City>> GetAllAsync()

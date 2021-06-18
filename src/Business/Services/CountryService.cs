@@ -14,12 +14,12 @@ namespace PlaneTicketReservationSystem.Business.Services
     {
         private readonly ICountryRepository _countries;
 
-        private readonly Mapper _countryMapper;
+        private readonly IMapper _countryMapper;
 
-        public CountryService(ICountryRepository countries, BusinessMappingsConfiguration conf)
+        public CountryService(ICountryRepository countries, IMapper mapper)
         {
             _countries = countries;
-            _countryMapper = new Mapper(conf.AirlineConfiguration);
+            _countryMapper = mapper;
         }
 
         public async Task<IEnumerable<Country>> GetAllAsync()

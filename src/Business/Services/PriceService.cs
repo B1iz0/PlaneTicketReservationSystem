@@ -16,13 +16,13 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         private readonly IAirplaneRepository _airplanes;
 
-        private readonly Mapper _pricesMapper;
+        private readonly IMapper _pricesMapper;
 
-        public PriceService(IPriceRepository prices, IAirplaneRepository airplanes, BusinessMappingsConfiguration conf)
+        public PriceService(IPriceRepository prices, IAirplaneRepository airplanes, IMapper mapper)
         {
             _prices = prices;
             _airplanes = airplanes;
-            _pricesMapper = new Mapper(conf.AirlineConfiguration);
+            _pricesMapper = mapper;
         }
 
         public async Task<IEnumerable<Price>> GetAllAsync()

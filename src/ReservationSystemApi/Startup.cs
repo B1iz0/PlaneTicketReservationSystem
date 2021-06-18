@@ -33,8 +33,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
             services.AddBusinessServices();
             services.AddProviderServices();
 
+            services.AddAutoMapper(typeof(BusinessMappingsProfile));
             services.AddScoped<ApiMappingsConfiguration>();
-            services.AddScoped<BusinessMappingsConfiguration>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -13,12 +13,12 @@ namespace PlaneTicketReservationSystem.Business.Services
     {
         private readonly IBookingRepository _bookings;
 
-        private readonly Mapper _bookingMapper;
+        private readonly IMapper _bookingMapper;
 
-        public BookingService(IBookingRepository bookings, BusinessMappingsConfiguration conf)
+        public BookingService(IBookingRepository bookings, IMapper mapper)
         {
             _bookings = bookings;
-            _bookingMapper = new Mapper(conf.AirlineConfiguration);
+            _bookingMapper = mapper;
         }
 
         public async Task<IEnumerable<Booking>> GetAllAsync()

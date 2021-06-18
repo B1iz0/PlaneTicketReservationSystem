@@ -14,12 +14,12 @@ namespace PlaneTicketReservationSystem.Business.Services
     {
         private readonly IAirplaneTypeRepository _airplaneTypes;
 
-        private readonly Mapper _airplaneTypeMapper;
+        private readonly IMapper _airplaneTypeMapper;
 
-        public AirplaneTypeService(IAirplaneTypeRepository airplaneTypes, BusinessMappingsConfiguration conf)
+        public AirplaneTypeService(IAirplaneTypeRepository airplaneTypes, IMapper mapper)
         {
             _airplaneTypes = airplaneTypes;
-            _airplaneTypeMapper = new Mapper(conf.AirlineConfiguration);
+            _airplaneTypeMapper = mapper;
         }
 
         public async Task<IEnumerable<AirplaneType>> GetAllAsync()
