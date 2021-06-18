@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -22,7 +23,7 @@ namespace Business.Tests
 
         private static Mock<IUserRepository> _mockUserRepository;
 
-        private static Mock<BusinessMappingsConfiguration> _mockMapperConf;
+        private static Mock<IMapper> _mockMapper;
 
         private static TokenSettings _tokenSettings;
 
@@ -36,7 +37,7 @@ namespace Business.Tests
             _mockTokenSettings = new Mock<IOptions<TokenSettings>>();
             _mockRoleRepository = new Mock<IRoleRepository>();
             _mockUserRepository = new Mock<IUserRepository>();
-            _mockMapperConf = new Mock<BusinessMappingsConfiguration>();
+            _mockMapper = new Mock<IMapper>();
             _tokenSettings = new TokenSettings();
 
             var config = new ConfigurationBuilder()
@@ -53,7 +54,7 @@ namespace Business.Tests
             // Arrange
             _mockRoleRepository.Setup(rep => rep.GetAsync(user.RoleId)).Returns(GetTestRole(user));
             _mockTokenSettings.Setup(m => m.Value).Returns(_tokenSettings);
-            var tokenProvider = new TokenProvider(_mockTokenSettings.Object, _mockUserRepository.Object, _mockRoleRepository.Object, _mockMapperConf.Object);
+            var tokenProvider = new TokenProvider(_mockTokenSettings.Object, _mockUserRepository.Object, _mockRoleRepository.Object, _mockMapper.Object);
 
             // Act
             var result = await tokenProvider.GenerateJwtTokenAsync(user);
@@ -78,7 +79,7 @@ namespace Business.Tests
         public async void GenerateJwtToken_InputRoleId0_ReturnNull(User user)
         {
             // Arrange
-            var tokenProvider = new TokenProvider(_mockTokenSettings.Object, _mockUserRepository.Object, _mockRoleRepository.Object, _mockMapperConf.Object);
+            var tokenProvider = new TokenProvider(_mockTokenSettings.Object, _mockUserRepository.Object, _mockRoleRepository.Object, _mockMapper.Object);
 
             // Act
             var result = await tokenProvider.GenerateJwtTokenAsync(user);
@@ -92,7 +93,7 @@ namespace Business.Tests
         public async void GenerateJwtToken_InputNull_ReturnNull(User user)
         {
             // Arrange
-            var tokenProvider = new TokenProvider(_mockTokenSettings.Object, _mockUserRepository.Object, _mockRoleRepository.Object, _mockMapperConf.Object);
+            var tokenProvider = new TokenProvider(_mockTokenSettings.Object, _mockUserRepository.Object, _mockRoleRepository.Object, _mockMapper.Object);
 
             // Act
             var result = await tokenProvider.GenerateJwtTokenAsync(user);
