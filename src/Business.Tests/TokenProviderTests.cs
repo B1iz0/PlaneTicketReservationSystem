@@ -63,6 +63,36 @@ namespace Business.Tests
             //Assert.IsType(expected, result);
         }
 
+        public static User test = new User() { };
+
+        [Theory]
+        [InlineData(null)]
+        public async void GenerateJwtToken_InputRoleId0_ReturnNull(User user)
+        {
+            // Arrange
+            var tokenProvider = new TokenProvider(_mockTokenSettings.Object, _mockUserRepository.Object, _mockRoleRepository.Object, _mockMapperConf.Object);
+
+            // Act
+            var result = await tokenProvider.GenerateJwtTokenAsync(user);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        public async void GenerateJwtToken_InputNull_ReturnNull(User user)
+        {
+            // Arrange
+            var tokenProvider = new TokenProvider(_mockTokenSettings.Object, _mockUserRepository.Object, _mockRoleRepository.Object, _mockMapperConf.Object);
+
+            // Act
+            var result = await tokenProvider.GenerateJwtTokenAsync(user);
+
+            // Assert
+            Assert.Null(result);
+        }
+
         private static async Task<RoleEntity> GetTestRole(User user)
         {
             int roleId = user.RoleId;
