@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirportModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Airport;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -27,20 +27,20 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var response = _airportMapper.Map<IEnumerable<AirportResponse>>(await _airportService.GetAllAsync());
+            var response = _airportMapper.Map<IEnumerable<AirportResponseModel>>(await _airportService.GetAllAsync());
             return Ok(response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var response = _airportMapper.Map<AirportDetails>(await _airportService.GetByIdAsync(id));
+            var response = _airportMapper.Map<AirportDetailsModel>(await _airportService.GetByIdAsync(id));
             return Ok(response);
         }
 
         [HttpPost]
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Post([FromBody] AirportRegistration value)
+        public async Task<IActionResult> Post([FromBody] AirportRegistrationModel value)
         {
             await _airportService.PostAsync(_airportMapper.Map<Airport>(value));
             return Ok();
@@ -48,7 +48,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Put(int id, [FromBody] AirportRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] AirportRegistrationModel value)
         {
             await _airportService.UpdateAsync(id, _airportMapper.Map<Airport>(value));
             return Ok();

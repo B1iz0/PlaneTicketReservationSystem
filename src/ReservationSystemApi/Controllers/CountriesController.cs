@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.CountryModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Country;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -27,13 +27,13 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var response = _countryMapper.Map<IEnumerable<CountryResponse>>(await _countryService.GetAllAsync());
+            var response = _countryMapper.Map<IEnumerable<CountryResponseModel>>(await _countryService.GetAllAsync());
             return Ok(response);
         }
 
         [HttpPost]
         [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Post([FromBody] CountryRegistration value)
+        public async Task<IActionResult> Post([FromBody] CountryRegistrationModel value)
         {
             await _countryService.PostAsync(_countryMapper.Map<Country>(value));
             return Ok();
@@ -41,7 +41,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Put(int id, [FromBody] CountryRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] CountryRegistrationModel value)
         {
             await _countryService.UpdateAsync(id, _countryMapper.Map<Country>(value));
             return Ok();

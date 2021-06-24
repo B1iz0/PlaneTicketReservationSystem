@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.PlaceModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Place;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -24,7 +24,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var response = _placeMapper.Map<PlaceResponse>(await _placeService.GetByIdAsync(id));
+            var response = _placeMapper.Map<PlaceResponseModel>(await _placeService.GetByIdAsync(id));
             return Ok(response);
         }
     }

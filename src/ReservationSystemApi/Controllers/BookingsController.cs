@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.BookingModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Booking;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -27,13 +27,13 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize]
         public async Task<IActionResult> Get(int id)
         {
-            var response = _bookingMapper.Map<BookingResponse>(await _bookingService.GetByIdAsync(id));
+            var response = _bookingMapper.Map<BookingResponseModel>(await _bookingService.GetByIdAsync(id));
             return Ok(response);
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Post([FromBody] BookingRegistration value)
+        public async Task<IActionResult> Post([FromBody] BookingRegistrationModel value)
         {
             await _bookingService.PostAsync(_bookingMapper.Map<Booking>(value));
             return Ok();

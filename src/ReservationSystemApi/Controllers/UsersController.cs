@@ -9,7 +9,8 @@ using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.UserModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Authenticate;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.User;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -37,7 +38,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
+        public async Task<IActionResult> Authenticate(AuthenticateRequestModel model)
         {
             var response = await _account.AuthenticateAsync(_authMapper.Map<Authenticate>(model));
 
@@ -46,12 +47,12 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
                 return BadRequest(new {message = "Username or password is incorrect"});
             }
 
-            return Ok(_authMapper.Map<AuthenticateResponse>(response));
+            return Ok(_authMapper.Map<AuthenticateResponseModel>(response));
         }
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest model)
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestModel model)
         {
             var refreshToken = model.RefreshToken;
             var response = await _tokenProvider.RefreshTokenAsync(refreshToken);
@@ -68,7 +69,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public IActionResult Get(int offset, int limit, string email, string firstName, string lastName)
         {
-            var users = _userMapper.Map<IEnumerable<UserResponse>>(_userService.GetFilteredUsers(offset, limit, email, firstName, lastName));
+            var users = _userMapper.Map<IEnumerable<UserResponseModel>>(_userService.GetFilteredUsers(offset, limit, email, firstName, lastName));
             return Ok(users);
         }
 
@@ -89,7 +90,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             {
                 return BadRequest("Server problems");
             }
-            var response = _userMapper.Map<UserDetails>(await _userService.GetByIdAsync(int.Parse(userId.Value)));
+            var response = _userMapper.Map<UserDetailsModel>(await _userService.GetByIdAsync(int.Parse(userId.Value)));
             if (response == null)
             {
                 return BadRequest();
@@ -99,24 +100,24 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [Authorize(Policy = "AdminApp")]
         [HttpPost()]
-        public async Task<IActionResult> Post([FromBody] UserRegistration user)
+        public async Task<IActionResult> Post([FromBody] UserRegistrationModel user)
         {
             await _userService.PostAsync(_userMapper.Map<User>(user));
             return Ok();
         }
 
         [HttpPost("registration")]
-        public async Task<IActionResult> Registration([FromBody] UserRegistration user)
+        public async Task<IActionResult> Registration([FromBody] UserRegistrationModel user)
         {
             user.RoleId = 3;
             await _userService.PostAsync(_userMapper.Map<User>(user));
-            IActionResult registrationResult = await Authenticate(new AuthenticateRequest() { Email = user.Email, Password = user.Password });
+            IActionResult registrationResult = await Authenticate(new AuthenticateRequestModel() { Email = user.Email, Password = user.Password });
             return registrationResult;
         }
 
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] UserRegistration user)
+        public async Task<IActionResult> Put(int id, [FromBody] UserRegistrationModel user)
         {
             await _userService.UpdateAsync(id, _userMapper.Map<User>(user));
             return Ok();

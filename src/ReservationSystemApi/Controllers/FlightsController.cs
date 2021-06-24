@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.FlightModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Flight;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -27,14 +27,14 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public IActionResult Get(string departureCity, string arrivalCity, int offset, int limit = 16)
         {
-            var response = _flightMapper.Map<IEnumerable<FlightResponse>>(_flightService.GetFilteredFlights(offset, limit, departureCity, arrivalCity));
+            var response = _flightMapper.Map<IEnumerable<FlightResponseModel>>(_flightService.GetFilteredFlights(offset, limit, departureCity, arrivalCity));
             return Ok(response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var response = _flightMapper.Map<FlightDetails>(await _flightService.GetByIdAsync(id));
+            var response = _flightMapper.Map<FlightDetailsModel>(await _flightService.GetByIdAsync(id));
             return Ok(response);
         }
 
@@ -47,7 +47,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [HttpPost]
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Post([FromBody] FlightRegistration value)
+        public async Task<IActionResult> Post([FromBody] FlightRegistrationModel value)
         {
             await _flightService.PostAsync(_flightMapper.Map<Flight>(value));
             return Ok();
@@ -55,7 +55,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Put(int id, [FromBody] FlightRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] FlightRegistrationModel value)
         {
             await _flightService.UpdateAsync(id, _flightMapper.Map<Flight>(value));
             return Ok();

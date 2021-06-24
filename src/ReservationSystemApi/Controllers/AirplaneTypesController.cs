@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneTypeModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneType;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -27,20 +27,20 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var response = _airplaneTypeMapper.Map<IEnumerable<AirplaneTypeResponse>>(await _airplaneTypeService.GetAllAsync());
+            var response = _airplaneTypeMapper.Map<IEnumerable<AirplaneTypeResponseModel>>(await _airplaneTypeService.GetAllAsync());
             return Ok(response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var response = _airplaneTypeMapper.Map<AirplaneTypeDetails>(await _airplaneTypeService.GetByIdAsync(id));
+            var response = _airplaneTypeMapper.Map<AirplaneTypeDetailsModel>(await _airplaneTypeService.GetByIdAsync(id));
             return Ok(response);
         }
 
         [HttpPost]
         [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Post([FromBody] AirplaneTypeRegistration value)
+        public async Task<IActionResult> Post([FromBody] AirplaneTypeRegistrationModel value)
         {
             await _airplaneTypeService.PostAsync(_airplaneTypeMapper.Map<AirplaneType>(value));
             return Ok();
@@ -48,7 +48,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Put(int id, [FromBody] AirplaneTypeRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] AirplaneTypeRegistrationModel value)
         {
             await _airplaneTypeService.UpdateAsync(id, _airplaneTypeMapper.Map<AirplaneType>(value));
             return Ok();

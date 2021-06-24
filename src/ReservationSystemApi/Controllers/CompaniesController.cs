@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.CompanyModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Company;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -27,14 +27,14 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
-            var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(await _companyService.GetAllAsync());
+            var response = _companyMapper.Map<IEnumerable<CompanyResponseModel>>(await _companyService.GetAllAsync());
             return Ok(response);
         }
 
         [HttpGet]
         public IActionResult Get(string companyName, string countryName, int offset, int limit)
         {
-            var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(_companyService.GetFilteredCompanies(offset, limit, companyName, countryName));
+            var response = _companyMapper.Map<IEnumerable<CompanyResponseModel>>(_companyService.GetFilteredCompanies(offset, limit, companyName, countryName));
             return Ok(response);
         }
 
@@ -48,13 +48,13 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var response = _companyMapper.Map<CompanyDetails>(await _companyService.GetByIdAsync(id));
+            var response = _companyMapper.Map<CompanyDetailsModel>(await _companyService.GetByIdAsync(id));
             return Ok(response);
         }
 
         [HttpPost]
         [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Post([FromBody] CompanyRegistration value)
+        public async Task<IActionResult> Post([FromBody] CompanyRegistrationModel value)
         {
             await _companyService.PostAsync(_companyMapper.Map<Company>(value));
             return Ok();
@@ -62,7 +62,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Put(int id, [FromBody] CompanyRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] CompanyRegistrationModel value)
         {
             await _companyService.UpdateAsync(id, _companyMapper.Map<Company>(value));
             return Ok();

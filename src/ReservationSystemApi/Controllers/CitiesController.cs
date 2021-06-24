@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.CityModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.City;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -27,13 +27,13 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var response = _cityMapper.Map<IEnumerable<CityResponse>>(await _cityService.GetAllAsync());
+            var response = _cityMapper.Map<IEnumerable<CityResponseModel>>(await _cityService.GetAllAsync());
             return Ok(response);
         }
 
         [HttpPost]
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Post([FromBody] CityRegistration value)
+        public async Task<IActionResult> Post([FromBody] CityRegistrationModel value)
         {
             await _cityService.PostAsync(_cityMapper.Map<City>(value));
             return Ok();
@@ -41,7 +41,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Put(int id, [FromBody] CityRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] CityRegistrationModel value)
         {
             await _cityService.UpdateAsync(id, _cityMapper.Map<City>(value));
             return Ok();

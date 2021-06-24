@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Airplane;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -27,7 +27,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet]
         public IActionResult Get(string airplaneType, string company, string model, int offset, int limit)
         {
-            var response = _airplaneMapper.Map<IEnumerable<AirplaneResponse>>(_airplaneService.GetFilteredAirplanes(offset, limit, airplaneType, company, model));
+            var response = _airplaneMapper.Map<IEnumerable<AirplaneResponseModel>>(_airplaneService.GetFilteredAirplanes(offset, limit, airplaneType, company, model));
             return Ok(response);
         }
 
@@ -41,20 +41,20 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet("free")]
         public IActionResult GetFreeAirplanes()
         {
-            var response = _airplaneMapper.Map<IEnumerable<AirplaneResponse>>(_airplaneService.GetFreeAirplanes());
+            var response = _airplaneMapper.Map<IEnumerable<AirplaneResponseModel>>(_airplaneService.GetFreeAirplanes());
             return Ok(response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var response = _airplaneMapper.Map<AirplaneResponse>(await _airplaneService.GetByIdAsync(id));
+            var response = _airplaneMapper.Map<AirplaneResponseModel>(await _airplaneService.GetByIdAsync(id));
             return Ok(response);
         }
 
         [HttpPost]
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Post([FromBody] AirplaneRegistration value)
+        public async Task<IActionResult> Post([FromBody] AirplaneRegistrationModel value)
         {
             await _airplaneService.PostAsync(_airplaneMapper.Map<Airplane>(value));
             return Ok();
@@ -62,7 +62,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Put(int id, [FromBody] AirplaneRegistration value)
+        public async Task<IActionResult> Put(int id, [FromBody] AirplaneRegistrationModel value)
         {
             await _airplaneService.UpdateAsync(id, _airplaneMapper.Map<Airplane>(value));
             return Ok();
