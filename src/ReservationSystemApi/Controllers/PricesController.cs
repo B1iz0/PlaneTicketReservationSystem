@@ -26,9 +26,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpGet("{airplaneId}")]
-        public async Task<IActionResult> Get(int airplaneId)
+        public IActionResult Get(int airplaneId)
         {
-            var response = _priceMapper.Map<IEnumerable<PriceResponseModel>>(await _priceService.GetByAirplaneIdAsync(airplaneId));
+            var response = _priceMapper.Map<IEnumerable<PriceResponseModel>>(_priceService.GetByAirplaneIdAsync(airplaneId));
             return Ok(response);
         }
 

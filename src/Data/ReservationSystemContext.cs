@@ -65,8 +65,6 @@ namespace PlaneTicketReservationSystem.Data
                 .WithMany(at => at.Airplanes)
                 .HasForeignKey(a => a.AirplaneTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Property(a => a.Id)
-                .IsRequired();
             modelBuilder.Property(a => a.AirplaneTypeId)
                 .IsRequired();
             modelBuilder.Property(a => a.CompanyId)
@@ -80,8 +78,6 @@ namespace PlaneTicketReservationSystem.Data
         private static void AirplaneTypeConfigure(EntityTypeBuilder<AirplaneTypeEntity> modelBuilder)
         {
             modelBuilder.HasKey(a => a.Id);
-            modelBuilder.Property(a => a.Id)
-                .IsRequired();
             modelBuilder.Property(a => a.TypeName)
                 .IsRequired()
                 .HasMaxLength(15);
@@ -96,8 +92,6 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.HasOne(a => a.City)
                 .WithMany(c => c.Airports)
                 .HasForeignKey(a => a.CityId);
-            modelBuilder.Property(a => a.Id)
-                .IsRequired();
             modelBuilder.Property(a => a.Name)
                 .IsRequired()
                 .HasMaxLength(20);
@@ -119,8 +113,6 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.HasOne(b => b.Place)
                 .WithOne(p => p.Booking)
                 .HasForeignKey<BookingEntity>(b => b.PlaceId);
-            modelBuilder.Property(b => b.Id)
-                .IsRequired();
             modelBuilder.Property(b => b.FlightId)
                 .IsRequired();
             modelBuilder.Property(b => b.UserId)
@@ -135,8 +127,6 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.HasOne(c => c.Country)
                 .WithMany(c => c.Cities)
                 .HasForeignKey(c => c.CountryId);
-            modelBuilder.Property(c => c.Id)
-                .IsRequired();
             modelBuilder.Property(c => c.Name)
                 .IsRequired()
                 .HasMaxLength(20);
@@ -151,8 +141,6 @@ namespace PlaneTicketReservationSystem.Data
                 .WithMany(c => c.Companies)
                 .HasForeignKey(c => c.CountryId)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Property(c => c.Id)
-                .IsRequired();
             modelBuilder.Property(c => c.Name)
                 .IsRequired()
                 .HasMaxLength(20);
@@ -163,8 +151,6 @@ namespace PlaneTicketReservationSystem.Data
         private static void CountryConfigure(EntityTypeBuilder<CountryEntity> modelBuilder)
         {
             modelBuilder.HasKey(c => c.Id);
-            modelBuilder.Property(c => c.Id)
-                .IsRequired();
             modelBuilder.Property(c => c.Name)
                 .IsRequired()
                 .HasMaxLength(20);
@@ -185,21 +171,16 @@ namespace PlaneTicketReservationSystem.Data
                 .WithMany(a => a.ArrivingAirplanes)
                 .HasForeignKey(f => f.ToId)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Property(f => f.Id)
-                .IsRequired();
             modelBuilder.Property(f => f.AirplaneId)
                 .IsRequired();
             modelBuilder.Property(f => f.FlightNumber)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(20);
             modelBuilder.Property(f => f.FromId)
                 .IsRequired();
             modelBuilder.Property(f => f.ToId)
                 .IsRequired();
-            modelBuilder.Property(f => f.DepartureDate)
-                .IsRequired();
             modelBuilder.Property(f => f.DepartureTime)
-                .IsRequired();
-            modelBuilder.Property(f => f.ArrivalDate)
                 .IsRequired();
             modelBuilder.Property(f => f.ArrivalTime)
                 .IsRequired();
@@ -208,8 +189,6 @@ namespace PlaneTicketReservationSystem.Data
         private static void RoleConfigure(EntityTypeBuilder<RoleEntity> modelBuilder)
         {
             modelBuilder.HasKey(r => r.Id);
-            modelBuilder.Property(r => r.Id)
-                .IsRequired();
             modelBuilder.Property(r => r.Name)
                 .IsRequired()
                 .HasMaxLength(20);
@@ -226,8 +205,6 @@ namespace PlaneTicketReservationSystem.Data
                 .WithMany(c => c.Admins)
                 .HasForeignKey(c => c.CompanyId)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Property(u => u.Id)
-                .IsRequired();
             modelBuilder.Property(u => u.Email)
                 .IsRequired();
             modelBuilder.Property(u => u.RoleId)

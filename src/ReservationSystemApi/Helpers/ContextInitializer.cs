@@ -30,7 +30,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Helpers
                 _db?.Roles.Add(
                     new RoleEntity
                     {
-                        Id = ApiRoles.AdminAppId, 
                         Name = ApiRoles.AdminApp
                     }
                 );
@@ -42,7 +41,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Helpers
                 _db?.Roles.Add(
                     new RoleEntity
                     {
-                        Id = ApiRoles.AdminId, 
                         Name = ApiRoles.Admin
                     }
                 );
@@ -51,28 +49,33 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Helpers
             var userRole = _db?.Roles.FirstOrDefault(role => role.Name == ApiRoles.User);
             if (userRole == null)
             {
-                _db?.Roles.Add(
+                _db?.Roles.AddAsync(
                     new RoleEntity
                     {
-                        Id = ApiRoles.UserId, 
                         Name = ApiRoles.User
                     }
                 );
             }
 
+            _db?.SaveChanges();
+
             var admin = _db?.Users.FirstOrDefault(user => user.Email == _adminOptions.Email);
             if (admin == null)
             {
-                _db?.Users.Add(
-                    new UserEntity
-                    {
-                        Email = _adminOptions.Email,
-                        Password = _passwordProvider.GenerateHash(_adminOptions.Password, SHA256.Create()),
-                        FirstName = _adminOptions.FirstName,
-                        LastName = _adminOptions.LastName,
-                        RoleId = 1
-                    }
-                );
+                RoleEntity adminAppRoleEntity = _db?.Roles.FirstOrDefault(role => role.Name == ApiRoles.AdminApp);
+                if (adminAppRoleEntity != null)
+                {
+                    _db?.Users.Add(
+                        new UserEntity
+                        {
+                            Email = _adminOptions.Email,
+                            Password = _passwordProvider.GenerateHash(_adminOptions.Password, SHA256.Create()),
+                            FirstName = _adminOptions.FirstName,
+                            LastName = _adminOptions.LastName,
+                            RoleId = adminAppRoleEntity.Id
+                        }
+                    );
+                }
             }
 
             _db?.SaveChanges();

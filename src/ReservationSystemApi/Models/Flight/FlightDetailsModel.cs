@@ -12,17 +12,13 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Flight
 
         public AirplaneResponseModel Airplane { get; set; }
 
-        public long FlightNumber { get; set; }
+        public string FlightNumber { get; set; }
 
         public AirportResponseModel From { get; set; }
 
         public AirportResponseModel To { get; set; }
 
-        public DateTime DepartureDate { get; set; }
-
         public DateTime DepartureTime { get; set; }
-
-        public DateTime ArrivalDate { get; set; }
 
         public DateTime ArrivalTime { get; set; }
 

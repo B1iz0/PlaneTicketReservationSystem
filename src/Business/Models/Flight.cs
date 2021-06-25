@@ -10,7 +10,7 @@ namespace PlaneTicketReservationSystem.Business.Models
         public int AirplaneId { get; set; }
         public Airplane Airplane { get; set; }
 
-        public long FlightNumber { get; set; }
+        public string FlightNumber { get; set; }
 
         public int FromId { get; set; }
         public Airport From { get; set; }
@@ -18,11 +18,7 @@ namespace PlaneTicketReservationSystem.Business.Models
         public int ToId { get; set; }
         public Airport To { get; set; }
 
-        public DateTime DepartureDate { get; set; }
-
         public DateTime DepartureTime { get; set; }
-
-        public DateTime ArrivalDate { get; set; }
 
         public DateTime ArrivalTime { get; set; }
 
