@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
@@ -24,27 +26,32 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public IEnumerable<Flight> GetFilteredFlights(int offset, int limit, string departureCity, string arrivalCity)
         {
-            var result = _flights.FindWithLimitAndOffset(x => (string.IsNullOrEmpty(departureCity) || x.From.City.Name == departureCity)
-                                                                    && (string.IsNullOrEmpty(arrivalCity) || x.To.City.Name == arrivalCity), offset, limit);
+            Expression<Func<FlightEntity, bool>> predicate = f =>
+                (string.IsNullOrEmpty(departureCity) || f.From.City.Name.Contains(departureCity))
+                && (string.IsNullOrEmpty(arrivalCity) || f.To.City.Name.Contains(arrivalCity));
+            var result = _flights.FindWithLimitAndOffset(predicate, offset, limit);
             var flight = _flightMapper.Map<IEnumerable<Flight>>(result);
             return flight;
         }
 
         public int GetFilteredFlightsCount(string departureCity, string arrivalCity)
         {
-            int count = _flights.Find(x => (string.IsNullOrEmpty(departureCity) || x.From.City.Name == departureCity)
-                                           && (string.IsNullOrEmpty(arrivalCity) || x.To.City.Name == arrivalCity)).Count();
+            Expression<Func<FlightEntity, bool>> predicate = f =>
+                (string.IsNullOrEmpty(departureCity) || f.From.City.Name.Contains(departureCity))
+                && (string.IsNullOrEmpty(arrivalCity) || f.To.City.Name.Contains(arrivalCity));
+            IQueryable<FlightEntity> flightsEntities = _flights.Find(predicate);
+            int count = flightsEntities.Count();
             return count;
         }
 
         public async Task<Flight> GetByIdAsync(int id)
         {
-            bool isFlightExisting = await _flights.IsExistingAsync(id);
-            if (!isFlightExisting)
+            FlightEntity flightEntity = await _flights.GetAsync(id);
+            if (flightEntity == null)
             {
                 throw new ElementNotFoundException($"No such flight with id: {id}");
             }
-            var flight = _flightMapper.Map<Flight>(await _flights.GetAsync(id));
+            var flight = _flightMapper.Map<Flight>(flightEntity);
             return flight;
         }
 
@@ -55,7 +62,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementAlreadyExistException($"Flight with airplane id: {item.AirplaneId} is already exist");
             }
-            await _flights.CreateAsync(_flightMapper.Map<FlightEntity>(item));
+            var flightEntity = _flightMapper.Map<FlightEntity>(item);
+            await _flights.CreateAsync(flightEntity);
         }
 
         public async Task DeleteAsync(int id)
@@ -76,7 +84,8 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException($"No such flight with id: {id}");
             }
             item.Id = id;
-            await _flights.UpdateAsync(_flightMapper.Map<FlightEntity>(item));
+            var flightEntity = _flightMapper.Map<FlightEntity>(item);
+            await _flights.UpdateAsync(flightEntity);
         }
     }
 }

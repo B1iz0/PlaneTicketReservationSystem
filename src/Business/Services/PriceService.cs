@@ -14,25 +14,22 @@ namespace PlaneTicketReservationSystem.Business.Services
     {
         private readonly IPriceRepository _prices;
 
-        private readonly IAirplaneRepository _airplanes;
-
         private readonly IMapper _pricesMapper;
 
-        public PriceService(IPriceRepository prices, IAirplaneRepository airplanes, IMapper mapper)
+        public PriceService(IPriceRepository prices, IMapper mapper)
         {
             _prices = prices;
-            _airplanes = airplanes;
             _pricesMapper = mapper;
         }
 
-        public async Task<IEnumerable<Price>> GetByAirplaneIdAsync(int airplaneId)
+        public IEnumerable<Price> GetByAirplaneIdAsync(int airplaneId)
         {
-            bool isAirplaneExisting = await _airplanes.IsExistingAsync(airplaneId);
-            if (!isAirplaneExisting)
+            IQueryable<PriceEntity> priceEntities = _prices.Find(x => x.AirplaneId == airplaneId);
+            if (!priceEntities.Any())
             {
                 throw new ElementNotFoundException($"No such airplane with id: {airplaneId}");
             }
-            var pricesForAirplane = _pricesMapper.Map<IEnumerable<Price>>(_prices.Find(x => x.AirplaneId == airplaneId));
+            var pricesForAirplane = _pricesMapper.Map<IEnumerable<Price>>(priceEntities);
             return pricesForAirplane;
         }
 
@@ -43,7 +40,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementAlreadyExistException("Such price is already exist");
             }
-            await _prices.CreateAsync(_pricesMapper.Map<PriceEntity>(item));
+            var priceEntity = _pricesMapper.Map<PriceEntity>(item);
+            await _prices.CreateAsync(priceEntity);
         }
 
         public async Task UpdateAsync(int id, Price item)
@@ -54,7 +52,8 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException("No such price");
             }
             item.Id = id;
-            await _prices.UpdateAsync(_pricesMapper.Map<PriceEntity>(item));
+            var priceEntity = _pricesMapper.Map<PriceEntity>(item);
+            await _prices.UpdateAsync(priceEntity);
         }
     }
 }

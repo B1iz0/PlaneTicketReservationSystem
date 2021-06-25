@@ -24,7 +24,8 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<IEnumerable<PlaceType>> GetAllAsync()
         {
-            var placeTypes = _placeTypeMapper.Map<IEnumerable<PlaceType>>(await _placeTypes.GetAllAsync());
+            IEnumerable<PlaceTypeEntity> placeTypeEntities = await _placeTypes.GetAllAsync();
+            var placeTypes = _placeTypeMapper.Map<IEnumerable<PlaceType>>(placeTypeEntities);
             return placeTypes;
         }
 
@@ -35,7 +36,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementAlreadyExistException("Such place type is already exist");
             }
-            await _placeTypes.CreateAsync(_placeTypeMapper.Map<PlaceTypeEntity>(item));
+            var placeTypeEntity = _placeTypeMapper.Map<PlaceTypeEntity>(item);
+            await _placeTypes.CreateAsync(placeTypeEntity);
         }
 
         public async Task UpdateAsync(int id, PlaceType item)
@@ -46,7 +48,8 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException("No such place type");
             }
             item.Id = id;
-            await _placeTypes.UpdateAsync(_placeTypeMapper.Map<PlaceTypeEntity>(item));
+            var placeTypeEntity = _placeTypeMapper.Map<PlaceTypeEntity>(item);
+            await _placeTypes.UpdateAsync(placeTypeEntity);
         }
     }
 }

@@ -24,12 +24,12 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<Place> GetByIdAsync(int id)
         {
-            bool isPlaceExisting = await _places.IsExistingAsync(id);
-            if (!isPlaceExisting)
+            PlaceEntity placeEntity = await _places.GetAsync(id);
+            if (placeEntity == null)
             {
                 throw new ElementNotFoundException($"No such place with id: {id}");
             }
-            var place = _placeMapper.Map<Place>(await _places.GetAsync(id));
+            var place = _placeMapper.Map<Place>(placeEntity);
             return place;
         }
 
@@ -40,7 +40,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementAlreadyExistException("Such place is already exist");
             }
-            await _places.CreateAsync(_placeMapper.Map<PlaceEntity>(item));
+            var placeEntity = _placeMapper.Map<PlaceEntity>(item);
+            await _places.CreateAsync(placeEntity);
         }
     }
 }

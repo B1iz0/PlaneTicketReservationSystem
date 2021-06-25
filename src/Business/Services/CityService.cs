@@ -24,7 +24,8 @@ namespace PlaneTicketReservationSystem.Business.Services
         
         public async Task<IEnumerable<City>> GetAllAsync()
         {
-            var cities = _cityMapper.Map<IEnumerable<City>>(await _cities.GetAllAsync());
+            var citiesEntities = await _cities.GetAllAsync();
+            var cities = _cityMapper.Map<IEnumerable<City>>(citiesEntities);
             return cities;
         }
 
@@ -35,7 +36,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementAlreadyExistException($"City {item.Name} is already exist");
             }
-            await _cities.CreateAsync(_cityMapper.Map<CityEntity>(item));
+            var cityEntity = _cityMapper.Map<CityEntity>(item);
+            await _cities.CreateAsync(cityEntity);
         }
 
         public async Task UpdateAsync(int id, City item)
@@ -46,7 +48,8 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException($"No such city with id: {id}");
             }
             item.Id = id;
-            await _cities.UpdateAsync(_cityMapper.Map<CityEntity>(item));
+            var cityEntity = _cityMapper.Map<CityEntity>(item);
+            await _cities.UpdateAsync(cityEntity);
         }
     }
 }

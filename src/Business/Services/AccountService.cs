@@ -49,7 +49,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             var token = await _tokenProvider.GenerateJwtTokenAsync(user);
             var refreshToken = _tokenProvider.GenerateRefreshToken();
 
-            userEntity.RefreshTokens.Add(_userMapper.Map<RefreshTokenEntity>(refreshToken));
+            var refreshTokenEntity = _userMapper.Map<RefreshTokenEntity>(refreshToken);
+            userEntity.RefreshTokens.Add(refreshTokenEntity);
             await _users.UpdateAsync(userEntity);
 
             var authenticateResponse = new Authenticate(_userMapper.Map<User>(userEntity), token, refreshToken.Token);

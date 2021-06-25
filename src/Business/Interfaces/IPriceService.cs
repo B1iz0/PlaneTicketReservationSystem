@@ -6,7 +6,7 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
 {
     public interface IPriceService
     {
-        Task<IEnumerable<Price>> GetByAirplaneIdAsync(int airplaneId);
+        IEnumerable<Price> GetByAirplaneIdAsync(int airplaneId);
 
         Task PostAsync(Price item);
 

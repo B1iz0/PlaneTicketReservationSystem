@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
@@ -24,19 +26,19 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<IEnumerable<Company>> GetAllAsync()
         {
-            var companies = _companyMapper.Map<IEnumerable<Company>>(await _companies.GetAllAsync());
+            IEnumerable<CompanyEntity> companiesEntities = await _companies.GetAllAsync();
+            var companies = _companyMapper.Map<IEnumerable<Company>>(companiesEntities);
             return companies;
         }
 
         public async Task<Company> GetByIdAsync(int id)
         {
-            bool isCompanyExisting = await _companies.IsExistingAsync(id);
-            if (!isCompanyExisting)
+            CompanyEntity companyEntity = await _companies.GetAsync(id);
+            if (companyEntity == null)
             {
                 throw new ElementNotFoundException($"No such company with id: {id}");
             }
-
-            var company = _companyMapper.Map<Company>(await _companies.GetAsync(id));
+            var company = _companyMapper.Map<Company>(companyEntity);
             return company;
         }
 
@@ -47,7 +49,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementAlreadyExistException($"Company {item.Name} is already exist");
             }
-            await _companies.CreateAsync(_companyMapper.Map<CompanyEntity>(item));
+            var companyEntity = _companyMapper.Map<CompanyEntity>(item);
+            await _companies.CreateAsync(companyEntity);
         }
 
         public async Task DeleteAsync(int id)
@@ -68,24 +71,26 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException($"No such company with id: {id}");
             }
             item.Id = id;
-            await _companies.UpdateAsync(_companyMapper.Map<CompanyEntity>(item));
+            var companyEntity = _companyMapper.Map<CompanyEntity>(item);
+            await _companies.UpdateAsync(companyEntity);
         }
 
         public IEnumerable<Company> GetFilteredCompanies(int offset, int limit, string companyName, string countryName)
         {
-            IEnumerable<CompanyEntity> result = _companies.FindWithLimitAndOffset(c =>
+            Expression<Func<CompanyEntity, bool>> predicate = c =>
                 (string.IsNullOrEmpty(companyName) || c.Name.Contains(companyName))
-                && (string.IsNullOrEmpty(countryName) || c.Country.Name.Contains(countryName)),
-                offset, limit);
-
+                && (string.IsNullOrEmpty(countryName) || c.Country.Name.Contains(countryName));
+            IEnumerable<CompanyEntity> result = _companies.FindWithLimitAndOffset(predicate, offset, limit);
             var companies = _companyMapper.Map<IEnumerable<Company>>(result);
             return companies;
         }
 
         public int GetFilteredCompaniesCount(string companyName, string countryName)
         {
-            var companies = _companies.Find(c => (string.IsNullOrEmpty(companyName) || c.Name.Contains(companyName))
-                                                 && (string.IsNullOrEmpty(countryName) || c.Country.Name.Contains(countryName)));
+            Expression<Func<CompanyEntity, bool>> predicate = c =>
+                (string.IsNullOrEmpty(companyName) || c.Name.Contains(companyName))
+                && (string.IsNullOrEmpty(countryName) || c.Country.Name.Contains(countryName));
+            IQueryable<CompanyEntity> companies = _companies.Find(predicate);
             int count = companies.Count();
             return count;
         }

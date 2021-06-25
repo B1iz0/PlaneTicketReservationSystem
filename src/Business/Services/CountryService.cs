@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -24,7 +25,8 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<IEnumerable<Country>> GetAllAsync()
         {
-            var countries = _countryMapper.Map<IEnumerable<Country>>(await _countries.GetAllAsync());
+            IEnumerable<CountryEntity> countriesEntities = await _countries.GetAllAsync();
+            var countries = _countryMapper.Map<IEnumerable<Country>>(countriesEntities);
             return countries;
         }
 
@@ -35,7 +37,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementAlreadyExistException($"Country {item.Name} is already exist");
             }
-            await _countries.CreateAsync(_countryMapper.Map<CountryEntity>(item));
+            var countryEntity = _countryMapper.Map<CountryEntity>(item);
+            await _countries.CreateAsync(countryEntity);
         }
 
         public async Task UpdateAsync(int id, Country item)
@@ -46,7 +49,8 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException($"No such country with id: {id}");
             }
             item.Id = id;
-            await _countries.UpdateAsync(_countryMapper.Map<CountryEntity>(item));
+            var countryEntity = _countryMapper.Map<CountryEntity>(item);
+            await _countries.UpdateAsync(countryEntity);
         }
     }
 }
