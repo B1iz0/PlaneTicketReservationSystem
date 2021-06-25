@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Company;
 
@@ -53,7 +54,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "AdminApp")]
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         public async Task<IActionResult> Post([FromBody] CompanyRegistrationModel value)
         {
             await _companyService.PostAsync(_companyMapper.Map<Company>(value));
@@ -61,7 +62,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
         public async Task<IActionResult> Put(int id, [FromBody] CompanyRegistrationModel value)
         {
             await _companyService.UpdateAsync(id, _companyMapper.Map<Company>(value));
@@ -69,7 +70,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminApp")]
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         public async Task<IActionResult> Delete(int id)
         {
             await _companyService.DeleteAsync(id);

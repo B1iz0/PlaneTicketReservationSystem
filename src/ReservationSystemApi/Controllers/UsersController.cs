@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Constants;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Authenticate;
@@ -65,7 +66,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok(response);
         }
 
-        [Authorize(Policy = "AdminApp")]
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         [HttpGet]
         public IActionResult Get(int offset, int limit, string email, string firstName, string lastName)
         {
@@ -73,7 +74,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok(users);
         }
 
-        [Authorize(Policy = "AdminApp")]
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         [HttpGet("count")]
         public IActionResult GetCount(string email, string firstName, string lastName)
         {
@@ -98,7 +99,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok(response);
         }
 
-        [Authorize(Policy = "AdminApp")]
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         [HttpPost()]
         public async Task<IActionResult> Post([FromBody] UserRegistrationModel user)
         {
@@ -123,7 +124,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        [Authorize(Policy = "AdminApp")]
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

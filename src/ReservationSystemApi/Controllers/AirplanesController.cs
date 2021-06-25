@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Airplane;
 
@@ -53,7 +54,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
         public async Task<IActionResult> Post([FromBody] AirplaneRegistrationModel value)
         {
             await _airplaneService.PostAsync(_airplaneMapper.Map<Airplane>(value));
@@ -61,7 +62,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
         public async Task<IActionResult> Put(int id, [FromBody] AirplaneRegistrationModel value)
         {
             await _airplaneService.UpdateAsync(id, _airplaneMapper.Map<Airplane>(value));
@@ -69,7 +70,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
         public async Task<IActionResult> Delete(int id)
         {
             await _airplaneService.DeleteAsync(id);

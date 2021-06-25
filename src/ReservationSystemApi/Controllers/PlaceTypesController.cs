@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.PlaceType;
 
@@ -31,7 +32,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok(response);
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PlaceTypeRegistrationModel value)
         {
@@ -39,7 +40,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        [Authorize(Policy = "AdminApp")]
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] PlaceTypeRegistrationModel value)
         {

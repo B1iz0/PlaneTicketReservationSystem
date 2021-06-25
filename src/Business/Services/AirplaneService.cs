@@ -26,18 +26,19 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<IEnumerable<Airplane>> GetAllAsync()
         {
-            var airplanes = _airplaneMapper.Map<IEnumerable<Airplane>>(await _airplanes.GetAllAsync());
+            var airplanesEntities = await _airplanes.GetAllAsync();
+            var airplanes = _airplaneMapper.Map<IEnumerable<Airplane>>(airplanesEntities);
             return airplanes;
         }
 
         public async Task<Airplane> GetByIdAsync(int id)
         {
-            bool isAirplaneExist = await _airplanes.IsExistingAsync(id);
-            if (!isAirplaneExist)
+            var airplaneEntity = await _airplanes.GetAsync(id);
+            if (airplaneEntity == null)
             {
                 throw new ElementNotFoundException($"Airplane with id:{id} is not found");
             }
-            var airplane = _airplaneMapper.Map<Airplane>(await _airplanes.GetAsync(id));
+            var airplane = _airplaneMapper.Map<Airplane>(airplaneEntity);
             return airplane;
         }
 
@@ -74,7 +75,8 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public IEnumerable<Airplane> GetFreeAirplanes()
         {
-            var freeAirplanes = _airplaneMapper.Map<IEnumerable<Airplane>>(_airplanes.GetFreeAirplanes());
+            var freeAirplanesEntities = _airplanes.GetFreeAirplanes();
+            var freeAirplanes = _airplaneMapper.Map<IEnumerable<Airplane>>(freeAirplanesEntities);
             return freeAirplanes;
         }
 
@@ -84,7 +86,8 @@ namespace PlaneTicketReservationSystem.Business.Services
                 (string.IsNullOrEmpty(airplaneType) || a.AirplaneType.TypeName.Contains(airplaneType))
                 && (string.IsNullOrEmpty(company) || a.Company.Name.Contains(company))
                 && (string.IsNullOrEmpty(model) || a.Model.Contains(model));
-            var airplanes = _airplaneMapper.Map<IEnumerable<Airplane>>(_airplanes.FindWithLimitAndOffset(predicate, offset, limit));
+            var airplanesEntities = _airplanes.FindWithLimitAndOffset(predicate, offset, limit);
+            var airplanes = _airplaneMapper.Map<IEnumerable<Airplane>>(airplanesEntities);
             return airplanes;
         }
 
@@ -94,7 +97,8 @@ namespace PlaneTicketReservationSystem.Business.Services
                 (string.IsNullOrEmpty(airplaneType) || a.AirplaneType.TypeName.Contains(airplaneType))
                 && (string.IsNullOrEmpty(company) || a.Company.Name.Contains(company))
                 && (string.IsNullOrEmpty(model) || a.Model.Contains(model));
-            int count = _airplanes.Find(predicate).Count();
+            var airplanesEntities = _airplanes.Find(predicate);
+            int count = airplanesEntities.Count();
             return count;
         }
     }

@@ -29,13 +29,12 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<Booking> GetByIdAsync(int id)
         {
-            bool isBookingExisting = await _bookings.IsExistingAsync(id);
-            if (!isBookingExisting)
+            var bookingEntity = await _bookings.GetAsync(id);
+            if (bookingEntity == null)
             {
                 throw new ElementNotFoundException($"No such booking with id: {id}");
             }
-
-            var booking = _bookingMapper.Map<Booking>(await _bookings.GetAsync(id));
+            var booking = _bookingMapper.Map<Booking>(bookingEntity);
             return booking;
         }
 
@@ -62,7 +61,8 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException($"No such booking with id: {id}");
             }
             item.Id = id;
-            await _bookings.UpdateAsync(_bookingMapper.Map<BookingEntity>(item));
+            var bookingEntity = _bookingMapper.Map<BookingEntity>(item);
+            await _bookings.UpdateAsync(bookingEntity);
         }
     }
 }

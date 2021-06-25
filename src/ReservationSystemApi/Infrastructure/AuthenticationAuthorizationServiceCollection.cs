@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PlaneTicketReservationSystem.Business.Constants;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Infrastructure
 {
@@ -33,12 +34,12 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Infrastructure
                 });
             services.AddAuthorization(opt =>
             {
-                opt.AddPolicy(ApiRoles.AdminApp, policy =>
+                opt.AddPolicy(ApiPolicies.AdminAppPolicy, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireRole(ApiRoles.AdminApp);
                 });
-                opt.AddPolicy(ApiRoles.Admin, policy =>
+                opt.AddPolicy(ApiPolicies.AdminPolicy, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireRole(ApiRoles.Admin, ApiRoles.AdminApp);

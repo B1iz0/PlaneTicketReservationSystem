@@ -30,13 +30,12 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<Airport> GetByIdAsync(int id)
         {
-            bool isAirportExisting = await _airports.IsExistingAsync(id);
-            if (!isAirportExisting)
+            var airportEntity = await _airports.GetAsync(id);
+            if (airportEntity == null)
             {
                 throw new ElementNotFoundException($"No such airport with id: {id}");
             }
-
-            var airport = _airportMapper.Map<Airport>(await _airports.GetAsync(id));
+            var airport = _airportMapper.Map<Airport>(airportEntity);
             return airport;
         }
 
@@ -47,7 +46,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementAlreadyExistException($"Airport {item.Name} is already exist");
             }
-            await _airports.CreateAsync(_airportMapper.Map<AirportEntity>(item));
+            var airportEntity = _airportMapper.Map<AirportEntity>(item);
+            await _airports.CreateAsync(airportEntity);
         }
 
         public async Task DeleteAsync(int id)
@@ -68,7 +68,8 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException($"No such airport with id: {id}");
             }
             item.Id = id;
-            await _airports.UpdateAsync(_airportMapper.Map<AirportEntity>(item));
+            var airportEntity = _airportMapper.Map<AirportEntity>(item);
+            await _airports.UpdateAsync(airportEntity);
         }
     }
 }

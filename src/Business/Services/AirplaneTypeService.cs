@@ -30,13 +30,12 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task<AirplaneType> GetByIdAsync(int id)
         {
-            bool isTypeExisting = await _airplaneTypes.IsExistingAsync(id);
-            if (!isTypeExisting)
+            var airplaneTypeEntity = await _airplaneTypes.GetAsync(id);
+            if (airplaneTypeEntity == null)
             {
                 throw new ElementNotFoundException($"No such type with id: {id}");
             }
-
-            var airplaneType = _airplaneTypeMapper.Map<AirplaneType>(await _airplaneTypes.GetAsync(id));
+            var airplaneType = _airplaneTypeMapper.Map<AirplaneType>(airplaneTypeEntity);
             return airplaneType;
         }
 
@@ -47,7 +46,8 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementAlreadyExistException($"Type {item.TypeName} is already exist");
             }
-            await _airplaneTypes.CreateAsync(_airplaneTypeMapper.Map<AirplaneTypeEntity>(item));
+            var airplaneEntity = _airplaneTypeMapper.Map<AirplaneTypeEntity>(item);
+            await _airplaneTypes.CreateAsync(airplaneEntity);
         }
 
         public async Task DeleteAsync(int id)
@@ -68,7 +68,8 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException($"No such type with id: {id}");
             }
             item.Id = id;
-            await _airplaneTypes.UpdateAsync(_airplaneTypeMapper.Map<AirplaneTypeEntity>(item));
+            var airplaneEntity = _airplaneTypeMapper.Map<AirplaneTypeEntity>(item);
+            await _airplaneTypes.UpdateAsync(airplaneEntity);
         }
     }
 }

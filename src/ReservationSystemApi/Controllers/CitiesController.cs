@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.City;
 
@@ -32,7 +33,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
         public async Task<IActionResult> Post([FromBody] CityRegistrationModel value)
         {
             await _cityService.PostAsync(_cityMapper.Map<City>(value));
@@ -40,7 +41,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Policy = "AdminApp")]
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         public async Task<IActionResult> Put(int id, [FromBody] CityRegistrationModel value)
         {
             await _cityService.UpdateAsync(id, _cityMapper.Map<City>(value));
