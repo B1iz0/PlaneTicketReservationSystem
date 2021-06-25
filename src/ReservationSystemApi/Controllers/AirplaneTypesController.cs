@@ -32,13 +32,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var response = _airplaneTypeMapper.Map<AirplaneTypeDetailsModel>(await _airplaneTypeService.GetByIdAsync(id));
-            return Ok(response);
-        }
-
         [HttpPost]
         [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         public async Task<IActionResult> Post([FromBody] AirplaneTypeRegistrationModel value)

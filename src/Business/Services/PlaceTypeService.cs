@@ -28,17 +28,6 @@ namespace PlaneTicketReservationSystem.Business.Services
             return placeTypes;
         }
 
-        public async Task<PlaceType> GetByIdAsync(int id)
-        {
-            bool isTypeExisting = await _placeTypes.IsExistingAsync(id);
-            if (!isTypeExisting)
-            {
-                throw new ElementNotFoundException($"No such place type with id: {id}");
-            }
-            var placeType = _placeTypeMapper.Map<PlaceType>(await _placeTypes.GetAsync(id));
-            return placeType;
-        }
-
         public async Task PostAsync(PlaceType item)
         {
             bool isTypeExisting = _placeTypes.Find(x => x.Name == item.Name).Any();
@@ -47,16 +36,6 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementAlreadyExistException("Such place type is already exist");
             }
             await _placeTypes.CreateAsync(_placeTypeMapper.Map<PlaceTypeEntity>(item));
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            bool isTypeExisting = await _placeTypes.IsExistingAsync(id);
-            if (!isTypeExisting)
-            {
-                throw new ElementNotFoundException("No such place type");
-            }
-            await _placeTypes.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, PlaceType item)

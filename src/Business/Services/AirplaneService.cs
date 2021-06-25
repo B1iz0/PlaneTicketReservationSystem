@@ -24,13 +24,6 @@ namespace PlaneTicketReservationSystem.Business.Services
             _airplaneMapper = mapper;
         }
 
-        public async Task<IEnumerable<Airplane>> GetAllAsync()
-        {
-            var airplanesEntities = await _airplanes.GetAllAsync();
-            var airplanes = _airplaneMapper.Map<IEnumerable<Airplane>>(airplanesEntities);
-            return airplanes;
-        }
-
         public async Task<Airplane> GetByIdAsync(int id)
         {
             var airplaneEntity = await _airplanes.GetAsync(id);

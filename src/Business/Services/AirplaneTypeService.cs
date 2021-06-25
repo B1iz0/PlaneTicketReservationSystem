@@ -28,17 +28,6 @@ namespace PlaneTicketReservationSystem.Business.Services
             return airplaneTypes;
         }
 
-        public async Task<AirplaneType> GetByIdAsync(int id)
-        {
-            var airplaneTypeEntity = await _airplaneTypes.GetAsync(id);
-            if (airplaneTypeEntity == null)
-            {
-                throw new ElementNotFoundException($"No such type with id: {id}");
-            }
-            var airplaneType = _airplaneTypeMapper.Map<AirplaneType>(airplaneTypeEntity);
-            return airplaneType;
-        }
-
         public async Task PostAsync(AirplaneType item)
         {
             bool isTypeExisting = _airplaneTypes.Find(x => x.TypeName == item.TypeName).Any();

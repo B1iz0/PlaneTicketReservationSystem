@@ -25,23 +25,6 @@ namespace PlaneTicketReservationSystem.Business.Services
             _pricesMapper = mapper;
         }
 
-        public async Task<IEnumerable<Price>> GetAllAsync()
-        {
-            var prices = _pricesMapper.Map<IEnumerable<Price>>(await _prices.GetAllAsync());
-            return prices;
-        }
-
-        public async Task<Price> GetByIdAsync(int id)
-        {
-            bool isPriceExisting = await _prices.IsExistingAsync(id);
-            if (!isPriceExisting)
-            {
-                throw new ElementNotFoundException($"No such price with id: {id}");
-            }
-            var price = _pricesMapper.Map<Price>(await _prices.GetAsync(id));
-            return price;
-        }
-
         public async Task<IEnumerable<Price>> GetByAirplaneIdAsync(int airplaneId)
         {
             bool isAirplaneExisting = await _airplanes.IsExistingAsync(airplaneId);
@@ -61,16 +44,6 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementAlreadyExistException("Such price is already exist");
             }
             await _prices.CreateAsync(_pricesMapper.Map<PriceEntity>(item));
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            bool isPriceExisting = await _prices.IsExistingAsync(id);
-            if (!isPriceExisting)
-            {
-                throw new ElementNotFoundException("No such price");
-            }
-            await _prices.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, Price item)

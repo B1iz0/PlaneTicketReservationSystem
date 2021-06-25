@@ -1,9 +1,16 @@
-﻿using PlaneTicketReservationSystem.Business.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using PlaneTicketReservationSystem.Business.Models;
 
 namespace PlaneTicketReservationSystem.Business.Interfaces
 {
-    public interface ICityService : IDataService<City>
+    public interface ICityService
     {
-        
+        Task<IEnumerable<City>> GetAllAsync();
+
+        Task PostAsync(City item);
+
+        Task UpdateAsync(int id, City item);
+
     }
 }

@@ -28,18 +28,6 @@ namespace PlaneTicketReservationSystem.Business.Services
             return cities;
         }
 
-        public async Task<City> GetByIdAsync(int id)
-        {
-            bool isCityExisting = await _cities.IsExistingAsync(id);
-            if (!isCityExisting)
-            {
-                throw new ElementNotFoundException($"No such city with id: {id}");
-            }
-
-            var city = _cityMapper.Map<City>(await _cities.GetAsync(id));
-            return city;
-        }
-
         public async Task PostAsync(City item)
         {
             bool isCityExisting = _cities.Find(x => x.Name == item.Name).Any();
@@ -48,16 +36,6 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementAlreadyExistException($"City {item.Name} is already exist");
             }
             await _cities.CreateAsync(_cityMapper.Map<CityEntity>(item));
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            bool isCityExisting = await _cities.IsExistingAsync(id);
-            if (!isCityExisting)
-            {
-                throw new ElementNotFoundException($"No such city with id: {id}");
-            }
-            await _cities.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, City item)

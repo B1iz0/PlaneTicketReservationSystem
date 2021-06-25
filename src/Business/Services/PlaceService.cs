@@ -22,12 +22,6 @@ namespace PlaneTicketReservationSystem.Business.Services
             _placeMapper = mapper;
         }
 
-        public async Task<IEnumerable<Place>> GetAllAsync()
-        {
-            var places = _placeMapper.Map<IEnumerable<Place>>(await _places.GetAllAsync());
-            return places;
-        }
-
         public async Task<Place> GetByIdAsync(int id)
         {
             bool isPlaceExisting = await _places.IsExistingAsync(id);
@@ -47,27 +41,6 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementAlreadyExistException("Such place is already exist");
             }
             await _places.CreateAsync(_placeMapper.Map<PlaceEntity>(item));
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            bool isPlaceExisting = await _places.IsExistingAsync(id);
-            if (!isPlaceExisting)
-            {
-                throw new ElementNotFoundException("No such place");
-            }
-            await _places.DeleteAsync(id);
-        }
-
-        public async Task UpdateAsync(int id, Place item)
-        {
-            bool isPlaceExisting = await _places.IsExistingAsync(id);
-            if (!isPlaceExisting)
-            {
-                throw new ElementNotFoundException("No such place");
-            }
-            item.Id = id;
-            await _places.UpdateAsync(_placeMapper.Map<PlaceEntity>(item));
         }
     }
 }

@@ -28,18 +28,6 @@ namespace PlaneTicketReservationSystem.Business.Services
             return countries;
         }
 
-        public async Task<Country> GetByIdAsync(int id)
-        {
-            bool isCountryExisting = await _countries.IsExistingAsync(id);
-            if (!isCountryExisting)
-            {
-                throw new ElementNotFoundException($"No such country with id: {id}");
-            }
-
-            var country = _countryMapper.Map<Country>(await _countries.GetAsync(id));
-            return country;
-        }
-
         public async Task PostAsync(Country item)
         {
             bool isCountryExisting = _countries.Find(x => x.Name == item.Name).Any();
@@ -48,16 +36,6 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementAlreadyExistException($"Country {item.Name} is already exist");
             }
             await _countries.CreateAsync(_countryMapper.Map<CountryEntity>(item));
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            bool isCountryExisting = await _countries.IsExistingAsync(id);
-            if (!isCountryExisting)
-            {
-                throw new ElementNotFoundException($"No such country with id: {id}");
-            }
-            await _countries.DeleteAsync(id);
         }
 
         public async Task UpdateAsync(int id, Country item)

@@ -32,13 +32,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var response = _airportMapper.Map<AirportDetailsModel>(await _airportService.GetByIdAsync(id));
-            return Ok(response);
-        }
-
         [HttpPost]
         [Authorize(Policy = ApiPolicies.AdminPolicy)]
         public async Task<IActionResult> Post([FromBody] AirportRegistrationModel value)

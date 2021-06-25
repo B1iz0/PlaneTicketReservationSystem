@@ -28,17 +28,6 @@ namespace PlaneTicketReservationSystem.Business.Services
             return airports;
         }
 
-        public async Task<Airport> GetByIdAsync(int id)
-        {
-            var airportEntity = await _airports.GetAsync(id);
-            if (airportEntity == null)
-            {
-                throw new ElementNotFoundException($"No such airport with id: {id}");
-            }
-            var airport = _airportMapper.Map<Airport>(airportEntity);
-            return airport;
-        }
-
         public async Task PostAsync(Airport item)
         {
             bool isAirportExisting = _airports.Find(x => x.Name == item.Name).Any();

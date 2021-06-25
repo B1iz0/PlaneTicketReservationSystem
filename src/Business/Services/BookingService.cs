@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Interfaces;
@@ -19,12 +18,6 @@ namespace PlaneTicketReservationSystem.Business.Services
         {
             _bookings = bookings;
             _bookingMapper = mapper;
-        }
-
-        public async Task<IEnumerable<Booking>> GetAllAsync()
-        {
-            var bookings = _bookingMapper.Map<IEnumerable<Booking>>(await _bookings.GetAllAsync());
-            return bookings;
         }
 
         public async Task<Booking> GetByIdAsync(int id)
@@ -51,18 +44,6 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException($"No such booking with id: {id}");
             }
             await _bookings.DeleteAsync(id);
-        }
-
-        public async Task UpdateAsync(int id, Booking item)
-        {
-            bool isBookingExisting = await _bookings.IsExistingAsync(id);
-            if (!isBookingExisting)
-            {
-                throw new ElementNotFoundException($"No such booking with id: {id}");
-            }
-            item.Id = id;
-            var bookingEntity = _bookingMapper.Map<BookingEntity>(item);
-            await _bookings.UpdateAsync(bookingEntity);
         }
     }
 }

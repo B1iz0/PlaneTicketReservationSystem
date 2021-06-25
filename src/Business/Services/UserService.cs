@@ -27,12 +27,6 @@ namespace PlaneTicketReservationSystem.Business.Services
             _userMapper = mapper;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
-        {
-            var users = _userMapper.Map<IEnumerable<User>>(await _users.GetAllAsync());
-            return users;
-        }
-
         public IEnumerable<User> GetFilteredUsers(int offset, int limit, string email, string firstName, string lastName)
         {
             var result = _users.FindWithLimitAndOffset(x => (string.IsNullOrEmpty(email) || x.Email.Contains(email))

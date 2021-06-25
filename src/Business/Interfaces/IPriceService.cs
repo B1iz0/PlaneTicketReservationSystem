@@ -4,8 +4,12 @@ using PlaneTicketReservationSystem.Business.Models;
 
 namespace PlaneTicketReservationSystem.Business.Interfaces
 {
-    public interface IPriceService : IDataService<Price>
+    public interface IPriceService
     {
         Task<IEnumerable<Price>> GetByAirplaneIdAsync(int airplaneId);
+
+        Task PostAsync(Price item);
+
+        Task UpdateAsync(int id, Price item);
     }
 }
