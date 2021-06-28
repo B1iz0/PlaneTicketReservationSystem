@@ -10,7 +10,7 @@ namespace PlaneTicketReservationSystem.Data.Interfaces
     {
         Task<IEnumerable<T>> GetAllAsync();
 
-        Task<T> GetAsync(int id);
+        Task<T> GetAsync(Guid id);
 
         IQueryable<T> Find(Expression<Func<T, bool>> predicate);
 
@@ -20,8 +20,8 @@ namespace PlaneTicketReservationSystem.Data.Interfaces
 
         Task UpdateAsync(T item);
 
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Guid id);
 
-        Task<bool> IsExistingAsync(int id);
+        Task<bool> IsExistingAsync(Guid id);
     }
 }

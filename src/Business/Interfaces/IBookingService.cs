@@ -1,14 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using PlaneTicketReservationSystem.Business.Models;
 
 namespace PlaneTicketReservationSystem.Business.Interfaces
 {
     public interface IBookingService
     {
-        Task<Booking> GetByIdAsync(int id);
+        Task<Booking> GetByIdAsync(Guid id);
 
         Task PostAsync(Booking item);
 
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Guid id);
     }
 }

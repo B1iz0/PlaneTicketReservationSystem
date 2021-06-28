@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
 
@@ -11,7 +10,7 @@ namespace PlaneTicketReservationSystem.Business.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly IPasswordProvider _passwordProvider;
+        private readonly IPasswordService _passwordService;
 
         private readonly IUserRepository _users;
 
@@ -20,12 +19,12 @@ namespace PlaneTicketReservationSystem.Business.Services
         private readonly IMapper _userMapper;
 
         public AccountService(
-            IPasswordProvider passwordProvider, 
+            IPasswordService passwordService, 
             IUserRepository users,
             ITokenProvider tokenProvider,
             IMapper mapper)
         {
-            _passwordProvider = passwordProvider;
+            _passwordService = passwordService;
             _users = users;
             _tokenProvider = tokenProvider;
             _userMapper = mapper;
@@ -39,7 +38,7 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new Exception("User with such email doesn't exist.");
             }
 
-            bool isPasswordConfirmed = _passwordProvider.CheckHash(model.Password, userEntity.Password);
+            bool isPasswordConfirmed = _passwordService.CheckHash(model.Password, userEntity.Password);
             if (!isPasswordConfirmed)
             {
                 throw new Exception("Password is not correct.");
@@ -50,7 +49,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             var refreshToken = _tokenProvider.GenerateRefreshToken();
 
             var refreshTokenEntity = _userMapper.Map<RefreshTokenEntity>(refreshToken);
-            userEntity.RefreshTokens.Add(refreshTokenEntity);
+            userEntity.RefreshToken = refreshTokenEntity;
             await _users.UpdateAsync(userEntity);
 
             var authenticateResponse = new Authenticate(_userMapper.Map<User>(userEntity), token, refreshToken.Token);

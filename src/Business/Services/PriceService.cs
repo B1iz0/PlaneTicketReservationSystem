@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -22,7 +23,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             _pricesMapper = mapper;
         }
 
-        public IEnumerable<Price> GetByAirplaneIdAsync(int airplaneId)
+        public IEnumerable<Price> GetByAirplaneIdAsync(Guid airplaneId)
         {
             IQueryable<PriceEntity> priceEntities = _prices.Find(x => x.AirplaneId == airplaneId);
             if (!priceEntities.Any())
@@ -44,7 +45,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _prices.CreateAsync(priceEntity);
         }
 
-        public async Task UpdateAsync(int id, Price item)
+        public async Task UpdateAsync(Guid id, Price item)
         {
             bool isPriceExisting = await _prices.IsExistingAsync(id);
             if (!isPriceExisting)

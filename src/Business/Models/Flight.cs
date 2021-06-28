@@ -5,17 +5,17 @@ namespace PlaneTicketReservationSystem.Business.Models
 {
     public class Flight
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
-        public int AirplaneId { get; set; }
+        public Guid AirplaneId { get; set; }
         public Airplane Airplane { get; set; }
 
         public string FlightNumber { get; set; }
 
-        public int FromId { get; set; }
+        public Guid FromId { get; set; }
         public Airport From { get; set; }
 
-        public int ToId { get; set; }
+        public Guid ToId { get; set; }
         public Airport To { get; set; }
 
         public DateTime DepartureTime { get; set; }

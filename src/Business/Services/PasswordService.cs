@@ -2,25 +2,27 @@
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
+using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 
-namespace PlaneTicketReservationSystem.Data
+namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class PasswordProvider : IPasswordProvider
+    public class PasswordService : IPasswordService
     {
-        private readonly PasswordProviderSettings _providerSettings;
+        private readonly PasswordServiceSettings _serviceSettings;
 
-        public PasswordProvider(IOptions<PasswordProviderSettings> providerSettings)
+        public PasswordService(IOptions<PasswordServiceSettings> providerSettings)
         {
-            _providerSettings = providerSettings.Value;
+            _serviceSettings = providerSettings.Value;
         }
 
         public string GenerateHash(string password, SHA256 sha256)
         {
             var passwordBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
             var passwordHash = Convert.ToBase64String(passwordBytes);
-            var result = new StringBuilder(passwordHash.Length + _providerSettings.Salt.Length);
+            var result = new StringBuilder(passwordHash.Length + _serviceSettings.Salt.Length);
             result.Append(passwordHash);
-            result.Append(_providerSettings.Salt);
+            result.Append(_serviceSettings.Salt);
             return result.ToString();
         }
 

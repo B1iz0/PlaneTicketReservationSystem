@@ -44,7 +44,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             return count;
         }
 
-        public async Task<Flight> GetByIdAsync(int id)
+        public async Task<Flight> GetByIdAsync(Guid id)
         {
             FlightEntity flightEntity = await _flights.GetAsync(id);
             if (flightEntity == null)
@@ -66,7 +66,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _flights.CreateAsync(flightEntity);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             bool isFlightExisting = await _flights.IsExistingAsync(id);
             if (!isFlightExisting)
@@ -76,7 +76,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _flights.DeleteAsync(id);
         }
 
-        public async Task UpdateAsync(int id, Flight item)
+        public async Task UpdateAsync(Guid id, Flight item)
         {
             bool isFlightExisting = await _flights.IsExistingAsync(id);
             if (!isFlightExisting)

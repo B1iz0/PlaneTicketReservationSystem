@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Airplane;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneType;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Airport;

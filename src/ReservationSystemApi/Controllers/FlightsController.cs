@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -32,8 +33,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Get(Guid id)
         {
             var response = _flightMapper.Map<FlightDetailsModel>(await _flightService.GetByIdAsync(id));
             return Ok(response);
@@ -54,17 +55,17 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         [Authorize(Policy = ApiPolicies.AdminPolicy)]
-        public async Task<IActionResult> Put(int id, [FromBody] FlightRegistrationModel value)
+        public async Task<IActionResult> Put(Guid id, [FromBody] FlightRegistrationModel value)
         {
             await _flightService.UpdateAsync(id, _flightMapper.Map<Flight>(value));
             return Ok();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         [Authorize(Policy = ApiPolicies.AdminPolicy)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             await _flightService.DeleteAsync(id);
             return Ok();

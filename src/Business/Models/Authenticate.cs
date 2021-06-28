@@ -1,8 +1,10 @@
-﻿namespace PlaneTicketReservationSystem.Business.Models
+﻿using System;
+
+namespace PlaneTicketReservationSystem.Business.Models
 {
     public class Authenticate
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Email { get; set; }
 

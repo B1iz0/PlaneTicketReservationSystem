@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -91,7 +92,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             {
                 return BadRequest("Server problems");
             }
-            var response = _userMapper.Map<UserDetailsModel>(await _userService.GetByIdAsync(int.Parse(userId.Value)));
+            var response = _userMapper.Map<UserDetailsModel>(await _userService.GetByIdAsync(Guid.Parse(userId.Value)));
             if (response == null)
             {
                 return BadRequest();
@@ -110,23 +111,22 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpPost("registration")]
         public async Task<IActionResult> Registration([FromBody] UserRegistrationModel user)
         {
-            user.RoleId = 3;
             await _userService.PostAsync(_userMapper.Map<User>(user));
             IActionResult registrationResult = await Authenticate(new AuthenticateRequestModel() { Email = user.Email, Password = user.Password });
             return registrationResult;
         }
 
         [Authorize]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] UserRegistrationModel user)
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] UserRegistrationModel user)
         {
             await _userService.UpdateAsync(id, _userMapper.Map<User>(user));
             return Ok();
         }
 
         [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
             await _userService.DeleteAsync(id);
             return Ok();

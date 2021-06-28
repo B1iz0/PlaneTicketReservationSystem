@@ -4,13 +4,13 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Flight
 {
     public class FlightRegistrationModel
     {
-        public int AirplaneId { get; set; }
+        public Guid AirplaneId { get; set; }
 
         public string FlightNumber { get; set; }
 
-        public int FromId { get; set; }
+        public Guid FromId { get; set; }
 
-        public int ToId { get; set; }
+        public Guid ToId { get; set; }
 
         public DateTime DepartureTime { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Booking;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Role;
 
@@ -6,7 +7,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.User
 {
     public class UserDetailsModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Email { get; set; }
 

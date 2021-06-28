@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PlaneTicketReservationSystem.Business.Models;
 
@@ -10,12 +11,12 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
 
         int GetFilteredFlightsCount(string departureCity, string arrivalCity);
 
-        Task<Flight> GetByIdAsync(int id);
+        Task<Flight> GetByIdAsync(Guid id);
 
         Task PostAsync(Flight item);
 
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Guid id);
 
-        Task UpdateAsync(int id, Flight item);
+        Task UpdateAsync(Guid id, Flight item);
     }
 }

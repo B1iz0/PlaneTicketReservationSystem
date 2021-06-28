@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -23,9 +24,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             _bookingMapper = new Mapper(conf.BookingMapperConfiguration);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         [Authorize]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(Guid id)
         {
             var response = _bookingMapper.Map<BookingResponseModel>(await _bookingService.GetByIdAsync(id));
             return Ok(response);
@@ -39,9 +40,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             await _bookingService.DeleteAsync(id);
             return Ok();

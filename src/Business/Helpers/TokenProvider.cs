@@ -85,12 +85,13 @@ namespace PlaneTicketReservationSystem.Business.Helpers
 
         public async Task<Authenticate> RefreshTokenAsync(string token)
         {
-            var user = _users.Find(x => x.RefreshTokens.Any(t => t.Token == token)).First();
+            var user = _users.Find(x => x.RefreshToken.Token == token).First();
             if (user == null)
             {
                 return null;
             }
-            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
+
+            var refreshToken = user.RefreshToken;
             if (!refreshToken.IsActive)
             {
                 return null;
@@ -98,8 +99,7 @@ namespace PlaneTicketReservationSystem.Business.Helpers
 
             var newRefreshToken = GenerateRefreshToken();
             refreshToken.Revoked = DateTime.UtcNow;
-            refreshToken.ReplacedByToken = newRefreshToken.Token;
-            user.RefreshTokens.Add(_userMapper.Map<RefreshTokenEntity>(newRefreshToken));
+            user.RefreshToken = _userMapper.Map<RefreshTokenEntity>(newRefreshToken);
             await _users.UpdateAsync(user);
 
             var jwtToken = await GenerateJwtTokenAsync(_userMapper.Map<User>(user));

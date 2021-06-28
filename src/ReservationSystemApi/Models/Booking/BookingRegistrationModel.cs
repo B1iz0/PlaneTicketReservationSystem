@@ -1,11 +1,13 @@
-﻿namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Booking
+﻿using System;
+
+namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Booking
 {
     public class BookingRegistrationModel
     {
-        public int FlightId { get; set; }
+        public Guid FlightId { get; set; }
 
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
 
-        public int PlaceId { get; set; }
+        public Guid PlaceId { get; set; }
     }
 }

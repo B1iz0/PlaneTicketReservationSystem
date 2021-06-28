@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Interfaces;
@@ -20,7 +21,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             _bookingMapper = mapper;
         }
 
-        public async Task<Booking> GetByIdAsync(int id)
+        public async Task<Booking> GetByIdAsync(Guid id)
         {
             var bookingEntity = await _bookings.GetAsync(id);
             if (bookingEntity == null)
@@ -36,7 +37,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _bookings.CreateAsync(_bookingMapper.Map<BookingEntity>(item));
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             bool isBookingExisting = await _bookings.IsExistingAsync(id);
             if (!isBookingExisting)

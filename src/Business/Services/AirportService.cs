@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -39,7 +40,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _airports.CreateAsync(airportEntity);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             bool isAirportExisting = await _airports.IsExistingAsync(id);
             if (!isAirportExisting)
@@ -49,7 +50,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _airports.DeleteAsync(id);
         }
 
-        public async Task UpdateAsync(int id, Airport item)
+        public async Task UpdateAsync(Guid id, Airport item)
         {
             bool isAirportExisting = await _airports.IsExistingAsync(id);
             if (!isAirportExisting)

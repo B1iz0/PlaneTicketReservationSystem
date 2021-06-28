@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -41,8 +42,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] PlaceTypeRegistrationModel value)
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] PlaceTypeRegistrationModel value)
         {
             await _placeTypeService.UpdateAsync(id, _placeTypeMapper.Map<PlaceType>(value));
             return Ok();

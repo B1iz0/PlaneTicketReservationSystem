@@ -1,8 +1,10 @@
-﻿namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneType
+﻿using System;
+
+namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneType
 {
     public class AirplaneTypeResponseModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string TypeName { get; set; }
     }

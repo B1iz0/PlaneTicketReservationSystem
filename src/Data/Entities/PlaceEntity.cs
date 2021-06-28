@@ -1,16 +1,18 @@
-﻿namespace PlaneTicketReservationSystem.Data.Entities
+﻿using System;
+
+namespace PlaneTicketReservationSystem.Data.Entities
 {
     public class PlaceEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
-        public int AirplaneId { get; set; }
+        public Guid AirplaneId { get; set; }
         public virtual AirplaneEntity Airplane { get; set; }
 
-        public int PlaceTypeId { get; set; }
+        public Guid PlaceTypeId { get; set; }
         public virtual PlaceTypeEntity PlaceType { get; set; }
 
-        public int? PriceId { get; set; }
+        public Guid? PriceId { get; set; }
         public virtual PriceEntity Price { get; set; }
 
         public virtual BookingEntity Booking { get; set; }

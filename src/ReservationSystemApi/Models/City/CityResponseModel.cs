@@ -1,10 +1,11 @@
-﻿using PlaneTicketReservationSystem.ReservationSystemApi.Models.Country;
+﻿using System;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Country;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.City
 {
     public class CityResponseModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
 

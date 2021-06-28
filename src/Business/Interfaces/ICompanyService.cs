@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PlaneTicketReservationSystem.Business.Models;
 
@@ -8,13 +9,13 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
     {
         Task<IEnumerable<Company>> GetAllAsync();
 
-        Task<Company> GetByIdAsync(int id);
+        Task<Company> GetByIdAsync(Guid id);
 
         Task PostAsync(Company item);
 
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Guid id);
 
-        Task UpdateAsync(int id, Company item);
+        Task UpdateAsync(Guid id, Company item);
 
         IEnumerable<Company> GetFilteredCompanies(int offset, int limit, string companyName, string countryName);
 

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,7 +41,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _countries.CreateAsync(countryEntity);
         }
 
-        public async Task UpdateAsync(int id, Country item)
+        public async Task UpdateAsync(Guid id, Country item)
         {
             bool isCountryExisting = await _countries.IsExistingAsync(id);
             if (!isCountryExisting)

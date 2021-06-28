@@ -1,8 +1,8 @@
 ﻿using System.Security.Cryptography;
 
-namespace PlaneTicketReservationSystem.Data
+namespace PlaneTicketReservationSystem.Business.Interfaces
 {
-    public interface IPasswordProvider
+    public interface IPasswordService
     {
         string GenerateHash(string password, SHA256 sha256);
 

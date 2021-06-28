@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PlaneTicketReservationSystem.Business;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Interfaces;
-using PlaneTicketReservationSystem.Data;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Infrastructure
 {
@@ -9,7 +9,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Infrastructure
     {
         public static IServiceCollection AddProviderServices(this IServiceCollection services)
         {
-            services.AddScoped<IPasswordProvider, PasswordProvider>();
+            services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<ITokenProvider, TokenProvider>();
 
             return services;

@@ -1,8 +1,10 @@
-﻿namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Place
+﻿using System;
+
+namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Place
 {
     public class PlaceResponseModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string PlaceType { get; set; }
 

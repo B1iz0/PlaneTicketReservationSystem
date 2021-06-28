@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -40,7 +41,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _placeTypes.CreateAsync(placeTypeEntity);
         }
 
-        public async Task UpdateAsync(int id, PlaceType item)
+        public async Task UpdateAsync(Guid id, PlaceType item)
         {
             bool isTypeExisting = await _placeTypes.IsExistingAsync(id);
             if (!isTypeExisting)

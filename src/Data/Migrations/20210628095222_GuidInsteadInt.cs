@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PlaneTicketReservationSystem.Data.Migrations
 {
-    public partial class RefreshTokens : Migration
+    public partial class GuidInsteadInt : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,8 +11,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 name: "AirplaneTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TypeName = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false)
                 },
                 constraints: table =>
@@ -24,8 +23,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 name: "Countries",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
@@ -34,11 +32,22 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PlaceTypes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlaceTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
@@ -50,10 +59,9 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 name: "Cities",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    CountryId = table.Column<int>(type: "int", nullable: false)
+                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,10 +78,9 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 name: "Companies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    CountryId = table.Column<int>(type: "int", nullable: false)
+                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,41 +94,17 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Airplanes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AirplaneTypeId = table.Column<int>(type: "int", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: false),
-                    FlightId = table.Column<int>(type: "int", nullable: true),
-                    ModelNumber = table.Column<int>(type: "int", nullable: false),
-                    RegistrationNumber = table.Column<short>(type: "smallint", nullable: false),
-                    Capacity = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AirplaneTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FlightId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RegistrationNumber = table.Column<int>(type: "int", nullable: false),
+                    Rows = table.Column<int>(type: "int", nullable: false),
+                    Columns = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -144,11 +127,10 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 name: "Airports",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    CityId = table.Column<int>(type: "int", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                    CityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -168,27 +150,62 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RefreshTokenEntity",
+                name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserEntityId = table.Column<int>(type: "int", nullable: false),
-                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByIp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Revoked = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RevokedByIp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReplacedByToken = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshToken_Id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    RefreshToken_Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshToken_Expires = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RefreshToken_Created = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RefreshToken_Revoked = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RefreshTokenEntity", x => new { x.UserEntityId, x.Id });
+                    table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RefreshTokenEntity_Users_UserEntityId",
-                        column: x => x.UserEntityId,
-                        principalTable: "Users",
+                        name: "FK_Users_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Users_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Prices",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AirplaneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlaceTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TicketPrice = table.Column<decimal>(type: "decimal(10,4)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Prices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Prices_Airplanes_AirplaneId",
+                        column: x => x.AirplaneId,
+                        principalTable: "Airplanes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Prices_PlaceTypes_PlaceTypeId",
+                        column: x => x.PlaceTypeId,
+                        principalTable: "PlaceTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -197,15 +214,12 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 name: "Flights",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AirplaneId = table.Column<int>(type: "int", nullable: false),
-                    FlightNumber = table.Column<long>(type: "bigint", nullable: false),
-                    FromId = table.Column<int>(type: "int", nullable: false),
-                    ToId = table.Column<int>(type: "int", nullable: false),
-                    DepartureDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AirplaneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FlightNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    FromId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ToId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DepartureTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ArrivalDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -232,13 +246,47 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Places",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AirplaneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlaceTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PriceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Row = table.Column<int>(type: "int", nullable: false),
+                    Column = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Places", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Places_Airplanes_AirplaneId",
+                        column: x => x.AirplaneId,
+                        principalTable: "Airplanes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Places_PlaceTypes_PlaceTypeId",
+                        column: x => x.PlaceTypeId,
+                        principalTable: "PlaceTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Places_Prices_PriceId",
+                        column: x => x.PriceId,
+                        principalTable: "Prices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Bookings",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FlightId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FlightId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlaceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -250,32 +298,18 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Bookings_Places_PlaceId",
+                        column: x => x.PlaceId,
+                        principalTable: "Places",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Bookings_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "Name" },
-                values: new object[] { 1, "AdminApp" });
-
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "Name" },
-                values: new object[] { 2, "Admin" });
-
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "Name" },
-                values: new object[] { 3, "User" });
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "Email", "FirstName", "LastName", "Password", "PhoneNumber", "RoleId" },
-                values: new object[] { 1, "admin", "admin", "admin", "WZRHGrsBESr8wYFZ9sx0tPURuZgG2lmzyvWpwXPKz8U=2RPShvcjQskH9RZ5iVDVmcBWb2dHd8NWNL5VqNZqC80=", null, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Airplanes_AirplaneTypeId",
@@ -301,6 +335,12 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 name: "IX_Bookings_FlightId",
                 table: "Bookings",
                 column: "FlightId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_PlaceId",
+                table: "Bookings",
+                column: "PlaceId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_UserId",
@@ -334,6 +374,36 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 column: "ToId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Places_AirplaneId",
+                table: "Places",
+                column: "AirplaneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Places_PlaceTypeId",
+                table: "Places",
+                column: "PlaceTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Places_PriceId",
+                table: "Places",
+                column: "PriceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prices_AirplaneId",
+                table: "Prices",
+                column: "AirplaneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prices_PlaceTypeId",
+                table: "Prices",
+                column: "PlaceTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_CompanyId",
+                table: "Users",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
@@ -345,28 +415,34 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                 name: "Bookings");
 
             migrationBuilder.DropTable(
-                name: "RefreshTokenEntity");
+                name: "Flights");
 
             migrationBuilder.DropTable(
-                name: "Flights");
+                name: "Places");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Airplanes");
+                name: "Airports");
 
             migrationBuilder.DropTable(
-                name: "Airports");
+                name: "Prices");
 
             migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "AirplaneTypes");
+                name: "Cities");
 
             migrationBuilder.DropTable(
-                name: "Cities");
+                name: "Airplanes");
+
+            migrationBuilder.DropTable(
+                name: "PlaceTypes");
+
+            migrationBuilder.DropTable(
+                name: "AirplaneTypes");
 
             migrationBuilder.DropTable(
                 name: "Companies");

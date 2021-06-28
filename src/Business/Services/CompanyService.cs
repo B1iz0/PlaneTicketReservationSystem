@@ -31,7 +31,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             return companies;
         }
 
-        public async Task<Company> GetByIdAsync(int id)
+        public async Task<Company> GetByIdAsync(Guid id)
         {
             CompanyEntity companyEntity = await _companies.GetAsync(id);
             if (companyEntity == null)
@@ -53,7 +53,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _companies.CreateAsync(companyEntity);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             bool isCompanyExisting = await _companies.IsExistingAsync(id);
             if (!isCompanyExisting)
@@ -63,7 +63,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _companies.DeleteAsync(id);
         }
 
-        public async Task UpdateAsync(int id, Company item)
+        public async Task UpdateAsync(Guid id, Company item)
         {
             bool isCompanyExisting = await _companies.IsExistingAsync(id);
             if (!isCompanyExisting)

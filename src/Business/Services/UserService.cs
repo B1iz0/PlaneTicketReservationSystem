@@ -8,7 +8,6 @@ using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
 
@@ -16,15 +15,15 @@ namespace PlaneTicketReservationSystem.Business.Services
 {
     public class UserService : IUserService
     {
-        private readonly IPasswordProvider _passwordProvider;
+        private readonly IPasswordService _passwordService;
 
         private readonly IUserRepository _users;
 
         private readonly IMapper _userMapper;
 
-        public UserService(IPasswordProvider passwordProvider, IUserRepository users, IMapper mapper)
+        public UserService(IPasswordService passwordService, IUserRepository users, IMapper mapper)
         {
-            _passwordProvider = passwordProvider;
+            _passwordService = passwordService;
             _users = users;
             _userMapper = mapper;
         }
@@ -51,7 +50,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             return count;
         }
 
-        public async Task<User> GetByIdAsync(int id)
+        public async Task<User> GetByIdAsync(Guid id)
         {
             UserEntity userEntity = await _users.GetAsync(id);
             if (userEntity == null)
@@ -69,12 +68,12 @@ namespace PlaneTicketReservationSystem.Business.Services
             {
                 throw new ElementAlreadyExistException($"User with email: {user.Email} is already registered");
             }
-            user.Password = _passwordProvider.GenerateHash(user.Password, SHA256.Create());
+            user.Password = _passwordService.GenerateHash(user.Password, SHA256.Create());
             var userEntity = _userMapper.Map<UserEntity>(user);
             await _users.CreateAsync(userEntity);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             bool isUserExisting = await _users.IsExistingAsync(id);
             if (!isUserExisting)
@@ -84,7 +83,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _users.DeleteAsync(id);
         }
 
-        public async Task UpdateAsync(int id, User user)
+        public async Task UpdateAsync(Guid id, User user)
         {
             bool isUserExisting = await _users.IsExistingAsync(id);
             if (!isUserExisting)
@@ -92,7 +91,7 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementNotFoundException($"User with id:{id} is not found");
             }
             user.Id = id;
-            user.Password = _passwordProvider.GenerateHash(user.Password, SHA256.Create());
+            user.Password = _passwordService.GenerateHash(user.Password, SHA256.Create());
             var userEntity = _userMapper.Map<UserEntity>(user);
             await _users.UpdateAsync(userEntity);
         }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PlaneTicketReservationSystem.Business.Helpers;
-using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Infrastructure
@@ -12,7 +11,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Infrastructure
         {
             services.Configure<TokenSettings>(configuration.GetSection("AuthOptions"));
             services.Configure<AdminAppOptions>(configuration.GetSection("AdminAppOptions"));
-            services.Configure<PasswordProviderSettings>(configuration.GetSection("PasswordSalt"));
+            services.Configure<PasswordServiceSettings>(configuration.GetSection("PasswordSalt"));
 
             return services;
         }

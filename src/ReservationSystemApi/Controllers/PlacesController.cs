@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Interfaces;
@@ -21,8 +22,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             _placeMapper = new Mapper(conf.PlaceMapperConfiguration);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Get(Guid id)
         {
             var response = _placeMapper.Map<PlaceResponseModel>(await _placeService.GetByIdAsync(id));
             return Ok(response);

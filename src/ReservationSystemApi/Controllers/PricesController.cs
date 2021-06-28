@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -25,8 +26,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             _priceMapper = new Mapper(conf.PriceMapperConfiguration);
         }
 
-        [HttpGet("{airplaneId}")]
-        public IActionResult Get(int airplaneId)
+        [HttpGet("{airplaneId:guid}")]
+        public IActionResult Get(Guid airplaneId)
         {
             var response = _priceMapper.Map<IEnumerable<PriceResponseModel>>(_priceService.GetByAirplaneIdAsync(airplaneId));
             return Ok(response);
@@ -41,8 +42,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [Authorize(Policy = ApiPolicies.AdminPolicy)]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] PriceRegistrationModel value)
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] PriceRegistrationModel value)
         {
             await _priceService.UpdateAsync(id, _priceMapper.Map<Price>(value));
             return Ok();

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
-using PlaneTicketReservationSystem.Business;
 using PlaneTicketReservationSystem.Business.Constants;
 using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Models;
@@ -104,13 +104,13 @@ namespace Business.Tests
 
         private static async Task<RoleEntity> GetTestRole(User user)
         {
-            int roleId = user.RoleId;
+            Guid roleId = user.RoleId;
 
             var roles = new List<RoleEntity>
             {
-                new RoleEntity {Id = ApiRoles.AdminAppId, Name = ApiRoles.AdminApp},
-                new RoleEntity {Id = ApiRoles.AdminId, Name = ApiRoles.Admin},
-                new RoleEntity {Id = ApiRoles.UserId, Name = ApiRoles.User},
+                new RoleEntity {Id = new Guid(), Name = ApiRoles.AdminApp},
+                new RoleEntity {Id = new Guid(), Name = ApiRoles.Admin},
+                new RoleEntity {Id = new Guid(), Name = ApiRoles.User},
             };
 
             var roleResult = await Task.Run(() => roles.FirstOrDefault(role => role.Id == roleId));

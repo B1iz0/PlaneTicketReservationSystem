@@ -24,7 +24,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             _airplaneMapper = mapper;
         }
 
-        public async Task<Airplane> GetByIdAsync(int id)
+        public async Task<Airplane> GetByIdAsync(Guid id)
         {
             var airplaneEntity = await _airplanes.GetAsync(id);
             if (airplaneEntity == null)
@@ -45,7 +45,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _airplanes.CreateAsync(_airplaneMapper.Map<AirplaneEntity>(item));
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             bool isAirplaneExisting = await _airplanes.IsExistingAsync(id);
             if (!isAirplaneExisting)
@@ -55,7 +55,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _airplanes.DeleteAsync(id);
         }
 
-        public async Task UpdateAsync(int id, Airplane item)
+        public async Task UpdateAsync(Guid id, Airplane item)
         {
             bool isAirplaneExisting = await _airplanes.IsExistingAsync(id);
             if (!isAirplaneExisting)

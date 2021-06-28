@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PlaneTicketReservationSystem.Business.Models;
 
@@ -6,13 +7,13 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
 {
     public interface IAirplaneService
     {
-        Task<Airplane> GetByIdAsync(int id);
+        Task<Airplane> GetByIdAsync(Guid id);
 
         Task PostAsync(Airplane item);
 
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Guid id);
 
-        Task UpdateAsync(int id, Airplane item);
+        Task UpdateAsync(Guid id, Airplane item);
 
         IEnumerable<Airplane> GetFreeAirplanes();
 

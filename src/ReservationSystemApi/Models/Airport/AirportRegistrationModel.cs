@@ -1,13 +1,15 @@
-﻿namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Airport
+﻿using System;
+
+namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Airport
 {
     public class AirportRegistrationModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
 
-        public int CityId { get; set; }
+        public Guid CityId { get; set; }
 
-        public int CompanyId { get; set; }
+        public Guid CompanyId { get; set; }
     }
 }

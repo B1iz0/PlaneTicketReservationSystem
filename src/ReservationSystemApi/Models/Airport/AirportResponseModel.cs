@@ -1,11 +1,12 @@
-﻿using PlaneTicketReservationSystem.ReservationSystemApi.Models.City;
+﻿using System;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.City;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Company;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Airport
 {
     public class AirportResponseModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
 

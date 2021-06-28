@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -22,7 +22,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             _placeMapper = mapper;
         }
 
-        public async Task<Place> GetByIdAsync(int id)
+        public async Task<Place> GetByIdAsync(Guid id)
         {
             PlaceEntity placeEntity = await _places.GetAsync(id);
             if (placeEntity == null)

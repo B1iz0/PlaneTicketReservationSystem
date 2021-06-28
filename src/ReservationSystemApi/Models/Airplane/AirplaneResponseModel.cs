@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.AirplaneType;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Company;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Flight;
@@ -9,7 +10,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Airplane
 {
     public class AirplaneResponseModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public AirplaneTypeResponseModel AirplaneType { get; set; }
 

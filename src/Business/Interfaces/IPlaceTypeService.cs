@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PlaneTicketReservationSystem.Business.Models;
 
@@ -10,6 +11,6 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
 
         Task PostAsync(PlaceType item);
 
-        Task UpdateAsync(int id, PlaceType item);
+        Task UpdateAsync(Guid id, PlaceType item);
     }
 }

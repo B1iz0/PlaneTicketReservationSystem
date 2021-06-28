@@ -26,7 +26,7 @@ namespace PlaneTicketReservationSystem.Data.Repositories.BaseRepository
             await Db.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             T item = await DbSet.FindAsync(id);
             if (item != null)
@@ -51,12 +51,12 @@ namespace PlaneTicketReservationSystem.Data.Repositories.BaseRepository
             return await DbSet.ToListAsync();
         }
 
-        public async Task<T> GetAsync(int id)
+        public async Task<T> GetAsync(Guid id)
         {
             return await DbSet.FindAsync(id);
         }
 
-        public async Task<bool> IsExistingAsync(int id)
+        public async Task<bool> IsExistingAsync(Guid id)
         {
             bool isItemExisting = (await GetAsync(id) != null);
             return isItemExisting;
