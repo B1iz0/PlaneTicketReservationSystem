@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using AutoMapper;
+using PlaneTicketReservationSystem.Business.Constants;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
@@ -19,12 +20,15 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         private readonly IUserRepository _users;
 
+        private readonly IRoleRepository _roles;
+
         private readonly IMapper _userMapper;
 
-        public UserService(IPasswordService passwordService, IUserRepository users, IMapper mapper)
+        public UserService(IPasswordService passwordService, IUserRepository users, IRoleRepository roles, IMapper mapper)
         {
             _passwordService = passwordService;
             _users = users;
+            _roles = roles;
             _userMapper = mapper;
         }
 
@@ -67,6 +71,16 @@ namespace PlaneTicketReservationSystem.Business.Services
             if (isUserExisting)
             {
                 throw new ElementAlreadyExistException($"User with email: {user.Email} is already registered");
+            }
+
+            if (user.RoleId == Guid.Empty)
+            {
+                RoleEntity userRole = _roles.Find(role => role.Name == ApiRoles.User).FirstOrDefault();
+                if (userRole == null)
+                {
+                    throw new ElementNotFoundException("User can't be added. Some server troubles. Try a bit latter");
+                }
+                user.RoleId = userRole.Id;
             }
             user.Password = _passwordService.GenerateHash(user.Password, SHA256.Create());
             var userEntity = _userMapper.Map<UserEntity>(user);
