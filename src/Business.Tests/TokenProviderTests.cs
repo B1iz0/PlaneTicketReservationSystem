@@ -69,7 +69,7 @@ namespace Business.Tests
             {
                 return new[]
                 {
-                    new object[] { new User {} },
+                    new object[] { new User() },
                 };
             }
         }
