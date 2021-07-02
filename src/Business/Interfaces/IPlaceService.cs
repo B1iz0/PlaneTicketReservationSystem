@@ -8,6 +8,6 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
     {
         Task<Place> GetByIdAsync(Guid id);
 
-        Task PostAsync(Place item);
+        Task PostAsync(PlaceListRegistration item);
     }
 }

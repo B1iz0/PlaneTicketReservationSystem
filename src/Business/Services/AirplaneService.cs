@@ -35,14 +35,16 @@ namespace PlaneTicketReservationSystem.Business.Services
             return airplane;
         }
 
-        public async Task PostAsync(Airplane item)
+        public async Task<Airplane> PostAsync(Airplane item)
         {
             bool isAirplaneExisting = _airplanes.Find(x => x.RegistrationNumber == item.RegistrationNumber).Any();
             if (isAirplaneExisting)
             {
                 throw new ElementAlreadyExistException($"Airplane with registration number:{item.RegistrationNumber} is already exist");
-            }
-            await _airplanes.CreateAsync(_airplaneMapper.Map<AirplaneEntity>(item));
+            } 
+            AirplaneEntity createdAirplaneEntity = await _airplanes.CreateAsync(_airplaneMapper.Map<AirplaneEntity>(item));
+            var createdAirplane = _airplaneMapper.Map<Airplane>(createdAirplaneEntity);
+            return createdAirplane;
         }
 
         public async Task DeleteAsync(Guid id)

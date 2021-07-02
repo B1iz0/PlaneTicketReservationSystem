@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Place
+namespace PlaneTicketReservationSystem.Business.Models
 {
-    public class PlaceRegistrationModel
+    public class PlaceRegistration
     {
         public Guid PlaceTypeId { get; set; }
 

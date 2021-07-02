@@ -20,10 +20,12 @@ namespace PlaneTicketReservationSystem.Data.Repositories.BaseRepository
             this.DbSet = dbSet;
         }
 
-        public async Task CreateAsync(T item)
+        public async Task<T> CreateAsync(T item)
         {
-            await DbSet.AddAsync(item);
+            var addedEntityEntry = await DbSet.AddAsync(item);
             await Db.SaveChangesAsync();
+
+            return addedEntityEntry.Entity;
         }
 
         public async Task DeleteAsync(Guid id)

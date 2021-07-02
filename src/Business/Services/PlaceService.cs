@@ -14,11 +14,14 @@ namespace PlaneTicketReservationSystem.Business.Services
     {
         private readonly IPlaceRepository _places;
 
+        private readonly IPlaceTypeRepository _placeTypes;
+
         private readonly IMapper _placeMapper;
 
-        public PlaceService(IPlaceRepository places, IMapper mapper)
+        public PlaceService(IPlaceRepository places, IPlaceTypeRepository placeTypes, IMapper mapper)
         {
             _places = places;
+            _placeTypes = placeTypes;
             _placeMapper = mapper;
         }
 
@@ -33,15 +36,33 @@ namespace PlaneTicketReservationSystem.Business.Services
             return place;
         }
 
-        public async Task PostAsync(Place item)
+        public async Task PostAsync(PlaceListRegistration item)
         {
-            bool isPlaceExisting = _places.Find(x => x.AirplaneId == item.AirplaneId && x.Row == item.Row && x.Column == item.Column).Any();
-            if (isPlaceExisting)
+            foreach (var place in item.Places)
             {
-                throw new ElementAlreadyExistException("Such place is already exist");
+                for (int i = 0; i < place.PlaceAmount; i++)
+                {
+                    PlaceTypeEntity placeType = _placeTypes.Find(type => type.Name == place.PlaceTypeName).FirstOrDefault();
+                    if (placeType == null)
+                    {
+                        var newPlaceType = new PlaceType
+                        {
+                            Name = place.PlaceTypeName,
+                        };
+                        var newPlaceTypeEntity = _placeMapper.Map<PlaceTypeEntity>(newPlaceType);
+                        placeType = await _placeTypes.CreateAsync(newPlaceTypeEntity);
+                    }
+                    var newPlace = new Place
+                    {
+                        AirplaneId = item.AirplaneId,
+                        PlaceTypeId = placeType.Id,
+                        Row = place.Row,
+                        Column = place.Column
+                    };
+                    var newPlaceEntity = _placeMapper.Map<PlaceEntity>(newPlace);
+                    await _places.CreateAsync(newPlaceEntity);
+                }
             }
-            var placeEntity = _placeMapper.Map<PlaceEntity>(item);
-            await _places.CreateAsync(placeEntity);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
     {
         Task<Airplane> GetByIdAsync(Guid id);
 
-        Task PostAsync(Airplane item);
+        Task<Airplane> PostAsync(Airplane item);
 
         Task DeleteAsync(Guid id);
 

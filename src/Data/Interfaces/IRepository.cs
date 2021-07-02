@@ -16,7 +16,7 @@ namespace PlaneTicketReservationSystem.Data.Interfaces
 
         IQueryable<T> FindWithLimitAndOffset(Expression<Func<T, bool>> predicate, int offset, int limit);
 
-        Task CreateAsync(T item);
+        Task<T> CreateAsync(T item);
 
         Task UpdateAsync(T item);
 

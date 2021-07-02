@@ -58,8 +58,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize(Policy = ApiPolicies.AdminPolicy)]
         public async Task<IActionResult> Post([FromBody] AirplaneRegistrationModel value)
         {
-            await _airplaneService.PostAsync(_airplaneMapper.Map<Airplane>(value));
-            return Ok();
+            Airplane createdAirplane = await _airplaneService.PostAsync(_airplaneMapper.Map<Airplane>(value));
+            var response = _airplaneMapper.Map<AirplaneResponseModel>(createdAirplane);
+            return Ok(response);
         }
 
         [HttpPut("{id:guid}")]

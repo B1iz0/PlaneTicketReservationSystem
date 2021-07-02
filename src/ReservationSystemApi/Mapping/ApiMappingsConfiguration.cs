@@ -198,7 +198,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<Place, PlaceResponseModel>()
                     .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name))
                     .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null));
-                x.CreateMap<PlaceRegistrationModel, Place>();
+                x.CreateMap<PlaceListRegistrationModel, PlaceListRegistration>();
+                x.CreateMap<PlaceRegistrationModel, PlaceRegistration>();
             });
         }
     }
