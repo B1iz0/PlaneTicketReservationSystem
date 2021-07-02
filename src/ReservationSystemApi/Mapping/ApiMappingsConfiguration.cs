@@ -91,8 +91,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<City, CityResponseModel>();
                 x.CreateMap<Place, PlaceResponseModel>()
                     .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name))
-                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null))
-                    .ForMember(z => z.TicketPrice, opt => opt.MapFrom(c => c.Price.TicketPrice));
+                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null));
                 x.CreateMap<PlaceType, PlaceTypeResponseModel>();
                 x.CreateMap<Price, PriceResponseModel>()
                     .ForMember(z => z.AirplaneModel, opt => opt.MapFrom(c => c.Airplane.Model))
@@ -133,8 +132,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<User, UserResponseModel>();
                 x.CreateMap<Place, PlaceResponseModel>()
                     .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name))
-                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null))
-                    .ForMember(z => z.TicketPrice, opt => opt.MapFrom(c => c.Price.TicketPrice));
+                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null));
             });
             CityMapperConfiguration = new MapperConfiguration(x =>
             {
@@ -199,8 +197,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
             {
                 x.CreateMap<Place, PlaceResponseModel>()
                     .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name))
-                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null))
-                    .ForMember(z => z.TicketPrice, opt => opt.MapFrom(c => c.Price.TicketPrice));
+                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null));
                 x.CreateMap<PlaceRegistrationModel, Place>();
             });
         }

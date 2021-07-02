@@ -8,8 +8,6 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Place
 
         public string PlaceType { get; set; }
 
-        public decimal TicketPrice { get; set; }
-
         public int Row { get; set; }
 
         public int Column { get; set; }

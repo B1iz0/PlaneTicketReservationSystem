@@ -228,9 +228,6 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.HasOne(p => p.PlaceType)
                 .WithMany(p => p.Places)
                 .HasForeignKey(p => p.PlaceTypeId);
-            modelBuilder.HasOne(p => p.Price)
-                .WithMany(p => p.Places)
-                .HasForeignKey(p => p.PriceId);
             modelBuilder.Property(p => p.AirplaneId)
                 .IsRequired();
             modelBuilder.Property(p => p.PlaceTypeId)

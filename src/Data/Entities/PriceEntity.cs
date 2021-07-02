@@ -14,7 +14,5 @@ namespace PlaneTicketReservationSystem.Data.Entities
         public virtual PlaceTypeEntity PlaceType { get; set; }
 
         public decimal TicketPrice { get; set; }
-
-        public virtual List<PlaceEntity> Places { get; set; }
     }
 }
