@@ -16,12 +16,15 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         private readonly IPlaceTypeRepository _placeTypes;
 
+        private readonly IPriceRepository _prices;
+
         private readonly IMapper _placeMapper;
 
-        public PlaceService(IPlaceRepository places, IPlaceTypeRepository placeTypes, IMapper mapper)
+        public PlaceService(IPlaceRepository places, IPlaceTypeRepository placeTypes, IPriceRepository prices, IMapper mapper)
         {
             _places = places;
             _placeTypes = placeTypes;
+            _prices = prices;
             _placeMapper = mapper;
         }
 
@@ -51,6 +54,18 @@ namespace PlaneTicketReservationSystem.Business.Services
                         };
                         var newPlaceTypeEntity = _placeMapper.Map<PlaceTypeEntity>(newPlaceType);
                         placeType = await _placeTypes.CreateAsync(newPlaceTypeEntity);
+                    }
+                    var price = new PriceEntity
+                    {
+                        AirplaneId = item.AirplaneId,
+                        PlaceTypeId = placeType.Id,
+                        TicketPrice = 0,
+                    };
+                    IQueryable<PriceEntity> existedPrice = _prices.Find(p => (p.PlaceTypeId == placeType.Id) &&
+                                                                             (p.AirplaneId == item.AirplaneId));
+                    if (!existedPrice.Any())
+                    {
+                        await _prices.CreateAsync(price);
                     }
                     var newPlace = new Place
                     {

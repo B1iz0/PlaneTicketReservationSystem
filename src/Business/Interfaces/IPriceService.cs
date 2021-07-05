@@ -12,5 +12,7 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
         Task PostAsync(Price item);
 
         Task UpdateAsync(Guid id, Price item);
+
+        Task UpdateListAsync(IEnumerable<Price> prices);
     }
 }

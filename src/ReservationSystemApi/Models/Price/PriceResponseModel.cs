@@ -10,6 +10,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Price
 
         public string AirplaneModel { get; set; }
 
+        public Guid PlaceTypeId { get; set; }
+
         public string PlaceType { get; set; }
 
         public decimal TicketPrice { get; set; }

@@ -47,14 +47,22 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task UpdateAsync(Guid id, Price item)
         {
-            bool isPriceExisting = await _prices.IsExistingAsync(id);
-            if (!isPriceExisting)
-            {
-                throw new ElementNotFoundException("No such price");
-            }
+            //bool isPriceExisting = await _prices.IsExistingAsync(id);
+            //if (!isPriceExisting)
+            //{
+            //    throw new ElementNotFoundException("No such price");
+            //}
             item.Id = id;
             var priceEntity = _pricesMapper.Map<PriceEntity>(item);
             await _prices.UpdateAsync(priceEntity);
+        }
+
+        public async Task UpdateListAsync(IEnumerable<Price> prices)
+        {
+            foreach (var price in prices)
+            {
+                await UpdateAsync(price.Id, price);
+            }
         }
     }
 }

@@ -48,5 +48,13 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             await _priceService.UpdateAsync(id, _priceMapper.Map<Price>(value));
             return Ok();
         }
+
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
+        [HttpPut]
+        public async Task<IActionResult> PutList([FromBody] IEnumerable<PriceRegistrationModel> prices)
+        {
+            await _priceService.UpdateListAsync(_priceMapper.Map<IEnumerable<Price>>(prices));
+            return Ok();
+        }
     }
 }
