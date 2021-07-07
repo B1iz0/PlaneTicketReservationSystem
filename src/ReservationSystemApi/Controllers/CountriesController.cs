@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.CountryModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Country;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -15,61 +16,36 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class CountriesController : ControllerBase
     {
-        private readonly IDataService<Country> _countryService;
+        private readonly ICountryService _countryService;
+
         private readonly Mapper _countryMapper;
 
-        public CountriesController(IDataService<Country> service, ApiMappingsConfiguration conf)
+        public CountriesController(ICountryService service, ApiMappingsConfiguration conf)
         {
             _countryService = service;
             _countryMapper = new Mapper(conf.CountryMapperConfiguration);
         }
 
-        // GET: api/<CountriesController>
         [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
-            var response = _countryMapper.Map<IEnumerable<CountryResponse>>(await _countryService.GetAllAsync());
-            if (response == null)
-                throw new NullReferenceException();
+            var response = _countryMapper.Map<IEnumerable<CountryResponseModel>>(await _countryService.GetAllAsync());
             return Ok(response);
         }
 
-        // GET api/<CountriesController>/5
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<IActionResult> Get(int id)
-        {
-            var response = _countryMapper.Map<CountryDetails>(await _countryService.GetByIdAsync(id));
-            if (response == null)
-                throw new NullReferenceException();
-            return Ok(response);
-        }
-
-        // POST api/<CountriesController>
         [HttpPost]
-        [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Post([FromBody] CountryRegistration value)
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
+        public async Task<IActionResult> Post([FromBody] CountryRegistrationModel value)
         {
             await _countryService.PostAsync(_countryMapper.Map<Country>(value));
             return Ok();
         }
 
-        // PUT api/<CountriesController>/5
-        [HttpPut("{id}")]
-        [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Put(int id, [FromBody] CountryRegistration value)
+        [HttpPut("{id:guid}")]
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
+        public async Task<IActionResult> Put(Guid id, [FromBody] CountryRegistrationModel value)
         {
             await _countryService.UpdateAsync(id, _countryMapper.Map<Country>(value));
-            return Ok();
-        }
-
-        // DELETE api/<CountriesController>/5
-        [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _countryService.DeleteAsync(id);
             return Ok();
         }
     }

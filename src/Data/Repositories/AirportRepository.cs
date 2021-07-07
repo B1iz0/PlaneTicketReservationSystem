@@ -1,65 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using PlaneTicketReservationSystem.Data.Entities;
+﻿using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
+using PlaneTicketReservationSystem.Data.Repositories.BaseRepository;
 
 namespace PlaneTicketReservationSystem.Data.Repositories
 {
-    public class AirportRepository : IRepository<AirportEntity>
+    public class AirportRepository : BaseRepository<AirportEntity>, IAirportRepository
     {
-        private readonly ReservationSystemContext _db;
-        private readonly DbSet<AirportEntity> _airports;
-
-        public AirportRepository(ReservationSystemContext context)
+        public AirportRepository(ReservationSystemContext context) : base(context, context.Airports)
         {
-            this._db = context;
-            _airports = context.Airports;
-        }
-
-        public async Task CreateAsync(AirportEntity item)
-        {
-            await _airports.AddAsync(item);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            AirportEntity airport = await _airports.FindAsync(id);
-            if (airport != null)
-            {
-                _airports.Remove(airport);
-                await _db.SaveChangesAsync();
-            }
-        }
-
-        public IEnumerable<AirportEntity> Find(Func<AirportEntity, bool> predicate)
-        {
-            return _airports.Where(predicate).ToList();
-        }
-
-        public async Task<AirportEntity> GetAsync(int id)
-        {
-            return await _airports.FindAsync(id);
-        }
-
-        public async Task<IEnumerable<AirportEntity>> GetAllAsync()
-        {
-            return await _airports.ToListAsync();
-        }
-
-        public async Task<bool> IsExistingAsync(int id)
-        {
-            return await _airports.AnyAsync(x => x.Id == id);
-        }
-
-        public async Task UpdateAsync(int id, AirportEntity item)
-        {
-            item.Id = id;
-            _airports.Update(item);
-            await _db.SaveChangesAsync();
         }
     }
 }

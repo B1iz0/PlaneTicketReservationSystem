@@ -4,56 +4,53 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
-using PlaneTicketReservationSystem.Data.Repositories;
+using PlaneTicketReservationSystem.Data.Interfaces;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class CityService : IDataService<City>
+    public class CityService : ICityService
     {
-        private readonly CityRepository _cities;
-        private readonly Mapper _cityMapper;
+        private readonly ICityRepository _cities;
 
-        public CityService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
+        private readonly IMapper _cityMapper;
+
+        public CityService(ICityRepository cities, IMapper mapper)
         {
-            _cities = new CityRepository(context);
-            _cityMapper = new Mapper(conf.AirlineConfiguration);
+            _cities = cities;
+            _cityMapper = mapper;
         }
         
         public async Task<IEnumerable<City>> GetAllAsync()
         {
-            return _cityMapper.Map<IEnumerable<City>>(await _cities.GetAllAsync());
-        }
-
-        public async Task<City> GetByIdAsync(int id)
-        {
-            if (!_cities.Find(x => x.Id == id).Any())
-                throw new ElementNotFoundException($"No such city with id: {id}");
-            return _cityMapper.Map<City>(await _cities.GetAsync(id));
+            var citiesEntities = await _cities.GetAllAsync();
+            var cities = _cityMapper.Map<IEnumerable<City>>(citiesEntities);
+            return cities;
         }
 
         public async Task PostAsync(City item)
         {
-            if (_cities.Find(x => x.Name == item.Name).Any())
+            bool isCityExisting = _cities.Find(x => x.Name == item.Name).Any();
+            if (isCityExisting)
+            {
                 throw new ElementAlreadyExistException($"City {item.Name} is already exist");
-            await _cities.CreateAsync(_cityMapper.Map<CityEntity>(item));
+            }
+            var cityEntity = _cityMapper.Map<CityEntity>(item);
+            await _cities.CreateAsync(cityEntity);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task UpdateAsync(Guid id, City item)
         {
-            if (!_cities.Find(x => x.Id == id).Any())
+            bool isCityExisting = await _cities.IsExistingAsync(id);
+            if (!isCityExisting)
+            {
                 throw new ElementNotFoundException($"No such city with id: {id}");
-            await _cities.DeleteAsync(id);
-        }
-
-        public async Task UpdateAsync(int id, City item)
-        {
-            if (!(await _cities.IsExistingAsync(id)))
-                throw new ElementNotFoundException($"No such city with id: {id}");
-            await _cities.UpdateAsync(id, _cityMapper.Map<CityEntity>(item));
+            }
+            item.Id = id;
+            var cityEntity = _cityMapper.Map<CityEntity>(item);
+            await _cities.UpdateAsync(cityEntity);
         }
     }
 }

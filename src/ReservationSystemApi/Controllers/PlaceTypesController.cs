@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.PlaceTypeModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.PlaceType;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -15,59 +16,36 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class PlaceTypesController : ControllerBase
     {
-        private readonly IDataService<PlaceType> _placeTypeService;
+        private readonly IPlaceTypeService _placeTypeService;
+
         private readonly Mapper _placeTypeMapper;
 
-        public PlaceTypesController(IDataService<PlaceType> placeTypeService, ApiMappingsConfiguration conf)
+        public PlaceTypesController(IPlaceTypeService placeTypeService, ApiMappingsConfiguration conf)
         {
             _placeTypeService = placeTypeService;
             _placeTypeMapper = new Mapper(conf.PlaceTypeMapperConfiguration);
         }
 
-        // GET: api/<PlaceTypesController>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var response = _placeTypeMapper.Map<IEnumerable<PlaceTypeResponse>>(await _placeTypeService.GetAllAsync());
-            if (response == null)
-                throw new NullReferenceException();
+            var response = _placeTypeMapper.Map<IEnumerable<PlaceTypeResponseModel>>(await _placeTypeService.GetAllAsync());
             return Ok(response);
         }
 
-        // GET api/<PlaceTypesController>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var response = _placeTypeMapper.Map<PlaceTypeResponse>(await _placeTypeService.GetByIdAsync(id));
-            if (response == null)
-                throw new NullReferenceException();
-            return Ok(response);
-        }
-
-        // POST api/<PlaceTypesController>
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] PlaceTypeRegistration value)
+        public async Task<IActionResult> Post([FromBody] PlaceTypeRegistrationModel value)
         {
             await _placeTypeService.PostAsync(_placeTypeMapper.Map<PlaceType>(value));
             return Ok();
         }
 
-        // PUT api/<PlaceTypesController>/5
-        [Authorize(Policy = "AdminApp")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] PlaceTypeRegistration value)
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] PlaceTypeRegistrationModel value)
         {
             await _placeTypeService.UpdateAsync(id, _placeTypeMapper.Map<PlaceType>(value));
-            return Ok();
-        }
-
-        // DELETE api/<PlaceTypesController>/5
-        [Authorize(Policy = "AdminApp")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _placeTypeService.DeleteAsync(id);
             return Ok();
         }
     }

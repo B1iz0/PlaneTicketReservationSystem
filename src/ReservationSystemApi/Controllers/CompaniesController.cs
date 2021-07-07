@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.CompanyModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Company;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -15,59 +16,63 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class CompaniesController : ControllerBase
     {
-        private readonly IDataService<Company> _companyService;
+        private readonly ICompanyService _companyService;
+
         private readonly Mapper _companyMapper;
 
-        public CompaniesController(IDataService<Company> service, ApiMappingsConfiguration conf)
+        public CompaniesController(ICompanyService service, ApiMappingsConfiguration conf)
         {
             _companyService = service;
             _companyMapper = new Mapper(conf.CompanyMapperConfiguration);
         }
 
-        // GET: api/<CompaniesController>
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var response = _companyMapper.Map<IEnumerable<CompanyResponseModel>>(await _companyService.GetAllAsync());
+            return Ok(response);
+        }
+
         [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Get()
+        public IActionResult Get(string companyName, string countryName, int offset, int limit)
         {
-            var response = _companyMapper.Map<IEnumerable<CompanyResponse>>(await _companyService.GetAllAsync());
-            if (response == null)
-                throw new NullReferenceException();
+            var response = _companyMapper.Map<IEnumerable<CompanyResponseModel>>(_companyService.GetFilteredCompanies(offset, limit, companyName, countryName));
             return Ok(response);
         }
 
-        // GET api/<CompaniesController>/5
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("count")]
+        public IActionResult GetCount(string companyName, string countryName)
         {
-            var response = _companyMapper.Map<CompanyDetails>(await _companyService.GetByIdAsync(id));
-            if (response == null)
-                throw new NullReferenceException();
+            int response = _companyService.GetFilteredCompaniesCount(companyName, countryName);
             return Ok(response);
         }
 
-        // POST api/<CompaniesController>
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var response = _companyMapper.Map<CompanyDetailsModel>(await _companyService.GetByIdAsync(id));
+            return Ok(response);
+        }
+
         [HttpPost]
-        [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Post([FromBody] CompanyRegistration value)
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
+        public async Task<IActionResult> Post([FromBody] CompanyRegistrationModel value)
         {
             await _companyService.PostAsync(_companyMapper.Map<Company>(value));
             return Ok();
         }
 
-        // PUT api/<CompaniesController>/5
-        [HttpPut("{id}")]
-        [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Put(int id, [FromBody] CompanyRegistration value)
+        [HttpPut("{id:guid}")]
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
+        public async Task<IActionResult> Put(Guid id, [FromBody] CompanyRegistrationModel value)
         {
             await _companyService.UpdateAsync(id, _companyMapper.Map<Company>(value));
             return Ok();
         }
 
-        // DELETE api/<CompaniesController>/5
-        [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{id:guid}")]
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
+        public async Task<IActionResult> Delete(Guid id)
         {
             await _companyService.DeleteAsync(id);
             return Ok();

@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.CityModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.City;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -15,61 +16,36 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class CitiesController : ControllerBase
     {
-        private readonly IDataService<City> _cityService;
+        private readonly ICityService _cityService;
+
         private readonly Mapper _cityMapper;
 
-        public CitiesController(IDataService<City> service, ApiMappingsConfiguration conf)
+        public CitiesController(ICityService service, ApiMappingsConfiguration conf)
         {
             _cityService = service;
             _cityMapper = new Mapper(conf.CityMapperConfiguration);
         }
 
-        // GET: api/<CitiesController>
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> Get()
         {
-            var response = _cityMapper.Map<IEnumerable<CityResponse>>(await _cityService.GetAllAsync());
-            if (response == null)
-                throw new NullReferenceException();
+            var response = _cityMapper.Map<IEnumerable<CityResponseModel>>(await _cityService.GetAllAsync());
             return Ok(response);
         }
 
-        // GET api/<CitiesController>/5
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<IActionResult> Get(int id)
-        {
-            var response = _cityMapper.Map<CityDetails>(await _cityService.GetByIdAsync(id));
-            if (response == null)
-                throw new NullReferenceException();
-            return Ok(response);
-        }
-
-        // POST api/<CitiesController>
         [HttpPost]
-        [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Post([FromBody] CityRegistration value)
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
+        public async Task<IActionResult> Post([FromBody] CityRegistrationModel value)
         {
             await _cityService.PostAsync(_cityMapper.Map<City>(value));
             return Ok();
         }
 
-        // PUT api/<CitiesController>/5
-        [HttpPut("{id}")]
-        [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Put(int id, [FromBody] CityRegistration value)
+        [HttpPut("{id:guid}")]
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
+        public async Task<IActionResult> Put(Guid id, [FromBody] CityRegistrationModel value)
         {
             await _cityService.UpdateAsync(id, _cityMapper.Map<City>(value));
-            return Ok();
-        }
-
-        // DELETE api/<CitiesController>/5
-        [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminApp")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _cityService.DeleteAsync(id);
             return Ok();
         }
     }

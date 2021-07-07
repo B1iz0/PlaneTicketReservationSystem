@@ -4,65 +4,65 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
-using PlaneTicketReservationSystem.Data.Repositories;
+using PlaneTicketReservationSystem.Data.Interfaces;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class PriceService : IDataService<Price>
+    public class PriceService : IPriceService
     {
-        private readonly PriceRepository _prices;
-        private readonly AirplaneRepository _airplanes;
-        private readonly Mapper _pricesMapper;
+        private readonly IPriceRepository _prices;
 
-        public PriceService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
+        private readonly IMapper _pricesMapper;
+
+        public PriceService(IPriceRepository prices, IMapper mapper)
         {
-            _prices = new PriceRepository(context);
-            _airplanes = new AirplaneRepository(context);
-            _pricesMapper = new Mapper(conf.AirlineConfiguration);
+            _prices = prices;
+            _pricesMapper = mapper;
         }
 
-        public async Task<IEnumerable<Price>> GetAllAsync()
+        public IEnumerable<Price> GetByAirplaneIdAsync(Guid airplaneId)
         {
-            return _pricesMapper.Map<IEnumerable<Price>>(await _prices.GetAllAsync());
-        }
-
-        public async Task<Price> GetByIdAsync(int id)
-        {
-            if (!(await _prices.IsExistingAsync(id)))
-                throw new ElementNotFoundException($"No such price with id: {id}");
-            return _pricesMapper.Map<Price>(await _prices.GetAsync(id));
-        }
-
-        public async Task<IEnumerable<Price>> GetByAirplaneIdAsync(int airplaneId)
-        {
-            if (!(await _airplanes.IsExistingAsync(airplaneId)))
+            IQueryable<PriceEntity> priceEntities = _prices.Find(x => x.AirplaneId == airplaneId);
+            if (!priceEntities.Any())
+            {
                 throw new ElementNotFoundException($"No such airplane with id: {airplaneId}");
-            return _pricesMapper.Map<IEnumerable<Price>>(_prices.Find(x => x.AirplaneId == airplaneId));
+            }
+            var pricesForAirplane = _pricesMapper.Map<IEnumerable<Price>>(priceEntities);
+            return pricesForAirplane;
         }
 
         public async Task PostAsync(Price item)
         {
-            if (_prices.Find(x => x.AirplaneId == item.AirplaneId && x.PlaceTypeId == item.PlaceTypeId).Any())
+            bool isPriceExisting = _prices.Find(x => x.AirplaneId == item.AirplaneId && x.PlaceTypeId == item.PlaceTypeId).Any();
+            if (isPriceExisting)
+            {
                 throw new ElementAlreadyExistException("Such price is already exist");
-            await _prices.CreateAsync(_pricesMapper.Map<PriceEntity>(item));
+            }
+            var priceEntity = _pricesMapper.Map<PriceEntity>(item);
+            await _prices.CreateAsync(priceEntity);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task UpdateAsync(Guid id, Price item)
         {
-            if (!(await _prices.IsExistingAsync(id)))
-                throw new ElementNotFoundException("No such price");
-            await _prices.DeleteAsync(id);
+            //bool isPriceExisting = await _prices.IsExistingAsync(id);
+            //if (!isPriceExisting)
+            //{
+            //    throw new ElementNotFoundException("No such price");
+            //}
+            item.Id = id;
+            var priceEntity = _pricesMapper.Map<PriceEntity>(item);
+            await _prices.UpdateAsync(priceEntity);
         }
 
-        public async Task UpdateAsync(int id, Price item)
+        public async Task UpdateListAsync(IEnumerable<Price> prices)
         {
-            if (!(await _prices.IsExistingAsync(id)))
-                throw new ElementNotFoundException("No such price");
-            await _prices.UpdateAsync(id, _pricesMapper.Map<PriceEntity>(item));
+            foreach (var price in prices)
+            {
+                await UpdateAsync(price.Id, price);
+            }
         }
     }
 }

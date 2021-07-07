@@ -21,22 +21,21 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.AirplaneEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AirplaneTypeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("AirplaneTypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Columns")
                         .HasColumnType("int");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("FlightId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("FlightId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Model")
                         .HasColumnType("nvarchar(max)");
@@ -58,10 +57,9 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.AirplaneTypeEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TypeName")
                         .IsRequired()
@@ -75,16 +73,15 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.AirportEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -102,19 +99,18 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.BookingEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("FlightId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("FlightId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("PlaceId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PlaceId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -130,13 +126,12 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.CityEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CountryId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CountryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -152,13 +147,12 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.CompanyEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CountryId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CountryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -174,10 +168,9 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.CountryEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -191,34 +184,29 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.FlightEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AirplaneId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ArrivalDate")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid>("AirplaneId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ArrivalTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DepartureDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DepartureTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("FlightNumber")
-                        .HasColumnType("bigint");
+                    b.Property<string>("FlightNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("FromId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("FromId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ToId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ToId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -234,22 +222,18 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.PlaceEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AirplaneId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("AirplaneId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Column")
                         .HasColumnType("int");
 
-                    b.Property<int>("PlaceTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PriceId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PlaceTypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Row")
                         .HasColumnType("int");
@@ -260,17 +244,14 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
                     b.HasIndex("PlaceTypeId");
 
-                    b.HasIndex("PriceId");
-
                     b.ToTable("Places");
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.PlaceTypeEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -283,16 +264,15 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.PriceEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AirplaneId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("AirplaneId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("PlaceTypeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PlaceTypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("TicketPrice")
                         .HasColumnType("decimal(10,4)");
@@ -308,10 +288,9 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.RoleEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -321,34 +300,16 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "AdminApp"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "User"
-                        });
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.UserEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -371,8 +332,8 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -381,17 +342,6 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "admin",
-                            FirstName = "admin",
-                            LastName = "admin",
-                            Password = "WZRHGrsBESr8wYFZ9sx0tPURuZgG2lmzyvWpwXPKz8U=2RPShvcjQskH9RZ5iVDVmcBWb2dHd8NWNL5VqNZqC80=",
-                            RoleId = 1
-                        });
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.AirplaneEntity", b =>
@@ -437,7 +387,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.FlightEntity", "Flight")
                         .WithMany("Bookings")
                         .HasForeignKey("FlightId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.PlaceEntity", "Place")
@@ -486,7 +436,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.AirplaneEntity", "Airplane")
                         .WithOne("Flight")
                         .HasForeignKey("PlaneTicketReservationSystem.Data.Entities.FlightEntity", "AirplaneId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.AirportEntity", "From")
@@ -522,15 +472,9 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PlaneTicketReservationSystem.Data.Entities.PriceEntity", "Price")
-                        .WithMany("Places")
-                        .HasForeignKey("PriceId");
-
                     b.Navigation("Airplane");
 
                     b.Navigation("PlaceType");
-
-                    b.Navigation("Price");
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.PriceEntity", b =>
@@ -565,40 +509,29 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.OwnsMany("PlaneTicketReservationSystem.Data.Entities.RefreshTokenEntity", "RefreshTokens", b1 =>
+                    b.OwnsOne("PlaneTicketReservationSystem.Data.Entities.RefreshTokenEntity", "RefreshToken", b1 =>
                         {
-                            b1.Property<int>("UserEntityId")
-                                .HasColumnType("int");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                            b1.Property<Guid>("UserEntityId")
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<DateTime>("Created")
                                 .HasColumnType("datetime2");
 
-                            b1.Property<string>("CreatedByIp")
-                                .HasColumnType("nvarchar(max)");
-
                             b1.Property<DateTime>("Expires")
                                 .HasColumnType("datetime2");
 
-                            b1.Property<string>("ReplacedByToken")
-                                .HasColumnType("nvarchar(max)");
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<DateTime?>("Revoked")
                                 .HasColumnType("datetime2");
 
-                            b1.Property<string>("RevokedByIp")
-                                .HasColumnType("nvarchar(max)");
-
                             b1.Property<string>("Token")
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.HasKey("UserEntityId", "Id");
+                            b1.HasKey("UserEntityId");
 
-                            b1.ToTable("RefreshTokenEntity");
+                            b1.ToTable("Users");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserEntityId");
@@ -606,7 +539,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
                     b.Navigation("Company");
 
-                    b.Navigation("RefreshTokens");
+                    b.Navigation("RefreshToken");
 
                     b.Navigation("Role");
                 });
@@ -668,11 +601,6 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                     b.Navigation("Places");
 
                     b.Navigation("Prices");
-                });
-
-            modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.PriceEntity", b =>
-                {
-                    b.Navigation("Places");
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.RoleEntity", b =>

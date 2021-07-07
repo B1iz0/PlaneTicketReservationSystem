@@ -4,56 +4,53 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
-using PlaneTicketReservationSystem.Data.Repositories;
+using PlaneTicketReservationSystem.Data.Interfaces;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class CountryService : IDataService<Country>
+    public class CountryService : ICountryService
     {
-        private readonly CountryRepository _countries;
-        private readonly Mapper _countryMapper;
+        private readonly ICountryRepository _countries;
 
-        public CountryService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
+        private readonly IMapper _countryMapper;
+
+        public CountryService(ICountryRepository countries, IMapper mapper)
         {
-            _countries = new CountryRepository(context);
-            _countryMapper = new Mapper(conf.AirlineConfiguration);
+            _countries = countries;
+            _countryMapper = mapper;
         }
 
         public async Task<IEnumerable<Country>> GetAllAsync()
         {
-            return _countryMapper.Map<IEnumerable<Country>>(await _countries.GetAllAsync());
-        }
-
-        public async Task<Country> GetByIdAsync(int id)
-        {
-            if (!_countries.Find(x => x.Id == id).Any())
-                throw new ElementNotFoundException($"No such country with id: {id}");
-            return _countryMapper.Map<Country>(await _countries.GetAsync(id));
+            IEnumerable<CountryEntity> countriesEntities = await _countries.GetAllAsync();
+            var countries = _countryMapper.Map<IEnumerable<Country>>(countriesEntities);
+            return countries;
         }
 
         public async Task PostAsync(Country item)
         {
-            if (_countries.Find(x => x.Name == item.Name).Any())
+            bool isCountryExisting = _countries.Find(x => x.Name == item.Name).Any();
+            if (isCountryExisting)
+            {
                 throw new ElementAlreadyExistException($"Country {item.Name} is already exist");
-            await _countries.CreateAsync(_countryMapper.Map<CountryEntity>(item));
+            }
+            var countryEntity = _countryMapper.Map<CountryEntity>(item);
+            await _countries.CreateAsync(countryEntity);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task UpdateAsync(Guid id, Country item)
         {
-            if (!_countries.Find(x => x.Id == id).Any())
+            bool isCountryExisting = await _countries.IsExistingAsync(id);
+            if (!isCountryExisting)
+            {
                 throw new ElementNotFoundException($"No such country with id: {id}");
-            await _countries.DeleteAsync(id);
-        }
-
-        public async Task UpdateAsync(int id, Country item)
-        {
-            if (!(await _countries.IsExistingAsync(id)))
-                throw new ElementNotFoundException($"No such country with id: {id}");
-            await _countries.UpdateAsync(id, _countryMapper.Map<CountryEntity>(item));
+            }
+            item.Id = id;
+            var countryEntity = _countryMapper.Map<CountryEntity>(item);
+            await _countries.UpdateAsync(countryEntity);
         }
     }
 }

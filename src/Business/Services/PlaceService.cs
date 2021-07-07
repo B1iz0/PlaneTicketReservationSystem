@@ -1,59 +1,83 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Data;
 using PlaneTicketReservationSystem.Data.Entities;
-using PlaneTicketReservationSystem.Data.Repositories;
+using PlaneTicketReservationSystem.Data.Interfaces;
 
 namespace PlaneTicketReservationSystem.Business.Services
 {
-    public class PlaceService : IDataService<Place>
+    public class PlaceService : IPlaceService
     {
-        private readonly PlaceRepository _places;
-        private readonly Mapper _placeMapper;
+        private readonly IPlaceRepository _places;
 
-        public PlaceService(ReservationSystemContext context, BusinessMappingsConfiguration conf)
+        private readonly IPlaceTypeRepository _placeTypes;
+
+        private readonly IPriceRepository _prices;
+
+        private readonly IMapper _placeMapper;
+
+        public PlaceService(IPlaceRepository places, IPlaceTypeRepository placeTypes, IPriceRepository prices, IMapper mapper)
         {
-            _places = new PlaceRepository(context);
-            _placeMapper = new Mapper(conf.AirlineConfiguration);
+            _places = places;
+            _placeTypes = placeTypes;
+            _prices = prices;
+            _placeMapper = mapper;
         }
 
-        public async Task<IEnumerable<Place>> GetAllAsync()
+        public async Task<Place> GetByIdAsync(Guid id)
         {
-            return _placeMapper.Map<IEnumerable<Place>>(await _places.GetAllAsync());
-        }
-
-        public async Task<Place> GetByIdAsync(int id)
-        {
-            if (!(await _places.IsExistingAsync(id)))
+            PlaceEntity placeEntity = await _places.GetAsync(id);
+            if (placeEntity == null)
+            {
                 throw new ElementNotFoundException($"No such place with id: {id}");
-            return _placeMapper.Map<Place>(await _places.GetAsync(id));
+            }
+            var place = _placeMapper.Map<Place>(placeEntity);
+            return place;
         }
 
-        public async Task PostAsync(Place item)
+        public async Task PostAsync(PlaceListRegistration item)
         {
-            if (_places.Find(x => x.AirplaneId == item.AirplaneId && x.Row == item.Row && x.Column == item.Column).Any())
-                throw new ElementAlreadyExistException("Such place is already exist");
-            await _places.CreateAsync(_placeMapper.Map<PlaceEntity>(item));
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            if (!(await _places.IsExistingAsync(id)))
-                throw new ElementNotFoundException("No such place");
-            await _places.DeleteAsync(id);
-        }
-
-        public async Task UpdateAsync(int id, Place item)
-        {
-            if (!(await _places.IsExistingAsync(id)))
-                throw new ElementNotFoundException("No such place");
-            await _places.UpdateAsync(id, _placeMapper.Map<PlaceEntity>(item));
+            foreach (var place in item.Places)
+            {
+                for (int i = 0; i < place.PlaceAmount; i++)
+                {
+                    PlaceTypeEntity placeType = _placeTypes.Find(type => type.Name == place.PlaceTypeName).FirstOrDefault();
+                    if (placeType == null)
+                    {
+                        var newPlaceType = new PlaceType
+                        {
+                            Name = place.PlaceTypeName,
+                        };
+                        var newPlaceTypeEntity = _placeMapper.Map<PlaceTypeEntity>(newPlaceType);
+                        placeType = await _placeTypes.CreateAsync(newPlaceTypeEntity);
+                    }
+                    var price = new PriceEntity
+                    {
+                        AirplaneId = item.AirplaneId,
+                        PlaceTypeId = placeType.Id,
+                        TicketPrice = 0,
+                    };
+                    IQueryable<PriceEntity> existedPrice = _prices.Find(p => (p.PlaceTypeId == placeType.Id) &&
+                                                                             (p.AirplaneId == item.AirplaneId));
+                    if (!existedPrice.Any())
+                    {
+                        await _prices.CreateAsync(price);
+                    }
+                    var newPlace = new Place
+                    {
+                        AirplaneId = item.AirplaneId,
+                        PlaceTypeId = placeType.Id,
+                        Row = place.Row,
+                        Column = place.Column
+                    };
+                    var newPlaceEntity = _placeMapper.Map<PlaceEntity>(newPlace);
+                    await _places.CreateAsync(newPlaceEntity);
+                }
+            }
         }
     }
 }

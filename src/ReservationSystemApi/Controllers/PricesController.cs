@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Business.Services;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.PriceModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Price;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -15,59 +16,44 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class PricesController : ControllerBase
     {
-        private readonly PriceService _priceService;
+        private readonly IPriceService _priceService;
+
         private readonly Mapper _priceMapper;
 
-        public PricesController(PriceService priceService, ApiMappingsConfiguration conf)
+        public PricesController(IPriceService priceService, ApiMappingsConfiguration conf)
         {
             _priceService = priceService;
             _priceMapper = new Mapper(conf.PriceMapperConfiguration);
         }
 
-        // GET: api/<PricesController>
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("{airplaneId:guid}")]
+        public IActionResult Get(Guid airplaneId)
         {
-            var response = _priceMapper.Map<IEnumerable<PriceResponse>>(await _priceService.GetAllAsync());
-            if (response == null)
-                throw new NullReferenceException();
+            var response = _priceMapper.Map<IEnumerable<PriceResponseModel>>(_priceService.GetByAirplaneIdAsync(airplaneId));
             return Ok(response);
         }
 
-        // GET api/<PricesController>/5
-        [HttpGet("{airplaneId}")]
-        public async Task<IActionResult> Get(int airplaneId)
-        {
-            var response = _priceMapper.Map<IEnumerable<PriceResponse>>(await _priceService.GetByAirplaneIdAsync(airplaneId));
-            if (response == null)
-                throw new NullReferenceException();
-            return Ok(response);
-        }
-
-        // POST api/<PricesController>
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] PriceRegistration value)
+        public async Task<IActionResult> Post([FromBody] PriceRegistrationModel value)
         {
             await _priceService.PostAsync(_priceMapper.Map<Price>(value));
             return Ok();
         }
 
-        // PUT api/<PricesController>/5
-        [Authorize(Policy = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] PriceRegistration value)
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] PriceRegistrationModel value)
         {
             await _priceService.UpdateAsync(id, _priceMapper.Map<Price>(value));
             return Ok();
         }
 
-        // DELETE api/<PricesController>/5
-        [Authorize(Policy = "Admin")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
+        [HttpPut]
+        public async Task<IActionResult> PutList([FromBody] IEnumerable<PriceRegistrationModel> prices)
         {
-            await _priceService.DeleteAsync(id);
+            await _priceService.UpdateListAsync(_priceMapper.Map<IEnumerable<Price>>(prices));
             return Ok();
         }
     }

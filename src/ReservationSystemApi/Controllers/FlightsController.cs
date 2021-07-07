@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.FlightModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Flight;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -15,57 +16,56 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
-        private readonly IDataService<Flight> _flightService;
+        private readonly IFlightService _flightService;
+
         private readonly Mapper _flightMapper;
 
-        public FlightsController(IDataService<Flight> service, ApiMappingsConfiguration conf)
+        public FlightsController(IFlightService service, ApiMappingsConfiguration conf)
         {
             _flightService = service;
             _flightMapper = new Mapper(conf.FlightMapperConfiguration);
         }
 
-        // GET: api/<FlightsController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get(string departureCity, string arrivalCity, int offset, int limit = 16)
         {
-            var response = _flightMapper.Map<IEnumerable<FlightResponse>>(await _flightService.GetAllAsync());
-            if (response == null)
-                throw new NullReferenceException();
+            var response = _flightMapper.Map<IEnumerable<FlightResponseModel>>(_flightService.GetFilteredFlights(offset, limit, departureCity, arrivalCity));
             return Ok(response);
         }
 
-        // GET api/<FlightsController>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Get(Guid id)
         {
-            var response = _flightMapper.Map<FlightDetails>(await _flightService.GetByIdAsync(id));
-            if (response == null)
-                throw new NullReferenceException();
+            var response = _flightMapper.Map<FlightDetailsModel>(await _flightService.GetByIdAsync(id));
             return Ok(response);
         }
 
-        // POST api/<FlightsController>
+        [HttpGet("count")]
+        public IActionResult GetCount(string departureCity, string arrivalCity)
+        {
+            var response = _flightService.GetFilteredFlightsCount(departureCity, arrivalCity);
+            return Ok(response);
+        }
+
         [HttpPost]
-        [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Post([FromBody] FlightRegistration value)
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
+        public async Task<IActionResult> Post([FromBody] FlightRegistrationModel value)
         {
             await _flightService.PostAsync(_flightMapper.Map<Flight>(value));
             return Ok();
         }
 
-        // PUT api/<FlightsController>/5
-        [HttpPut("{id}")]
-        [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Put(int id, [FromBody] FlightRegistration value)
+        [HttpPut("{id:guid}")]
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
+        public async Task<IActionResult> Put(Guid id, [FromBody] FlightRegistrationModel value)
         {
             await _flightService.UpdateAsync(id, _flightMapper.Map<Flight>(value));
             return Ok();
         }
 
-        // DELETE api/<FlightsController>/5
-        [HttpDelete("{id}")]
-        [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{id:guid}")]
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
+        public async Task<IActionResult> Delete(Guid id)
         {
             await _flightService.DeleteAsync(id);
             return Ok();

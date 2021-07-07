@@ -1,18 +1,13 @@
-using System.Security.Cryptography;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using PlaneTicketReservationSystem.Business;
-using PlaneTicketReservationSystem.Business.Helpers;
-using PlaneTicketReservationSystem.Business.Models;
-using PlaneTicketReservationSystem.Business.Services;
 using PlaneTicketReservationSystem.Data;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
+using PlaneTicketReservationSystem.ReservationSystemApi.Infrastructure;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi
@@ -22,80 +17,24 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            PasswordHasher.Salt = configuration.GetSection("Salt").Get<string>();
         }
 
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy("ApiCorsPolicy", builder =>
-                {
-                    builder.WithOrigins("http://localhost:3000")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-            });
             services.AddControllers();
-            services.AddDbContext<ReservationSystemContext>(opt =>
-                {
-                    opt.UseLazyLoadingProxies();
-                    opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                }
-                );
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(opt =>
-                {
-                    opt.RequireHttpsMetadata = false;
-                    opt.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = Configuration["AuthOptions:Issuer"],
 
-                        ValidateAudience = true,
-                        ValidAudience = Configuration["AuthOptions:Audience"],
+            services.AddConfigurationServices(Configuration);
+            services.AddContextServices(Configuration);
+            services.AddAuthenticationAuthorizationServices(Configuration);
+            services.AddCorsServices();
+            services.AddRepositoryServices();
+            services.AddBusinessServices();
+            services.AddProviderServices();
 
-                        ValidateLifetime = true,
-
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["AuthOptions:Key"])),
-                        ValidateIssuerSigningKey = true,
-                    };
-                });
-            services.AddAuthorization(opt =>
-            {
-                opt.AddPolicy("AdminApp", policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireRole("AdminApp");
-                });
-                opt.AddPolicy("Admin", policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireRole("Admin", "AdminApp");
-                });
-            });
-            services.Configure<AppSettings>(Configuration.GetSection("AuthOptions"));
-
-            services.AddScoped<IAccountService, AccountService>();
-
-            services.AddScoped<IDataService<User>, UserService>();
-            services.AddScoped<IDataService<Role>, RoleService>();
-            services.AddScoped<IDataService<Airplane>, AirplaneService>();
-            services.AddScoped<IDataService<AirplaneType>, AirplaneTypeService>();
-            services.AddScoped<IDataService<Airport>, AirportService>();
-            services.AddScoped<IDataService<Booking>, BookingService>();
-            services.AddScoped<IDataService<City>, CityService>();
-            services.AddScoped<IDataService<Company>, CompanyService>();
-            services.AddScoped<IDataService<Country>, CountryService>();
-            services.AddScoped<IDataService<Flight>, FlightService>();
-            services.AddScoped<PriceService>();
-            services.AddScoped<IDataService<Place>, PlaceService>();
-            services.AddScoped<IDataService<PlaceType>, PlaceTypeService>();
-
+            services.AddAutoMapper(typeof(BusinessMappingsProfile));
             services.AddScoped<ApiMappingsConfiguration>();
-            services.AddScoped<BusinessMappingsConfiguration>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -104,6 +43,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
             {
                 var context = serviceScope.ServiceProvider.GetService<ReservationSystemContext>();
                 context?.Database.Migrate();
+
+                var contextInitializer = serviceScope.ServiceProvider.GetService<ContextInitializer>();
+                contextInitializer?.InitializeContext();
             }
 
             if (env.IsDevelopment())
@@ -115,7 +57,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
 
             app.UseRouting();
 
-            app.UseCors("ApiCorsPolicy");
+            app.UseCors(CorsOptions.ApiCorsName);
 
             app.UseCors(x => x
                 .AllowAnyOrigin()

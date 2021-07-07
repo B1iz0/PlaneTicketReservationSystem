@@ -1,13 +1,13 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.PlaceModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Place;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -15,59 +15,29 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class PlacesController : ControllerBase
     {
-        private readonly IDataService<Place> _placeService;
+        private readonly IPlaceService _placeService;
+
         private readonly Mapper _placeMapper;
 
-        public PlacesController(IDataService<Place> placeService, ApiMappingsConfiguration conf)
+        public PlacesController(IPlaceService placeService, ApiMappingsConfiguration conf)
         {
             _placeService = placeService;
             _placeMapper = new Mapper(conf.PlaceMapperConfiguration);
         }
 
-        // GET: api/<PlacesController>
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Get(Guid id)
         {
-            var response = _placeMapper.Map<IEnumerable<PlaceResponse>>(await _placeService.GetAllAsync());
-            if (response == null)
-                throw new NullReferenceException();
+            var response = _placeMapper.Map<PlaceResponseModel>(await _placeService.GetByIdAsync(id));
             return Ok(response);
         }
 
-        // GET api/<PlacesController>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var response = _placeMapper.Map<PlaceResponse>(await _placeService.GetByIdAsync(id));
-            if (response == null)
-                throw new NullReferenceException();
-            return Ok(response);
-        }
-
-        // POST api/<PlacesController>
-        [Authorize(Policy = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] PlaceRegistration value)
+        [Authorize(Policy = ApiPolicies.AdminPolicy)]
+        public async Task<IActionResult> PostList([FromBody] PlaceListRegistrationModel value)
         {
-            await _placeService.PostAsync(_placeMapper.Map<Place>(value));
-            return Ok();
-        }
-
-        // PUT api/<PlacesController>/5
-        [Authorize(Policy = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] PlaceRegistration value)
-        {
-            await _placeService.UpdateAsync(id, _placeMapper.Map<Place>(value));
-            return Ok();
-        }
-
-        // DELETE api/<PlacesController>/5
-        [Authorize(Policy = "Admin")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _placeService.DeleteAsync(id);
+            var placesRegistration = _placeMapper.Map<PlaceListRegistration>(value);
+            await _placeService.PostAsync(placesRegistration);
             return Ok();
         }
     }

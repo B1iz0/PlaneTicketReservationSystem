@@ -1,13 +1,12 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using PlaneTicketReservationSystem.Business.Helpers;
+using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
-using PlaneTicketReservationSystem.ReservationSystemApi.Models.BookingModels;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.Booking;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -15,59 +14,35 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
     [ApiController]
     public class BookingsController : ControllerBase
     {
-        private readonly IDataService<Booking> _bookingService;
+        private readonly IBookingService _bookingService;
+
         private readonly Mapper _bookingMapper;
 
-        public BookingsController(IDataService<Booking> service, ApiMappingsConfiguration conf)
+        public BookingsController(IBookingService service, ApiMappingsConfiguration conf)
         {
             _bookingService = service;
             _bookingMapper = new Mapper(conf.BookingMapperConfiguration);
         }
 
-        // GET: api/<BookingsController>
-        [HttpGet]
+        [HttpGet("{id:guid}")]
         [Authorize]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(Guid id)
         {
-            var response = _bookingMapper.Map<IEnumerable<BookingResponse>>(await _bookingService.GetAllAsync());
-            if (response == null)
-                throw new NullReferenceException();
+            var response = _bookingMapper.Map<BookingResponseModel>(await _bookingService.GetByIdAsync(id));
             return Ok(response);
         }
 
-        // GET api/<BookingsController>/5
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<IActionResult> Get(int id)
-        {
-            var response = _bookingMapper.Map<BookingResponse>(await _bookingService.GetByIdAsync(id));
-            if (response == null)
-                throw new NullReferenceException();
-            return Ok(response);
-        }
-
-        // POST api/<BookingsController>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Post([FromBody] BookingRegistration value)
+        public async Task<IActionResult> Post([FromBody] BookingRegistrationModel value)
         {
             await _bookingService.PostAsync(_bookingMapper.Map<Booking>(value));
             return Ok();
         }
 
-        // PUT api/<BookingsController>/5
-        [HttpPut("{id}")]
+        [HttpDelete("{id:guid}")]
         [Authorize]
-        public async Task<IActionResult> Put(int id, [FromBody] BookingRegistration value)
-        {
-            await _bookingService.UpdateAsync(id, _bookingMapper.Map<Booking>(value));
-            return Ok();
-        }
-
-        // DELETE api/<BookingsController>/5
-        [HttpDelete("{id}")]
-        [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             await _bookingService.DeleteAsync(id);
             return Ok();
