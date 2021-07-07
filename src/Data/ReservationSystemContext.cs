@@ -106,7 +106,8 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.HasKey(b => b.Id);
             modelBuilder.HasOne(b => b.Flight)
                 .WithMany(f => f.Bookings)
-                .HasForeignKey(b => b.FlightId);
+                .HasForeignKey(b => b.FlightId)
+                .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.HasOne(b => b.User)
                 .WithMany(u => u.Bookings)
                 .HasForeignKey(b => b.UserId);
@@ -162,7 +163,7 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.HasOne(f => f.Airplane)
                 .WithOne(a => a.Flight)
                 .HasForeignKey<FlightEntity>(f => f.AirplaneId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.HasOne(f => f.From)
                 .WithMany(a => a.OutgoingAirplanes)
                 .HasForeignKey(f => f.FromId)
