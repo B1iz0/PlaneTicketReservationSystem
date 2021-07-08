@@ -172,7 +172,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<AirplaneType, AirplaneTypeResponseModel>();
                 x.CreateMap<Company, CompanyResponseModel>();
                 x.CreateMap<Country, CountryResponseModel>();
-                x.CreateMap<Place, PlaceResponseModel>();
+                x.CreateMap<Place, PlaceResponseModel>()
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name))
+                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null));
                 x.CreateMap<Price, PriceResponseModel>()
                     .ForMember(z => z.AirplaneModel, opt => opt.MapFrom(model => model.Airplane.Model))
                     .ForMember(z => z.PlaceType, opt => opt.MapFrom(model => model.PlaceType.Name));

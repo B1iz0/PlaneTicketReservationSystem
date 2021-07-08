@@ -16,15 +16,18 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         private readonly IPlaceTypeRepository _placeTypes;
 
+        private readonly IAirplaneRepository _airplanes;
+
         private readonly IPriceRepository _prices;
 
         private readonly IMapper _placeMapper;
 
-        public PlaceService(IPlaceRepository places, IPlaceTypeRepository placeTypes, IPriceRepository prices, IMapper mapper)
+        public PlaceService(IPlaceRepository places, IPlaceTypeRepository placeTypes, IPriceRepository prices, IAirplaneRepository airplanes, IMapper mapper)
         {
             _places = places;
             _placeTypes = placeTypes;
             _prices = prices;
+            _airplanes = airplanes;
             _placeMapper = mapper;
         }
 
@@ -41,10 +44,18 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task PostAsync(PlaceListRegistration item)
         {
+            AirplaneEntity airplane = await _airplanes.GetAsync(item.AirplaneId);
+            int currentRow = 0;
+            int currentColumn = 0;
             foreach (var place in item.Places)
             {
                 for (int i = 0; i < place.PlaceAmount; i++)
                 {
+                    if (currentColumn == airplane.Columns)
+                    {
+                        currentRow++;
+                        currentColumn = 0;
+                    }
                     PlaceTypeEntity placeType = _placeTypes.Find(type => type.Name == place.PlaceTypeName).FirstOrDefault();
                     if (placeType == null)
                     {
@@ -71,11 +82,12 @@ namespace PlaneTicketReservationSystem.Business.Services
                     {
                         AirplaneId = item.AirplaneId,
                         PlaceTypeId = placeType.Id,
-                        Row = place.Row,
-                        Column = place.Column
+                        Row = currentRow,
+                        Column = currentColumn
                     };
                     var newPlaceEntity = _placeMapper.Map<PlaceEntity>(newPlace);
                     await _places.CreateAsync(newPlaceEntity);
+                    currentColumn++;
                 }
             }
         }
