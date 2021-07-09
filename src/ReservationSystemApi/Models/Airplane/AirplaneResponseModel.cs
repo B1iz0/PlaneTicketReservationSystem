@@ -26,6 +26,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Airplane
 
         public int Columns { get; set; }
 
+        public double BaggageCapacityInKilograms { get; set; }
+
+        public double OnePersonBaggageLimitInKilograms { get; set; }
+
         public List<PlaceResponseModel> Places { get; set; }
 
         public List<PriceResponseModel> Prices { get; set; }

@@ -23,6 +23,8 @@ namespace PlaneTicketReservationSystem.Data.Entities
 
         public int Columns { get; set; }
 
+        public double BaggageCapacityInKilograms { get; set; }
+
         public virtual List<PlaceEntity> Places { get; set; }
 
         public virtual List<PriceEntity> Prices { get; set; }

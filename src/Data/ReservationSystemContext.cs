@@ -73,6 +73,8 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
             modelBuilder.Property(a => a.Columns)
                 .IsRequired();
+            modelBuilder.Property(a => a.BaggageCapacityInKilograms)
+                .IsRequired();
         }
 
         private static void AirplaneTypeConfigure(EntityTypeBuilder<AirplaneTypeEntity> modelBuilder)
@@ -185,6 +187,11 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
             modelBuilder.Property(f => f.ArrivalTime)
                 .IsRequired();
+            modelBuilder.Property(f => f.FreeBaggageLimitInKilograms)
+                .IsRequired();
+            modelBuilder.Property(f => f.OverweightPrice)
+                .IsRequired()
+                .HasColumnType("decimal(18,3)");
         }
 
         private static void RoleConfigure(EntityTypeBuilder<RoleEntity> modelBuilder)
@@ -250,7 +257,7 @@ namespace PlaneTicketReservationSystem.Data
                 .HasForeignKey(p => p.PlaceTypeId);
             modelBuilder.Property(p => p.TicketPrice)
                 .IsRequired()
-                .HasColumnType("decimal(10,4)");
+                .HasColumnType("decimal(10,2)");
             modelBuilder.Property(p => p.AirplaneId)
                 .IsRequired();
             modelBuilder.Property(p => p.PlaceTypeId)

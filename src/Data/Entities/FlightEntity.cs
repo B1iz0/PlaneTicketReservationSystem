@@ -22,6 +22,10 @@ namespace PlaneTicketReservationSystem.Data.Entities
 
         public DateTime ArrivalTime { get; set; }
 
+        public double FreeBaggageLimitInKilograms { get; set; }
+
+        public decimal OverweightPrice { get; set; }
+
         public virtual List<BookingEntity> Bookings { get; set; }
     }
 }
