@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Booking
 {
@@ -8,6 +9,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Booking
 
         public Guid UserId { get; set; }
 
-        public Guid PlaceId { get; set; }
+        public IEnumerable<Guid> PlacesId { get; set; }
+
+        public double BaggageWeight { get; set; }
     }
 }

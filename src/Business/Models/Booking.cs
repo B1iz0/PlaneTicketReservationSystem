@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PlaneTicketReservationSystem.Business.Models
 {
@@ -12,7 +13,9 @@ namespace PlaneTicketReservationSystem.Business.Models
         public Guid UserId { get; set; }
         public User User { get; set; }
 
-        public Guid PlaceId { get; set; }
-        public Place Place { get; set; }
+        public IEnumerable<Guid> PlacesId { get; set; }
+        public IEnumerable<Place> Places { get; set; }
+
+        public double BaggageWeight { get; set; }
     }
 }

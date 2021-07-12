@@ -113,14 +113,9 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.HasOne(b => b.User)
                 .WithMany(u => u.Bookings)
                 .HasForeignKey(b => b.UserId);
-            modelBuilder.HasOne(b => b.Place)
-                .WithOne(p => p.Booking)
-                .HasForeignKey<BookingEntity>(b => b.PlaceId);
             modelBuilder.Property(b => b.FlightId)
                 .IsRequired();
             modelBuilder.Property(b => b.UserId)
-                .IsRequired();
-            modelBuilder.Property(b => b.PlaceId)
                 .IsRequired();
         }
 
@@ -236,6 +231,9 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.HasOne(p => p.PlaceType)
                 .WithMany(p => p.Places)
                 .HasForeignKey(p => p.PlaceTypeId);
+            modelBuilder.HasOne(p => p.Booking)
+                .WithMany(b => b.Places)
+                .HasForeignKey(p => p.BookingId);
             modelBuilder.Property(p => p.AirplaneId)
                 .IsRequired();
             modelBuilder.Property(p => p.PlaceTypeId)
