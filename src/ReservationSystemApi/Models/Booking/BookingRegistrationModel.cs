@@ -11,6 +11,12 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Booking
 
         public IEnumerable<Guid> PlacesId { get; set; }
 
-        public double BaggageWeight { get; set; }
+        public double BaggageWeightInKilograms { get; set; }
+
+        public string CustomerFirstName { get; set; }
+
+        public string CustomerLastName { get; set; }
+
+        public string CustomerEmail { get; set; }
     }
 }

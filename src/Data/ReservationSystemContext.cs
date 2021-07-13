@@ -115,8 +115,6 @@ namespace PlaneTicketReservationSystem.Data
                 .HasForeignKey(b => b.UserId);
             modelBuilder.Property(b => b.FlightId)
                 .IsRequired();
-            modelBuilder.Property(b => b.UserId)
-                .IsRequired();
         }
 
         private static void CityConfigure(EntityTypeBuilder<CityEntity> modelBuilder)

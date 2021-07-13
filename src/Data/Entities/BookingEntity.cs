@@ -15,6 +15,12 @@ namespace PlaneTicketReservationSystem.Data.Entities
 
         public virtual IEnumerable<PlaceEntity> Places { get; set; }
 
-        public double BaggageWeight { get; set; }
+        public double BaggageWeightInKilograms { get; set; }
+
+        public string CustomerFirstName { get; set; }
+
+        public string CustomerLastName { get; set; }
+
+        public string CustomerEmail { get; set; }
     }
 }

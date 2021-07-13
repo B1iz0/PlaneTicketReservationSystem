@@ -10,12 +10,18 @@ namespace PlaneTicketReservationSystem.Business.Models
         public Guid FlightId { get; set; }
         public Flight Flight { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
         public User User { get; set; }
 
         public IEnumerable<Guid> PlacesId { get; set; }
         public IEnumerable<Place> Places { get; set; }
 
-        public double BaggageWeight { get; set; }
+        public double BaggageWeightInKilograms { get; set; }
+
+        public string CustomerFirstName { get; set; }
+
+        public string CustomerLastName { get; set; }
+
+        public string CustomerEmail { get; set; }
     }
 }
