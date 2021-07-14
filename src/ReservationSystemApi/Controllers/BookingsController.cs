@@ -33,11 +33,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Post([FromBody] BookingRegistrationModel value)
         {
-            await _bookingService.PostAsync(_bookingMapper.Map<Booking>(value));
-            return Ok();
+            Guid createdBookingId = await _bookingService.PostAsync(_bookingMapper.Map<Booking>(value));
+            return Ok(createdBookingId);
         }
 
         [HttpDelete("{id:guid}")]

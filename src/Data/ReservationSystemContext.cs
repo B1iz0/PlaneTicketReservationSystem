@@ -115,6 +115,20 @@ namespace PlaneTicketReservationSystem.Data
                 .HasForeignKey(b => b.UserId);
             modelBuilder.Property(b => b.FlightId)
                 .IsRequired();
+            modelBuilder.Property(b => b.BaggageWeightInKilograms)
+                .IsRequired();
+            modelBuilder.Property(b => b.CustomerFirstName)
+                .IsRequired();
+            modelBuilder.Property(b => b.CustomerLastName)
+                .IsRequired();
+            modelBuilder.Property(b => b.CustomerEmail)
+                .IsRequired();
+            modelBuilder.Property(b => b.PlacesTotalPrice)
+                .IsRequired()
+                .HasColumnType("decimal(10,2)");
+            modelBuilder.Property(b => b.BaggageTotalPrice)
+                .IsRequired()
+                .HasColumnType("decimal(10,2)");
         }
 
         private static void CityConfigure(EntityTypeBuilder<CityEntity> modelBuilder)
@@ -184,7 +198,7 @@ namespace PlaneTicketReservationSystem.Data
                 .IsRequired();
             modelBuilder.Property(f => f.OverweightPrice)
                 .IsRequired()
-                .HasColumnType("decimal(18,3)");
+                .HasColumnType("decimal(10,2)");
         }
 
         private static void RoleConfigure(EntityTypeBuilder<RoleEntity> modelBuilder)
@@ -231,7 +245,8 @@ namespace PlaneTicketReservationSystem.Data
                 .HasForeignKey(p => p.PlaceTypeId);
             modelBuilder.HasOne(p => p.Booking)
                 .WithMany(b => b.Places)
-                .HasForeignKey(p => p.BookingId);
+                .HasForeignKey(p => p.BookingId)
+                .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Property(p => p.AirplaneId)
                 .IsRequired();
             modelBuilder.Property(p => p.PlaceTypeId)

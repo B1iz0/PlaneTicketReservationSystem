@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlaneTicketReservationSystem.Data;
 
 namespace PlaneTicketReservationSystem.Data.Migrations
 {
     [DbContext(typeof(ReservationSystemContext))]
-    partial class ReservationSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20210714081155_BookingTotalPrice")]
+    partial class BookingTotalPrice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,7 +132,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                     b.Property<decimal>("PlacesTotalPrice")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -421,7 +423,9 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.UserEntity", "User")
                         .WithMany("Bookings")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Flight");
 

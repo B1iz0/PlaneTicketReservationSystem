@@ -7,7 +7,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Booking
     {
         public Guid FlightId { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
 
         public IEnumerable<Guid> PlacesId { get; set; }
 
@@ -18,5 +18,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Booking
         public string CustomerLastName { get; set; }
 
         public string CustomerEmail { get; set; }
+
+        public decimal PlacesTotalPrice { get; set; }
+
+        public decimal BaggageTotalPrice { get; set; }
     }
 }

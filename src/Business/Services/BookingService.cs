@@ -35,7 +35,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             return booking;
         }
 
-        public async Task PostAsync(Booking item)
+        public async Task<Guid> PostAsync(Booking item)
         {
             BookingEntity createdBooking = await _bookings.CreateAsync(_bookingMapper.Map<BookingEntity>(item));
             foreach (var placeId in item.PlacesId)
@@ -44,6 +44,7 @@ namespace PlaneTicketReservationSystem.Business.Services
                 currentSelectedPlace.BookingId = createdBooking.Id;
                 await _places.UpdateAsync(currentSelectedPlace);
             }
+            return createdBooking.Id;
         }
 
         public async Task DeleteAsync(Guid id)

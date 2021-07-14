@@ -23,5 +23,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Booking
         public string CustomerLastName { get; set; }
 
         public string CustomerEmail { get; set; }
+
+        public decimal PlacesTotalPrice { get; set; }
+
+        public decimal BaggageTotalPrice { get; set; }
     }
 }
