@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Options;
 using PlaneTicketReservationSystem.Business.Exceptions;
+using PlaneTicketReservationSystem.Business.Helpers;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
 using PlaneTicketReservationSystem.Data.Entities;
@@ -12,6 +14,8 @@ namespace PlaneTicketReservationSystem.Business.Services
 {
     public class PlaceService : IPlaceService
     {
+        private PlaceBlockingSettings _placeBlockingSettings;
+
         private readonly IPlaceRepository _places;
 
         private readonly IPlaceTypeRepository _placeTypes;
@@ -22,13 +26,29 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         private readonly IMapper _placeMapper;
 
-        public PlaceService(IPlaceRepository places, IPlaceTypeRepository placeTypes, IPriceRepository prices, IAirplaneRepository airplanes, IMapper mapper)
+        public PlaceService(IOptions<PlaceBlockingSettings> placeBlockingOptions, IPlaceRepository places, IPlaceTypeRepository placeTypes, IPriceRepository prices, IAirplaneRepository airplanes, IMapper mapper)
         {
+            _placeBlockingSettings = placeBlockingOptions.Value;
             _places = places;
             _placeTypes = placeTypes;
             _prices = prices;
             _airplanes = airplanes;
             _placeMapper = mapper;
+        }
+
+        public async Task BlockPlace(Guid id, Guid? blockingByUserId)
+        {
+            PlaceEntity blockingPlace = await _places.GetAsync(id);
+            if (blockingByUserId != null) blockingPlace.LastBlockedByUserId = blockingByUserId;
+            blockingPlace.LastBlockingExpires = DateTime.UtcNow.AddMinutes(_placeBlockingSettings.BlockingTime);
+            await _places.UpdateAsync(blockingPlace);
+        }
+
+        public async Task UnblockPlace(Guid id)
+        {
+            PlaceEntity unblockingPlace = await _places.GetAsync(id);
+            unblockingPlace.LastBlockingExpires = DateTime.UtcNow;
+            await _places.UpdateAsync(unblockingPlace);
         }
 
         public async Task<Place> GetByIdAsync(Guid id)
@@ -83,7 +103,8 @@ namespace PlaneTicketReservationSystem.Business.Services
                         AirplaneId = item.AirplaneId,
                         PlaceTypeId = placeType.Id,
                         Row = currentRow,
-                        Column = currentColumn
+                        Column = currentColumn,
+                        LastBlockingExpires = DateTime.UtcNow,
                     };
                     var newPlaceEntity = _placeMapper.Map<PlaceEntity>(newPlace);
                     await _places.CreateAsync(newPlaceEntity);

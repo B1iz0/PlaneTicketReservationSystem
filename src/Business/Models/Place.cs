@@ -15,10 +15,17 @@ namespace PlaneTicketReservationSystem.Business.Models
         public Guid? PriceId { get; set; }
         public Price Price { get; set; }
 
+        public Guid? BookingId { get; set; }
         public Booking Booking { get; set; }
 
         public int Row { get; set; }
 
         public int Column { get; set; }
+
+        public Guid? LastBlockedByUserId { get; set; }
+
+        public DateTime LastBlockingExpires { get; set; }
+
+        public bool IsFree { get; set; }
     }
 }

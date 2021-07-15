@@ -41,6 +41,11 @@ namespace PlaneTicketReservationSystem.Business.Services
             foreach (var placeId in item.PlacesId)
             {
                 PlaceEntity currentSelectedPlace = await _places.GetAsync(placeId);
+                if (currentSelectedPlace.BookingId != null)
+                {
+                    throw new Exception(
+                        $"Place {currentSelectedPlace.Row}-{currentSelectedPlace.Column} is already booked");
+                }
                 currentSelectedPlace.BookingId = createdBooking.Id;
                 await _places.UpdateAsync(currentSelectedPlace);
             }

@@ -23,6 +23,8 @@ namespace PlaneTicketReservationSystem.Data.Entities
 
         public string CustomerEmail { get; set; }
 
+        public string CustomerPhone { get; set; }
+
         public decimal PlacesTotalPrice { get; set; }
 
         public decimal BaggageTotalPrice { get; set; }

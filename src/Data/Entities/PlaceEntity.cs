@@ -18,5 +18,11 @@ namespace PlaneTicketReservationSystem.Data.Entities
         public int Row { get; set; }
 
         public int Column { get; set; }
+
+        public Guid? LastBlockedByUserId { get; set; }
+
+        public DateTime LastBlockingExpires { get; set; }
+
+        public bool IsFree => (DateTime.UtcNow >= LastBlockingExpires) && (BookingId == null);
     }
 }
