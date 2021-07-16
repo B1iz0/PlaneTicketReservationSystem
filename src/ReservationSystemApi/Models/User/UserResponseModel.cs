@@ -12,6 +12,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.User
 
         public string LastName { get; set; }
 
+        public Guid? CompanyId { get; set; }
+
         public Guid RoleId { get; set; }
 
         public string PhoneNumber { get; set; }

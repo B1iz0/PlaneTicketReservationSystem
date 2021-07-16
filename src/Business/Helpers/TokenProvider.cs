@@ -59,7 +59,8 @@ namespace PlaneTicketReservationSystem.Business.Helpers
                 {
                     new Claim(Claims.Id, user.Id.ToString()),
                     new Claim(Claims.Email, user.Email),
-                    new Claim(Claims.Role, roleName)
+                    new Claim(Claims.Role, roleName),
+                    new Claim(Claims.CompanyId, user.CompanyId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(_tokenSettings.LifeTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

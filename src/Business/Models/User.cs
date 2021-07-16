@@ -18,6 +18,8 @@ namespace PlaneTicketReservationSystem.Business.Models
 
         public string LastName { get; set; }
 
+        public Guid? CompanyId { get; set; }
+
         public string PhoneNumber { get; set; }
 
         public List<Booking> Bookings { get; set; }

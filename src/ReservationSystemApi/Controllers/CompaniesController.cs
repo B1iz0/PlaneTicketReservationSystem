@@ -50,7 +50,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var response = _companyMapper.Map<CompanyDetailsModel>(await _companyService.GetByIdAsync(id));
+            var response = _companyMapper.Map<CompanyResponseModel>(await _companyService.GetByIdAsync(id));
             return Ok(response);
         }
 
