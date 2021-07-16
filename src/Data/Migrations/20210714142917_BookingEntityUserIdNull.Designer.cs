@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlaneTicketReservationSystem.Data;
 
 namespace PlaneTicketReservationSystem.Data.Migrations
 {
     [DbContext(typeof(ReservationSystemContext))]
-    partial class ReservationSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20210714142917_BookingEntityUserIdNull")]
+    partial class BookingEntityUserIdNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,9 +124,6 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
                     b.Property<string>("CustomerLastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerPhone")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("FlightId")
@@ -261,12 +260,6 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
                     b.Property<int>("Column")
                         .HasColumnType("int");
-
-                    b.Property<Guid?>("LastBlockedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("LastBlockingExpires")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("PlaceTypeId")
                         .HasColumnType("uniqueidentifier");

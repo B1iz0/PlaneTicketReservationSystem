@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlaneTicketReservationSystem.Data;
 
 namespace PlaneTicketReservationSystem.Data.Migrations
 {
     [DbContext(typeof(ReservationSystemContext))]
-    partial class ReservationSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20210713094517_BookingEntityExtension")]
+    partial class BookingEntityExtension
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,34 +108,22 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("BaggageTotalPrice")
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<double>("BaggageWeightInKilograms")
                         .HasColumnType("float");
 
                     b.Property<string>("CustomerEmail")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CustomerFirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CustomerLastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerPhone")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("FlightId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("PlacesTotalPrice")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -230,7 +220,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("OverweightPrice")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(18,3)");
 
                     b.Property<Guid>("ToId")
                         .HasColumnType("uniqueidentifier");
@@ -261,12 +251,6 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
                     b.Property<int>("Column")
                         .HasColumnType("int");
-
-                    b.Property<Guid?>("LastBlockedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("LastBlockingExpires")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("PlaceTypeId")
                         .HasColumnType("uniqueidentifier");
@@ -430,7 +414,9 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.UserEntity", "User")
                         .WithMany("Bookings")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Flight");
 
@@ -496,8 +482,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
 
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.BookingEntity", "Booking")
                         .WithMany("Places")
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("BookingId");
 
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.PlaceTypeEntity", "PlaceType")
                         .WithMany("Places")

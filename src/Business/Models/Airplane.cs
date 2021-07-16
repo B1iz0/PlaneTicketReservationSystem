@@ -24,6 +24,10 @@ namespace PlaneTicketReservationSystem.Business.Models
 
         public int Columns { get; set; }
 
+        public double BaggageCapacityInKilograms { get; set; }
+
+        public double OnePersonBaggageLimitInKilograms => BaggageCapacityInKilograms / (Rows * Columns);
+
         public List<Place> Places { get; set; }
 
         public List<Price> Prices { get; set; }

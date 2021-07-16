@@ -40,5 +40,19 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
             await _placeService.PostAsync(placesRegistration);
             return Ok();
         }
+
+        [HttpPut("{id:guid}/block")]
+        public async Task<IActionResult> BlockPlace(Guid id, [FromQuery] Guid? blockingByUserId = null)
+        {
+            await _placeService.BlockPlace(id, blockingByUserId);
+            return Ok();
+        }
+
+        [HttpPut("{id:guid}/unblock")]
+        public async Task<IActionResult> UnblockPlace(Guid id)
+        {
+            await _placeService.UnblockPlace(id);
+            return Ok();
+        }
     }
 }

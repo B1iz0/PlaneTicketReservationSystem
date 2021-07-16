@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlaneTicketReservationSystem.Data;
 
 namespace PlaneTicketReservationSystem.Data.Migrations
 {
     [DbContext(typeof(ReservationSystemContext))]
-    partial class ReservationSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20210709104309_AddedBaggageSystem")]
+    partial class AddedBaggageSystem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,39 +108,21 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("BaggageTotalPrice")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<double>("BaggageWeightInKilograms")
-                        .HasColumnType("float");
-
-                    b.Property<string>("CustomerEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerFirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerLastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerPhone")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("FlightId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("PlacesTotalPrice")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<Guid>("PlaceId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FlightId");
+
+                    b.HasIndex("PlaceId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -230,7 +214,7 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("OverweightPrice")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(18,3)");
 
                     b.Property<Guid>("ToId")
                         .HasColumnType("uniqueidentifier");
@@ -256,17 +240,8 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                     b.Property<Guid>("AirplaneId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("BookingId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Column")
                         .HasColumnType("int");
-
-                    b.Property<Guid?>("LastBlockedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("LastBlockingExpires")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("PlaceTypeId")
                         .HasColumnType("uniqueidentifier");
@@ -277,8 +252,6 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AirplaneId");
-
-                    b.HasIndex("BookingId");
 
                     b.HasIndex("PlaceTypeId");
 
@@ -428,11 +401,21 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("PlaneTicketReservationSystem.Data.Entities.PlaceEntity", "Place")
+                        .WithOne("Booking")
+                        .HasForeignKey("PlaneTicketReservationSystem.Data.Entities.BookingEntity", "PlaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.UserEntity", "User")
                         .WithMany("Bookings")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Flight");
+
+                    b.Navigation("Place");
 
                     b.Navigation("User");
                 });
@@ -494,11 +477,6 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PlaneTicketReservationSystem.Data.Entities.BookingEntity", "Booking")
-                        .WithMany("Places")
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("PlaneTicketReservationSystem.Data.Entities.PlaceTypeEntity", "PlaceType")
                         .WithMany("Places")
                         .HasForeignKey("PlaceTypeId")
@@ -506,8 +484,6 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Airplane");
-
-                    b.Navigation("Booking");
 
                     b.Navigation("PlaceType");
                 });
@@ -600,11 +576,6 @@ namespace PlaneTicketReservationSystem.Data.Migrations
                     b.Navigation("OutgoingAirplanes");
                 });
 
-            modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.BookingEntity", b =>
-                {
-                    b.Navigation("Places");
-                });
-
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.CityEntity", b =>
                 {
                     b.Navigation("Airports");
@@ -629,6 +600,11 @@ namespace PlaneTicketReservationSystem.Data.Migrations
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.FlightEntity", b =>
                 {
                     b.Navigation("Bookings");
+                });
+
+            modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.PlaceEntity", b =>
+                {
+                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("PlaneTicketReservationSystem.Data.Entities.PlaceTypeEntity", b =>

@@ -131,8 +131,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<Country, CountryResponseModel>();
                 x.CreateMap<User, UserResponseModel>();
                 x.CreateMap<Place, PlaceResponseModel>()
-                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name))
-                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null));
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name));
             });
             CityMapperConfiguration = new MapperConfiguration(x =>
             {
@@ -172,7 +171,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
                 x.CreateMap<AirplaneType, AirplaneTypeResponseModel>();
                 x.CreateMap<Company, CompanyResponseModel>();
                 x.CreateMap<Country, CountryResponseModel>();
-                x.CreateMap<Place, PlaceResponseModel>();
+                x.CreateMap<Place, PlaceResponseModel>()
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name));
                 x.CreateMap<Price, PriceResponseModel>()
                     .ForMember(z => z.AirplaneModel, opt => opt.MapFrom(model => model.Airplane.Model))
                     .ForMember(z => z.PlaceType, opt => opt.MapFrom(model => model.PlaceType.Name));
@@ -196,8 +196,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
             PlaceMapperConfiguration = new MapperConfiguration(x =>
             {
                 x.CreateMap<Place, PlaceResponseModel>()
-                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name))
-                    .ForMember(z => z.IsFree, opt => opt.MapFrom(c => c.Booking == null));
+                    .ForMember(z => z.PlaceType, opt => opt.MapFrom(c => c.PlaceType.Name));
                 x.CreateMap<PlaceListRegistrationModel, PlaceListRegistration>();
                 x.CreateMap<PlaceRegistrationModel, PlaceRegistration>();
             });

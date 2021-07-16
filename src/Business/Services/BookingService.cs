@@ -13,11 +13,14 @@ namespace PlaneTicketReservationSystem.Business.Services
     {
         private readonly IBookingRepository _bookings;
 
+        private readonly IPlaceRepository _places;
+
         private readonly IMapper _bookingMapper;
 
-        public BookingService(IBookingRepository bookings, IMapper mapper)
+        public BookingService(IBookingRepository bookings, IPlaceRepository places, IMapper mapper)
         {
             _bookings = bookings;
+            _places = places;
             _bookingMapper = mapper;
         }
 
@@ -32,9 +35,21 @@ namespace PlaneTicketReservationSystem.Business.Services
             return booking;
         }
 
-        public async Task PostAsync(Booking item)
+        public async Task<Guid> PostAsync(Booking item)
         {
-            await _bookings.CreateAsync(_bookingMapper.Map<BookingEntity>(item));
+            BookingEntity createdBooking = await _bookings.CreateAsync(_bookingMapper.Map<BookingEntity>(item));
+            foreach (var placeId in item.PlacesId)
+            {
+                PlaceEntity currentSelectedPlace = await _places.GetAsync(placeId);
+                if (currentSelectedPlace.BookingId != null)
+                {
+                    throw new Exception(
+                        $"Place {currentSelectedPlace.Row}-{currentSelectedPlace.Column} is already booked");
+                }
+                currentSelectedPlace.BookingId = createdBooking.Id;
+                await _places.UpdateAsync(currentSelectedPlace);
+            }
+            return createdBooking.Id;
         }
 
         public async Task DeleteAsync(Guid id)

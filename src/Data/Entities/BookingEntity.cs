@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PlaneTicketReservationSystem.Data.Entities
 {
@@ -9,10 +10,23 @@ namespace PlaneTicketReservationSystem.Data.Entities
         public Guid FlightId { get; set; }
         public virtual FlightEntity Flight { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
         public virtual UserEntity User { get; set; }
 
-        public Guid PlaceId { get; set; }
-        public virtual PlaceEntity Place { get; set; }
+        public virtual IEnumerable<PlaceEntity> Places { get; set; }
+
+        public double BaggageWeightInKilograms { get; set; }
+
+        public string CustomerFirstName { get; set; }
+
+        public string CustomerLastName { get; set; }
+
+        public string CustomerEmail { get; set; }
+
+        public string CustomerPhone { get; set; }
+
+        public decimal PlacesTotalPrice { get; set; }
+
+        public decimal BaggageTotalPrice { get; set; }
     }
 }

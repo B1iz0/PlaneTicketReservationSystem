@@ -9,5 +9,9 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
         Task<Place> GetByIdAsync(Guid id);
 
         Task PostAsync(PlaceListRegistration item);
+
+        Task BlockPlace(Guid id, Guid? blockingByUserId);
+
+        Task UnblockPlace(Guid id);
     }
 }

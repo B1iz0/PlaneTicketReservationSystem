@@ -12,10 +12,17 @@ namespace PlaneTicketReservationSystem.Data.Entities
         public Guid PlaceTypeId { get; set; }
         public virtual PlaceTypeEntity PlaceType { get; set; }
 
+        public Guid? BookingId { get; set; }
         public virtual BookingEntity Booking { get; set; }
 
         public int Row { get; set; }
 
         public int Column { get; set; }
+
+        public Guid? LastBlockedByUserId { get; set; }
+
+        public DateTime LastBlockingExpires { get; set; }
+
+        public bool IsFree => (DateTime.UtcNow >= LastBlockingExpires) && (BookingId == null);
     }
 }

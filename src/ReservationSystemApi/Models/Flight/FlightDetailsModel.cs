@@ -22,6 +22,10 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Flight
 
         public DateTime ArrivalTime { get; set; }
 
+        public double FreeBaggageLimitInKilograms { get; set; }
+
+        public decimal OverweightPrice { get; set; }
+
         public List<BookingResponseModel> Bookings { get; set; }
     }
 }

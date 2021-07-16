@@ -12,6 +12,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Infrastructure
             services.Configure<TokenSettings>(configuration.GetSection("AuthOptions"));
             services.Configure<AdminAppOptions>(configuration.GetSection("AdminAppOptions"));
             services.Configure<PasswordServiceSettings>(configuration.GetSection("PasswordSalt"));
+            services.Configure<PlaceBlockingSettings>(configuration.GetSection("PlaceBlocking"));
 
             return services;
         }

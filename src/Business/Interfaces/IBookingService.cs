@@ -8,7 +8,7 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
     {
         Task<Booking> GetByIdAsync(Guid id);
 
-        Task PostAsync(Booking item);
+        Task<Guid> PostAsync(Booking item);
 
         Task DeleteAsync(Guid id);
     }
