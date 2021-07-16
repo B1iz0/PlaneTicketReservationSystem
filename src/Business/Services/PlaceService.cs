@@ -39,8 +39,15 @@ namespace PlaneTicketReservationSystem.Business.Services
         public async Task BlockPlace(Guid id, Guid? blockingByUserId)
         {
             PlaceEntity blockingPlace = await _places.GetAsync(id);
-            if (blockingByUserId != null) blockingPlace.LastBlockedByUserId = blockingByUserId;
-            blockingPlace.LastBlockingExpires = DateTime.UtcNow.AddMinutes(_placeBlockingSettings.BlockingTime);
+            if (blockingByUserId != null)
+            {
+                blockingPlace.LastBlockedByUserId = blockingByUserId;
+                blockingPlace.LastBlockingExpires = DateTime.UtcNow.AddMinutes(_placeBlockingSettings.AuthorizedUserBlockingTime);
+            } else
+            {
+                blockingPlace.LastBlockingExpires =
+                    DateTime.UtcNow.AddMinutes(_placeBlockingSettings.UnauthorizedBlockingTime);
+            }
             await _places.UpdateAsync(blockingPlace);
         }
 

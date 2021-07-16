@@ -2,6 +2,8 @@
 {
     public class PlaceBlockingSettings
     {
-        public int BlockingTime { get; set; }
+        public int AuthorizedUserBlockingTime { get; set; }
+
+        public int UnauthorizedBlockingTime { get; set; }
     }
 }
