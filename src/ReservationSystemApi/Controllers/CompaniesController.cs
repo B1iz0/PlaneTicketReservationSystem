@@ -58,8 +58,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         public async Task<IActionResult> Post([FromBody] CompanyRegistrationModel value)
         {
-            await _companyService.PostAsync(_companyMapper.Map<Company>(value));
-            return Ok();
+            Company createdCompany = await _companyService.PostAsync(_companyMapper.Map<Company>(value));
+            var company = _companyMapper.Map<CompanyResponseModel>(createdCompany);
+            return Ok(company);
         }
 
         [HttpPut("{id:guid}")]

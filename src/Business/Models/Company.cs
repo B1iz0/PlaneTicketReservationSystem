@@ -12,6 +12,8 @@ namespace PlaneTicketReservationSystem.Business.Models
         public Guid CountryId { get; set; }
         public Country Country { get; set; }
 
+        public IEnumerable<User> Admins { get; set; }
+
         public List<Airplane> Airplanes { get; set; }
 
         public List<Airport> Airports { get; set; }
