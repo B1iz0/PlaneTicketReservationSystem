@@ -109,5 +109,36 @@ namespace PlaneTicketReservationSystem.Business.Services
             var userEntity = _userMapper.Map<UserEntity>(user);
             await _users.UpdateAsync(userEntity);
         }
+
+        public IEnumerable<User> GetFreeUsers()
+        {
+            IEnumerable<UserEntity> usersEntities = _users.Find(user => !user.CompanyId.HasValue);
+            var usersResponse = _userMapper.Map<IEnumerable<User>>(usersEntities);
+            return usersResponse;
+        }
+
+        public async Task AssignCompanyAsync(Guid id, Guid? companyId)
+        {
+            UserEntity user = await _users.GetAsync(id);
+            user.CompanyId = companyId;
+            if (companyId == null)
+            {
+                RoleEntity userRole = _roles.Find(role => role.Name == ApiRoles.User).FirstOrDefault();
+                if (userRole != null) user.RoleId = userRole.Id;
+            }
+            else
+            {
+                RoleEntity adminRole = _roles.Find(role => role.Name == ApiRoles.Admin).FirstOrDefault();
+                if (adminRole != null) user.RoleId = adminRole.Id;
+            }
+            await _users.UpdateAsync(user);
+        }
+
+        public IEnumerable<User> GetManagers(Guid companyId)
+        {
+            IEnumerable<UserEntity> usersEntities = _users.Find(user => user.CompanyId == companyId);
+            var usersResponse = _userMapper.Map<IEnumerable<User>>(usersEntities);
+            return usersResponse;
+        }
     }
 }

@@ -219,7 +219,7 @@ namespace PlaneTicketReservationSystem.Data
             modelBuilder.HasOne(u => u.Company)
                 .WithMany(c => c.Admins)
                 .HasForeignKey(c => c.CompanyId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Property(u => u.Email)
                 .IsRequired();
             modelBuilder.Property(u => u.RoleId)
