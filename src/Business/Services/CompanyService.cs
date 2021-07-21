@@ -67,11 +67,6 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task UpdateAsync(Guid id, Company item)
         {
-            bool isCompanyExisting = await _companies.IsExistingAsync(id);
-            if (!isCompanyExisting)
-            {
-                throw new ElementNotFoundException($"No such company with id: {id}");
-            }
             item.Id = id;
             var companyEntity = _companyMapper.Map<CompanyEntity>(item);
             await _companies.UpdateAsync(companyEntity);
