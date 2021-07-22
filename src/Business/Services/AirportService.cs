@@ -77,11 +77,6 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task UpdateAsync(Guid id, Airport item)
         {
-            bool isAirportExisting = await _airports.IsExistingAsync(id);
-            if (!isAirportExisting)
-            {
-                throw new ElementNotFoundException($"No such airport with id: {id}");
-            }
             item.Id = id;
             var airportEntity = _airportMapper.Map<AirportEntity>(item);
             await _airports.UpdateAsync(airportEntity);
