@@ -50,7 +50,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var response = _companyMapper.Map<CompanyDetailsModel>(await _companyService.GetByIdAsync(id));
+            var response = _companyMapper.Map<CompanyResponseModel>(await _companyService.GetByIdAsync(id));
             return Ok(response);
         }
 
@@ -58,8 +58,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         public async Task<IActionResult> Post([FromBody] CompanyRegistrationModel value)
         {
-            await _companyService.PostAsync(_companyMapper.Map<Company>(value));
-            return Ok();
+            Company createdCompany = await _companyService.PostAsync(_companyMapper.Map<Company>(value));
+            var company = _companyMapper.Map<CompanyResponseModel>(createdCompany);
+            return Ok(company);
         }
 
         [HttpPut("{id:guid}")]

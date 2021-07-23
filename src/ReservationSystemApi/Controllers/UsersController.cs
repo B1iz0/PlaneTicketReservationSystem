@@ -68,6 +68,15 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
+        [HttpGet("free")]
+        public IActionResult GetFreeUsers()
+        {
+            IEnumerable<User> users = _userService.GetFreeUsers();
+            var usersResponse = _userMapper.Map<IEnumerable<UserResponseModel>>(users);
+            return Ok(usersResponse);
+        }
+
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         [HttpGet]
         public IActionResult Get(int offset, int limit, string email, string firstName, string lastName)
         {
@@ -101,6 +110,15 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
+        [HttpGet("managers")]
+        public IActionResult GetManagers([FromQuery] Guid companyId)
+        {
+            IEnumerable<User> users = _userService.GetManagers(companyId);
+            var usersResponse = _userMapper.Map<IEnumerable<UserResponseModel>>(users);
+            return Ok(usersResponse);
+        }
+
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         [HttpPost()]
         public async Task<IActionResult> Post([FromBody] UserRegistrationModel user)
         {
@@ -121,6 +139,14 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         public async Task<IActionResult> Put(Guid id, [FromBody] UserRegistrationModel user)
         {
             await _userService.UpdateAsync(id, _userMapper.Map<User>(user));
+            return Ok();
+        }
+
+        [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
+        [HttpPost("{id:guid}/assignCompany")]
+        public async Task<IActionResult> AssignCompany(Guid id, [FromQuery] Guid? companyId)
+        {
+            await _userService.AssignCompanyAsync(id, companyId);
             return Ok();
         }
 

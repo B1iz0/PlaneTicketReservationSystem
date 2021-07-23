@@ -11,7 +11,7 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
 
         Task<Company> GetByIdAsync(Guid id);
 
-        Task PostAsync(Company item);
+        Task<Company> PostAsync(Company item);
 
         Task DeleteAsync(Guid id);
 

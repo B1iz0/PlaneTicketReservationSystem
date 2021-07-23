@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
@@ -29,6 +30,30 @@ namespace PlaneTicketReservationSystem.Business.Services
             return airports;
         }
 
+        public IEnumerable<Airport> GetFilteredAirports(string company, string airportName, string city, string country, int offset, int limit)
+        {
+            Expression<Func<AirportEntity, bool>> predicate = airport =>
+                (string.IsNullOrEmpty(company) || airport.Company.Name.Contains(company))
+                && (string.IsNullOrEmpty(airportName) || airport.Name.Contains(airportName))
+                && (string.IsNullOrEmpty(city) || airport.City.Name.Contains(city))
+                && (string.IsNullOrEmpty(country) || airport.City.Country.Name.Contains(country));
+            var result = _airports.FindWithLimitAndOffset(predicate, offset, limit);
+            var airports = _airportMapper.Map<IEnumerable<Airport>>(result);
+            return airports;
+        }
+
+        public int GetFilteredAirportsCount(string company, string airportName, string city, string country)
+        {
+            Expression<Func<AirportEntity, bool>> predicate = airport =>
+                (string.IsNullOrEmpty(company) || airport.Company.Name.Contains(company))
+                && (string.IsNullOrEmpty(airportName) || airport.Name.Contains(airportName))
+                && (string.IsNullOrEmpty(city) || airport.City.Name.Contains(city))
+                && (string.IsNullOrEmpty(country) || airport.City.Country.Name.Contains(country));
+            IQueryable<AirportEntity> airportsEntities = _airports.Find(predicate);
+            int count = airportsEntities.Count();
+            return count;
+        }
+
         public async Task PostAsync(Airport item)
         {
             bool isAirportExisting = _airports.Find(x => x.Name == item.Name).Any();
@@ -52,11 +77,6 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task UpdateAsync(Guid id, Airport item)
         {
-            bool isAirportExisting = await _airports.IsExistingAsync(id);
-            if (!isAirportExisting)
-            {
-                throw new ElementNotFoundException($"No such airport with id: {id}");
-            }
             item.Id = id;
             var airportEntity = _airportMapper.Map<AirportEntity>(item);
             await _airports.UpdateAsync(airportEntity);

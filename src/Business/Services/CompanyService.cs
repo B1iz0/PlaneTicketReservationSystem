@@ -42,7 +42,7 @@ namespace PlaneTicketReservationSystem.Business.Services
             return company;
         }
 
-        public async Task PostAsync(Company item)
+        public async Task<Company> PostAsync(Company item)
         {
             bool isCompanyExisting = _companies.Find(x => x.Name == item.Name).Any();
             if (isCompanyExisting)
@@ -50,7 +50,9 @@ namespace PlaneTicketReservationSystem.Business.Services
                 throw new ElementAlreadyExistException($"Company {item.Name} is already exist");
             }
             var companyEntity = _companyMapper.Map<CompanyEntity>(item);
-            await _companies.CreateAsync(companyEntity);
+            CompanyEntity createdCompanyEntity = await _companies.CreateAsync(companyEntity);
+            var createdCompany = _companyMapper.Map<Company>(createdCompanyEntity);
+            return createdCompany;
         }
 
         public async Task DeleteAsync(Guid id)
@@ -65,11 +67,6 @@ namespace PlaneTicketReservationSystem.Business.Services
 
         public async Task UpdateAsync(Guid id, Company item)
         {
-            bool isCompanyExisting = await _companies.IsExistingAsync(id);
-            if (!isCompanyExisting)
-            {
-                throw new ElementNotFoundException($"No such company with id: {id}");
-            }
             item.Id = id;
             var companyEntity = _companyMapper.Map<CompanyEntity>(item);
             await _companies.UpdateAsync(companyEntity);
