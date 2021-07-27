@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 using PlaneTicketReservationSystem.Data.Entities;
 
 namespace PlaneTicketReservationSystem.Business
@@ -13,6 +14,9 @@ namespace PlaneTicketReservationSystem.Business
             CreateMap<CompanyEntity, Company>().ReverseMap();
             CreateMap<AirportEntity, Airport>().ReverseMap();
             CreateMap<FlightEntity, Flight>().ReverseMap();
+            CreateMap<Flight, FlightHint>()
+                .ForMember(hint => hint.DepartureCity, opt => opt.MapFrom(flight => flight.From.City.Name))
+                .ForMember(hint => hint.ArrivalCity, opt => opt.MapFrom(flight => flight.To.City.Name));
             CreateMap<CityEntity, City>().ReverseMap();
             CreateMap<CountryEntity, Country>().ReverseMap();
             CreateMap<BookingEntity, Booking>().ReverseMap();

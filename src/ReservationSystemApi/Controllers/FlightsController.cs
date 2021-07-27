@@ -6,9 +6,13 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Flight;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.SearchFilters;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.SearchHints;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -20,10 +24,13 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         private readonly Mapper _flightMapper;
 
-        public FlightsController(IFlightService service, ApiMappingsConfiguration conf)
+        private readonly IMapper _mapper;
+
+        public FlightsController(IFlightService service, ApiMappingsConfiguration conf, IMapper mapper)
         {
             _flightService = service;
             _flightMapper = new Mapper(conf.FlightMapperConfiguration);
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -69,6 +76,14 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             await _flightService.DeleteAsync(id);
             return Ok();
+        }
+
+        [HttpGet("hints")]
+        public IActionResult GetHints([FromQuery] FlightFilterModel filter)
+        {
+            IEnumerable<FlightHint> hints = _flightService.GetHints(_mapper.Map<FlightFilter>(filter));
+            var flightHints = _mapper.Map<IEnumerable<FlightHintModel>>(hints);
+            return Ok(flightHints);
         }
     }
 }

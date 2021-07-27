@@ -7,6 +7,8 @@ using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
 
@@ -86,6 +88,17 @@ namespace PlaneTicketReservationSystem.Business.Services
             item.Id = id;
             var flightEntity = _flightMapper.Map<FlightEntity>(item);
             await _flights.UpdateAsync(flightEntity);
+        }
+
+        public IEnumerable<FlightHint> GetHints(FlightFilter flightFilter)
+        {
+            Expression<Func<FlightEntity, bool>> predicate = f =>
+                (string.IsNullOrEmpty(flightFilter.DepartureCity) || f.From.City.Name.Contains(flightFilter.DepartureCity))
+                && (string.IsNullOrEmpty(flightFilter.ArrivalCity) || f.To.City.Name.Contains(flightFilter.ArrivalCity));
+            var result = _flights.FindWithLimitAndOffset(predicate, 0, 6);
+            var flight = _flightMapper.Map<IEnumerable<Flight>>(result);
+            var flightHints = _flightMapper.Map<IEnumerable<FlightHint>>(flight);
+            return flightHints;
         }
     }
 }

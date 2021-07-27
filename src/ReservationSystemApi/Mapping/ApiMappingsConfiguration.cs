@@ -52,7 +52,8 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
             UserMapperConfiguration = new MapperConfiguration(x =>
             {
                 x.CreateMap<User, UserDetailsModel>();
-                x.CreateMap<User, UserResponseModel>();
+                x.CreateMap<User, UserResponseModel>()
+                    .ForMember(z => z.RoleName, opt => opt.MapFrom(x => x.Role.Name));
                 x.CreateMap<UserRegistrationModel, User>();
                 x.CreateMap<Role, RoleResponseModel>().ForMember(r => r.Users, opt => opt.Ignore());
                 x.CreateMap<Booking, BookingResponseModel>().ForMember(b => b.User, opt => opt.Ignore());

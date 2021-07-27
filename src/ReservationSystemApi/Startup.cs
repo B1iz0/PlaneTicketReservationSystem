@@ -33,7 +33,7 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi
             services.AddBusinessServices();
             services.AddProviderServices();
 
-            services.AddAutoMapper(typeof(BusinessMappingsProfile));
+            services.AddAutoMapper(typeof(BusinessMappingsProfile), typeof(FiltersHintsMappingsProfile));
             services.AddScoped<ApiMappingsConfiguration>();
         }
 
