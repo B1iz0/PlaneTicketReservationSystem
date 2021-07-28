@@ -6,9 +6,13 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Airplane;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.SearchFilters;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.SearchHints;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -20,23 +24,28 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         private readonly Mapper _airplaneMapper;
 
-        public AirplanesController(IAirplaneService service, ApiMappingsConfiguration conf)
+        private readonly IMapper _mapper;
+
+        public AirplanesController(IAirplaneService service, ApiMappingsConfiguration conf, IMapper mapper)
         {
             _airplaneService = service;
             _airplaneMapper = new Mapper(conf.AirplaneMapperConfiguration);
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public IActionResult Get(string airplaneType, string company, string model, int offset, int limit)
+        public IActionResult Get([FromQuery] AirplaneFilterModel filter, int offset, int limit)
         {
-            var response = _airplaneMapper.Map<IEnumerable<AirplaneResponseModel>>(_airplaneService.GetFilteredAirplanes(offset, limit, airplaneType, company, model));
+            IEnumerable<Airplane> airplanes =
+                _airplaneService.GetFilteredAirplanes(_mapper.Map<AirplaneFilter>(filter), offset, limit);
+            var response = _airplaneMapper.Map<IEnumerable<AirplaneResponseModel>>(airplanes);
             return Ok(response);
         }
 
         [HttpGet("count")]
-        public IActionResult GetCount(string airplaneType, string company, string model)
+        public IActionResult GetCount([FromQuery] AirplaneFilterModel filter)
         {
-            var response = _airplaneService.GetFilteredAirplanesCount(airplaneType, company, model);
+            var response = _airplaneService.GetFilteredAirplanesCount(_mapper.Map<AirplaneFilter>(filter));
             return Ok(response);
         }
 
@@ -77,6 +86,15 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             await _airplaneService.DeleteAsync(id);
             return Ok();
+        }
+
+        [HttpGet("hints")]
+        public IActionResult GetHints([FromQuery] AirplaneFilterModel filter, int offset = 0, int limit = 6)
+        {
+            IEnumerable<AirplaneHint> hints =
+                _airplaneService.GetHints(_mapper.Map<AirplaneFilter>(filter), offset, limit);
+            var response = _mapper.Map<IEnumerable<AirplaneHintModel>>(hints);
+            return Ok(response);
         }
     }
 }

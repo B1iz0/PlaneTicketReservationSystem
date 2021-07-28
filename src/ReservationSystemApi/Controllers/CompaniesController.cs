@@ -6,9 +6,13 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Company;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.SearchFilters;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.SearchHints;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -20,10 +24,13 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         private readonly Mapper _companyMapper;
 
-        public CompaniesController(ICompanyService service, ApiMappingsConfiguration conf)
+        private readonly IMapper _mapper;
+
+        public CompaniesController(ICompanyService service, ApiMappingsConfiguration conf, IMapper mapper)
         {
             _companyService = service;
             _companyMapper = new Mapper(conf.CompanyMapperConfiguration);
+            _mapper = mapper;
         }
 
         [HttpGet("all")]
@@ -34,16 +41,17 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(string companyName, string countryName, int offset, int limit)
+        public IActionResult Get([FromQuery] CompanyFilterModel filter, int offset, int limit)
         {
-            var response = _companyMapper.Map<IEnumerable<CompanyResponseModel>>(_companyService.GetFilteredCompanies(offset, limit, companyName, countryName));
+            IEnumerable<Company> companies = _companyService.GetFilteredCompanies(_mapper.Map<CompanyFilter>(filter), offset, limit);
+            var response = _companyMapper.Map<IEnumerable<CompanyResponseModel>>(companies);
             return Ok(response);
         }
 
         [HttpGet("count")]
-        public IActionResult GetCount(string companyName, string countryName)
+        public IActionResult GetCount([FromQuery] CompanyFilterModel filter)
         {
-            int response = _companyService.GetFilteredCompaniesCount(companyName, countryName);
+            int response = _companyService.GetFilteredCompaniesCount(_mapper.Map<CompanyFilter>(filter));
             return Ok(response);
         }
 
@@ -77,6 +85,15 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             await _companyService.DeleteAsync(id);
             return Ok();
+        }
+
+        [HttpGet("hints")]
+        public IActionResult GetHints([FromQuery] CompanyFilterModel filter, int offset = 0, int limit = 6)
+        {
+            IEnumerable<CompanyHint>
+                hints = _companyService.GetHints(_mapper.Map<CompanyFilter>(filter), offset, limit);
+            var response = _mapper.Map<IEnumerable<CompanyHintModel>>(hints);
+            return Ok(hints);
         }
     }
 }

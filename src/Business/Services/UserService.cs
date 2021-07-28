@@ -9,6 +9,8 @@ using PlaneTicketReservationSystem.Business.Constants;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
 
@@ -32,23 +34,23 @@ namespace PlaneTicketReservationSystem.Business.Services
             _userMapper = mapper;
         }
 
-        public IEnumerable<User> GetFilteredUsers(int offset, int limit, string email, string firstName, string lastName)
+        public IEnumerable<User> GetFilteredUsers(UserFilter filter, int offset, int limit)
         {
             Expression<Func<UserEntity, bool>> predicate = u =>
-                (string.IsNullOrEmpty(email) || u.Email.Contains(email))
-                && (string.IsNullOrEmpty(firstName) || u.FirstName.Contains(firstName))
-                && (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName));
+                (string.IsNullOrEmpty(filter.Email) || u.Email.Contains(filter.Email))
+                && (string.IsNullOrEmpty(filter.FirstName) || u.FirstName.Contains(filter.FirstName))
+                && (string.IsNullOrEmpty(filter.LastName) || u.LastName.Contains(filter.LastName));
             var result = _users.FindWithLimitAndOffset(predicate, offset, limit);
             var flight = _userMapper.Map<IEnumerable<User>>(result);
             return flight;
         }
 
-        public int GetFilteredUsersCount(string email, string firstName, string lastName)
+        public int GetFilteredUsersCount(UserFilter filter)
         {
             Expression<Func<UserEntity, bool>> predicate = u =>
-                (string.IsNullOrEmpty(email) || u.Email.Contains(email))
-                && (string.IsNullOrEmpty(firstName) || u.FirstName.Contains(firstName))
-                && (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName));
+                (string.IsNullOrEmpty(filter.Email) || u.Email.Contains(filter.Email))
+                && (string.IsNullOrEmpty(filter.FirstName) || u.FirstName.Contains(filter.FirstName))
+                && (string.IsNullOrEmpty(filter.LastName) || u.LastName.Contains(filter.LastName));
             IQueryable<UserEntity> userEntities = _users.Find(predicate);
             int count = userEntities.Count();
             return count;
@@ -139,6 +141,13 @@ namespace PlaneTicketReservationSystem.Business.Services
             IEnumerable<UserEntity> usersEntities = _users.Find(user => user.CompanyId == companyId);
             var usersResponse = _userMapper.Map<IEnumerable<User>>(usersEntities);
             return usersResponse;
+        }
+
+        public IEnumerable<UserHint> GetHints(UserFilter filter, int offset, int limit)
+        {
+            IEnumerable<User> users = GetFilteredUsers(filter, offset, limit);
+            var userHints = _userMapper.Map<IEnumerable<UserHint>>(users);
+            return userHints;
         }
     }
 }

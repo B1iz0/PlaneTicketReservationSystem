@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 
 namespace PlaneTicketReservationSystem.Business.Interfaces
 {
@@ -9,14 +11,16 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
     {
         Task<IEnumerable<Airport>> GetAllAsync();
 
-        IEnumerable<Airport> GetFilteredAirports(string company, string airportName, string city, string country, int offset, int limit);
+        IEnumerable<Airport> GetFilteredAirports(AirportFilter filter, int offset, int limit);
 
-        int GetFilteredAirportsCount(string company, string airportName, string city, string country);
+        int GetFilteredAirportsCount(AirportFilter filter);
 
         Task PostAsync(Airport item);
 
         Task DeleteAsync(Guid id);
 
         Task UpdateAsync(Guid id, Airport item);
+
+        IEnumerable<AirportHint> GetHints(AirportFilter filter, int offset, int limit);
     }
 }

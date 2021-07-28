@@ -7,6 +7,8 @@ using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
 
@@ -72,24 +74,31 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _companies.UpdateAsync(companyEntity);
         }
 
-        public IEnumerable<Company> GetFilteredCompanies(int offset, int limit, string companyName, string countryName)
+        public IEnumerable<Company> GetFilteredCompanies(CompanyFilter filter, int offset, int limit)
         {
             Expression<Func<CompanyEntity, bool>> predicate = c =>
-                (string.IsNullOrEmpty(companyName) || c.Name.Contains(companyName))
-                && (string.IsNullOrEmpty(countryName) || c.Country.Name.Contains(countryName));
+                (string.IsNullOrEmpty(filter.CompanyName) || c.Name.Contains(filter.CompanyName))
+                && (string.IsNullOrEmpty(filter.CountryName) || c.Country.Name.Contains(filter.CountryName));
             IEnumerable<CompanyEntity> result = _companies.FindWithLimitAndOffset(predicate, offset, limit);
             var companies = _companyMapper.Map<IEnumerable<Company>>(result);
             return companies;
         }
 
-        public int GetFilteredCompaniesCount(string companyName, string countryName)
+        public int GetFilteredCompaniesCount(CompanyFilter filter)
         {
             Expression<Func<CompanyEntity, bool>> predicate = c =>
-                (string.IsNullOrEmpty(companyName) || c.Name.Contains(companyName))
-                && (string.IsNullOrEmpty(countryName) || c.Country.Name.Contains(countryName));
+                (string.IsNullOrEmpty(filter.CompanyName) || c.Name.Contains(filter.CompanyName))
+                && (string.IsNullOrEmpty(filter.CountryName) || c.Country.Name.Contains(filter.CountryName));
             IQueryable<CompanyEntity> companies = _companies.Find(predicate);
             int count = companies.Count();
             return count;
+        }
+
+        public IEnumerable<CompanyHint> GetHints(CompanyFilter filter, int offset, int limit)
+        {
+            IEnumerable<Company> companies = GetFilteredCompanies(filter, offset, limit);
+            var hints = _companyMapper.Map<IEnumerable<CompanyHint>>(companies);
+            return hints;
         }
     }
 }

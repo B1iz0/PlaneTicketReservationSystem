@@ -7,6 +7,8 @@ using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
 
@@ -30,25 +32,25 @@ namespace PlaneTicketReservationSystem.Business.Services
             return airports;
         }
 
-        public IEnumerable<Airport> GetFilteredAirports(string company, string airportName, string city, string country, int offset, int limit)
+        public IEnumerable<Airport> GetFilteredAirports(AirportFilter filter, int offset, int limit)
         {
             Expression<Func<AirportEntity, bool>> predicate = airport =>
-                (string.IsNullOrEmpty(company) || airport.Company.Name.Contains(company))
-                && (string.IsNullOrEmpty(airportName) || airport.Name.Contains(airportName))
-                && (string.IsNullOrEmpty(city) || airport.City.Name.Contains(city))
-                && (string.IsNullOrEmpty(country) || airport.City.Country.Name.Contains(country));
+                (string.IsNullOrEmpty(filter.CompanyName) || airport.Company.Name.Contains(filter.CompanyName))
+                && (string.IsNullOrEmpty(filter.AirportName) || airport.Name.Contains(filter.AirportName))
+                && (string.IsNullOrEmpty(filter.CityName) || airport.City.Name.Contains(filter.CityName))
+                && (string.IsNullOrEmpty(filter.CountryName) || airport.City.Country.Name.Contains(filter.CountryName));
             var result = _airports.FindWithLimitAndOffset(predicate, offset, limit);
             var airports = _airportMapper.Map<IEnumerable<Airport>>(result);
             return airports;
         }
 
-        public int GetFilteredAirportsCount(string company, string airportName, string city, string country)
+        public int GetFilteredAirportsCount(AirportFilter filter)
         {
             Expression<Func<AirportEntity, bool>> predicate = airport =>
-                (string.IsNullOrEmpty(company) || airport.Company.Name.Contains(company))
-                && (string.IsNullOrEmpty(airportName) || airport.Name.Contains(airportName))
-                && (string.IsNullOrEmpty(city) || airport.City.Name.Contains(city))
-                && (string.IsNullOrEmpty(country) || airport.City.Country.Name.Contains(country));
+                (string.IsNullOrEmpty(filter.CompanyName) || airport.Company.Name.Contains(filter.CompanyName))
+                && (string.IsNullOrEmpty(filter.AirportName) || airport.Name.Contains(filter.AirportName))
+                && (string.IsNullOrEmpty(filter.CityName) || airport.City.Name.Contains(filter.CityName))
+                && (string.IsNullOrEmpty(filter.CountryName) || airport.City.Country.Name.Contains(filter.CountryName));
             IQueryable<AirportEntity> airportsEntities = _airports.Find(predicate);
             int count = airportsEntities.Count();
             return count;
@@ -80,6 +82,13 @@ namespace PlaneTicketReservationSystem.Business.Services
             item.Id = id;
             var airportEntity = _airportMapper.Map<AirportEntity>(item);
             await _airports.UpdateAsync(airportEntity);
+        }
+
+        public IEnumerable<AirportHint> GetHints(AirportFilter filter, int offset, int limit)
+        {
+            IEnumerable<Airport> airports = GetFilteredAirports(filter, offset, limit);
+            var hints = _airportMapper.Map<IEnumerable<AirportHint>>(airports);
+            return hints;
         }
     }
 }

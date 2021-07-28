@@ -6,9 +6,13 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Airport;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.SearchFilters;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.SearchHints;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 {
@@ -20,10 +24,13 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         private readonly Mapper _airportMapper;
 
-        public AirportsController(IAirportService service, ApiMappingsConfiguration conf)
+        private readonly IMapper _mapper;
+
+        public AirportsController(IAirportService service, ApiMappingsConfiguration conf, IMapper mapper)
         {
             _airportService = service;
             _airportMapper = new Mapper(conf.AirportConfiguration);
+            _mapper = mapper;
         }
 
         [HttpGet("all")]
@@ -34,17 +41,17 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetFilteredAirports(string company, string airportName, string city, string country, int offset, int limit)
+        public IActionResult GetFilteredAirports([FromQuery] AirportFilterModel filter, int offset, int limit)
         {
-            var airports = _airportService.GetFilteredAirports(company, airportName, city, country, offset, limit);
+            IEnumerable<Airport> airports = _airportService.GetFilteredAirports(_mapper.Map<AirportFilter>(filter), offset, limit);
             var response = _airportMapper.Map<IEnumerable<AirportResponseModel>>(airports);
             return Ok(response);
         }
 
         [HttpGet("count")]
-        public IActionResult GetFilteredAirportsCount(string company, string airportName, string city, string country)
+        public IActionResult GetFilteredAirportsCount([FromQuery] AirportFilterModel filter)
         {
-            var airportsCount = _airportService.GetFilteredAirportsCount(company, airportName, city, country);
+            var airportsCount = _airportService.GetFilteredAirportsCount(_mapper.Map<AirportFilter>(filter));
             return Ok(airportsCount);
         }
 
@@ -70,6 +77,14 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             await _airportService.DeleteAsync(id);
             return Ok();
+        }
+
+        [HttpGet("hints")]
+        public IActionResult GetHints([FromQuery] AirportFilterModel filter, int offset = 0, int limit = 6)
+        {
+            IEnumerable<AirportHint> hints = _airportService.GetHints(_mapper.Map<AirportFilter>(filter), offset, limit);
+            var response = _mapper.Map<IEnumerable<AirportHintModel>>(hints);
+            return Ok(response);
         }
     }
 }

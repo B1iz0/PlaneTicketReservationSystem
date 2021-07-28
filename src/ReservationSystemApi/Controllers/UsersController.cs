@@ -8,10 +8,14 @@ using Microsoft.AspNetCore.Authorization;
 using PlaneTicketReservationSystem.Business.Constants;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 using PlaneTicketReservationSystem.ReservationSystemApi.Helpers;
 using PlaneTicketReservationSystem.ReservationSystemApi.Mapping;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.Authenticate;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.SearchFilters;
+using PlaneTicketReservationSystem.ReservationSystemApi.Models.SearchHints;
 using PlaneTicketReservationSystem.ReservationSystemApi.Models.User;
 
 namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
@@ -30,13 +34,16 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         private readonly Mapper _authMapper;
 
-        public UsersController(IUserService userService, ITokenProvider tokenProvider, IAccountService account, ApiMappingsConfiguration conf)
+        private readonly IMapper _mapper;
+
+        public UsersController(IUserService userService, ITokenProvider tokenProvider, IAccountService account, ApiMappingsConfiguration conf, IMapper mapper)
         {
             _userService = userService;
             _tokenProvider = tokenProvider;
             _account = account;
             _userMapper = new Mapper(conf.UserMapperConfiguration);
             _authMapper = new Mapper(conf.AuthMapperConfiguration);
+            _mapper = mapper;
         }
 
         [HttpPost("authenticate")]
@@ -78,17 +85,18 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
 
         [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         [HttpGet]
-        public IActionResult Get(int offset, int limit, string email, string firstName, string lastName)
+        public IActionResult Get([FromQuery] UserFilterModel filter, int offset, int limit)
         {
-            var users = _userMapper.Map<IEnumerable<UserResponseModel>>(_userService.GetFilteredUsers(offset, limit, email, firstName, lastName));
-            return Ok(users);
+            IEnumerable<User> users = _userService.GetFilteredUsers(_mapper.Map<UserFilter>(filter), offset, limit);
+            var response = _userMapper.Map<IEnumerable<UserResponseModel>>(users);
+            return Ok(response);
         }
 
         [Authorize(Policy = ApiPolicies.AdminAppPolicy)]
         [HttpGet("count")]
-        public IActionResult GetCount(string email, string firstName, string lastName)
+        public IActionResult GetCount([FromQuery] UserFilterModel filter)
         {
-            var response = _userService.GetFilteredUsersCount(email, firstName, lastName);
+            var response = _userService.GetFilteredUsersCount(_mapper.Map<UserFilter>(filter));
             return Ok(response);
         }
 
@@ -156,6 +164,14 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         {
             await _userService.DeleteAsync(id);
             return Ok();
+        }
+
+        [HttpGet("hints")]
+        public IActionResult GetHints([FromQuery] UserFilterModel filter, int offset = 0, int limit = 6)
+        {
+            IEnumerable<UserHint> hints = _userService.GetHints(_mapper.Map<UserFilter>(filter), offset, limit);
+            var response = _mapper.Map<IEnumerable<UserHintModel>>(hints);
+            return Ok(response);
         }
     }
 }

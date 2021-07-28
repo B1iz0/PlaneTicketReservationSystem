@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 
 namespace PlaneTicketReservationSystem.Business.Interfaces
 {
@@ -17,8 +19,10 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
 
         IEnumerable<Airplane> GetFreeAirplanes();
 
-        IEnumerable<Airplane> GetFilteredAirplanes(int offset, int limit, string airplaneType, string company, string model);
+        IEnumerable<Airplane> GetFilteredAirplanes(AirplaneFilter filter, int offset, int limit);
 
-        int GetFilteredAirplanesCount(string airplaneType, string company, string model);
+        int GetFilteredAirplanesCount(AirplaneFilter filter);
+
+        IEnumerable<AirplaneHint> GetHints(AirplaneFilter filter, int offset, int limit);
     }
 }

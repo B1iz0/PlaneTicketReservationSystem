@@ -9,9 +9,9 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
 {
     public interface IFlightService
     {
-        IEnumerable<Flight> GetFilteredFlights(int offset, int limit, string departureCity, string arrivalCity);
+        IEnumerable<Flight> GetFilteredFlights(FlightFilter filter, int offset, int limit);
 
-        int GetFilteredFlightsCount(string departureCity, string arrivalCity);
+        int GetFilteredFlightsCount(FlightFilter filter);
 
         Task<Flight> GetByIdAsync(Guid id);
 
@@ -21,6 +21,6 @@ namespace PlaneTicketReservationSystem.Business.Interfaces
 
         Task UpdateAsync(Guid id, Flight item);
 
-        IEnumerable<FlightHint> GetHints(FlightFilter flightFilter);
+        IEnumerable<FlightHint> GetHints(FlightFilter flightFilter, int offset, int limit);
     }
 }

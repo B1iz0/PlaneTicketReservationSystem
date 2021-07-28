@@ -26,21 +26,21 @@ namespace PlaneTicketReservationSystem.Business.Services
             _flightMapper = mapper;
         }
 
-        public IEnumerable<Flight> GetFilteredFlights(int offset, int limit, string departureCity, string arrivalCity)
+        public IEnumerable<Flight> GetFilteredFlights(FlightFilter filter, int offset, int limit)
         {
             Expression<Func<FlightEntity, bool>> predicate = f =>
-                (string.IsNullOrEmpty(departureCity) || f.From.City.Name.Contains(departureCity))
-                && (string.IsNullOrEmpty(arrivalCity) || f.To.City.Name.Contains(arrivalCity));
+                (string.IsNullOrEmpty(filter.DepartureCity) || f.From.City.Name.Contains(filter.DepartureCity))
+                && (string.IsNullOrEmpty(filter.ArrivalCity) || f.To.City.Name.Contains(filter.ArrivalCity));
             var result = _flights.FindWithLimitAndOffset(predicate, offset, limit);
             var flight = _flightMapper.Map<IEnumerable<Flight>>(result);
             return flight;
         }
 
-        public int GetFilteredFlightsCount(string departureCity, string arrivalCity)
+        public int GetFilteredFlightsCount(FlightFilter filter)
         {
             Expression<Func<FlightEntity, bool>> predicate = f =>
-                (string.IsNullOrEmpty(departureCity) || f.From.City.Name.Contains(departureCity))
-                && (string.IsNullOrEmpty(arrivalCity) || f.To.City.Name.Contains(arrivalCity));
+                (string.IsNullOrEmpty(filter.DepartureCity) || f.From.City.Name.Contains(filter.DepartureCity))
+                && (string.IsNullOrEmpty(filter.ArrivalCity) || f.To.City.Name.Contains(filter.ArrivalCity));
             IQueryable<FlightEntity> flightsEntities = _flights.Find(predicate);
             int count = flightsEntities.Count();
             return count;
@@ -90,14 +90,10 @@ namespace PlaneTicketReservationSystem.Business.Services
             await _flights.UpdateAsync(flightEntity);
         }
 
-        public IEnumerable<FlightHint> GetHints(FlightFilter flightFilter)
+        public IEnumerable<FlightHint> GetHints(FlightFilter flightFilter, int offset, int limit)
         {
-            Expression<Func<FlightEntity, bool>> predicate = f =>
-                (string.IsNullOrEmpty(flightFilter.DepartureCity) || f.From.City.Name.Contains(flightFilter.DepartureCity))
-                && (string.IsNullOrEmpty(flightFilter.ArrivalCity) || f.To.City.Name.Contains(flightFilter.ArrivalCity));
-            var result = _flights.FindWithLimitAndOffset(predicate, 0, 6);
-            var flight = _flightMapper.Map<IEnumerable<Flight>>(result);
-            var flightHints = _flightMapper.Map<IEnumerable<FlightHint>>(flight);
+            IEnumerable<Flight> flights = GetFilteredFlights(flightFilter, offset, limit);
+            var flightHints = _flightMapper.Map<IEnumerable<FlightHint>>(flights);
             return flightHints;
         }
     }

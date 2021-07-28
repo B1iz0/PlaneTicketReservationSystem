@@ -34,9 +34,11 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(string departureCity, string arrivalCity, int offset, int limit = 16)
+        public IActionResult Get([FromQuery] FlightFilterModel filter, int offset, int limit = 16)
         {
-            var response = _flightMapper.Map<IEnumerable<FlightResponseModel>>(_flightService.GetFilteredFlights(offset, limit, departureCity, arrivalCity));
+            IEnumerable<Flight> flights =
+                _flightService.GetFilteredFlights(_mapper.Map<FlightFilter>(filter), offset, limit);
+            var response = _flightMapper.Map<IEnumerable<FlightResponseModel>>(flights);
             return Ok(response);
         }
 
@@ -48,9 +50,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpGet("count")]
-        public IActionResult GetCount(string departureCity, string arrivalCity)
+        public IActionResult GetCount([FromQuery] FlightFilterModel filter)
         {
-            var response = _flightService.GetFilteredFlightsCount(departureCity, arrivalCity);
+            var response = _flightService.GetFilteredFlightsCount(_mapper.Map<FlightFilter>(filter));
             return Ok(response);
         }
 
@@ -79,9 +81,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Controllers
         }
 
         [HttpGet("hints")]
-        public IActionResult GetHints([FromQuery] FlightFilterModel filter)
+        public IActionResult GetHints([FromQuery] FlightFilterModel filter, int offset = 0, int limit = 6)
         {
-            IEnumerable<FlightHint> hints = _flightService.GetHints(_mapper.Map<FlightFilter>(filter));
+            IEnumerable<FlightHint> hints = _flightService.GetHints(_mapper.Map<FlightFilter>(filter), offset, limit);
             var flightHints = _mapper.Map<IEnumerable<FlightHintModel>>(hints);
             return Ok(flightHints);
         }

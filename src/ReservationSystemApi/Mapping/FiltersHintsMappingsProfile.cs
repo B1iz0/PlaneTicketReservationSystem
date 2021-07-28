@@ -12,6 +12,14 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Mapping
         {
             CreateMap<FlightFilter, FlightFilterModel>().ReverseMap();
             CreateMap<FlightHint, FlightHintModel>().ReverseMap();
+            CreateMap<UserFilter, UserFilterModel>().ReverseMap();
+            CreateMap<UserHint, UserHintModel>().ReverseMap();
+            CreateMap<CompanyFilter, CompanyFilterModel>().ReverseMap();
+            CreateMap<CompanyHint, CompanyHintModel>().ReverseMap();
+            CreateMap<AirplaneFilter, AirplaneFilterModel>().ReverseMap();
+            CreateMap<AirplaneHint, AirplaneHintModel>().ReverseMap();
+            CreateMap<AirportFilter, AirportFilterModel>().ReverseMap();
+            CreateMap<AirportHint, AirportHintModel>().ReverseMap();
         }
     }
 }

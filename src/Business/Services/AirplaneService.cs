@@ -7,6 +7,8 @@ using AutoMapper;
 using PlaneTicketReservationSystem.Business.Exceptions;
 using PlaneTicketReservationSystem.Business.Interfaces;
 using PlaneTicketReservationSystem.Business.Models;
+using PlaneTicketReservationSystem.Business.Models.SearchFilters;
+using PlaneTicketReservationSystem.Business.Models.SearchHints;
 using PlaneTicketReservationSystem.Data.Entities;
 using PlaneTicketReservationSystem.Data.Interfaces;
 
@@ -75,26 +77,33 @@ namespace PlaneTicketReservationSystem.Business.Services
             return freeAirplanes;
         }
 
-        public IEnumerable<Airplane> GetFilteredAirplanes(int offset, int limit, string airplaneType, string company, string model)
+        public IEnumerable<Airplane> GetFilteredAirplanes(AirplaneFilter filter, int offset, int limit)
         {
             Expression<Func<AirplaneEntity, bool>> predicate = a =>
-                (string.IsNullOrEmpty(airplaneType) || a.AirplaneType.TypeName.Contains(airplaneType))
-                && (string.IsNullOrEmpty(company) || a.Company.Name.Contains(company))
-                && (string.IsNullOrEmpty(model) || a.Model.Contains(model));
+                (string.IsNullOrEmpty(filter.AirplaneType) || a.AirplaneType.TypeName.Contains(filter.AirplaneType))
+                && (string.IsNullOrEmpty(filter.CompanyName) || a.Company.Name.Contains(filter.CompanyName))
+                && (string.IsNullOrEmpty(filter.Model) || a.Model.Contains(filter.Model));
             var airplanesEntities = _airplanes.FindWithLimitAndOffset(predicate, offset, limit);
             var airplanes = _airplaneMapper.Map<IEnumerable<Airplane>>(airplanesEntities);
             return airplanes;
         }
 
-        public int GetFilteredAirplanesCount(string airplaneType, string company, string model)
+        public int GetFilteredAirplanesCount(AirplaneFilter filter)
         {
             Expression<Func<AirplaneEntity, bool>> predicate = a =>
-                (string.IsNullOrEmpty(airplaneType) || a.AirplaneType.TypeName.Contains(airplaneType))
-                && (string.IsNullOrEmpty(company) || a.Company.Name.Contains(company))
-                && (string.IsNullOrEmpty(model) || a.Model.Contains(model));
+                (string.IsNullOrEmpty(filter.AirplaneType) || a.AirplaneType.TypeName.Contains(filter.AirplaneType))
+                && (string.IsNullOrEmpty(filter.CompanyName) || a.Company.Name.Contains(filter.CompanyName))
+                && (string.IsNullOrEmpty(filter.Model) || a.Model.Contains(filter.Model));
             var airplanesEntities = _airplanes.Find(predicate);
             int count = airplanesEntities.Count();
             return count;
+        }
+
+        public IEnumerable<AirplaneHint> GetHints(AirplaneFilter filter, int offset, int limit)
+        {
+            IEnumerable<Airplane> airplanes = GetFilteredAirplanes(filter, offset, limit);
+            var hints = _airplaneMapper.Map<IEnumerable<AirplaneHint>>(airplanes);
+            return hints;
         }
     }
 }
