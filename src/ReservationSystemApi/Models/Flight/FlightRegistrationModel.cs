@@ -12,9 +12,9 @@ namespace PlaneTicketReservationSystem.ReservationSystemApi.Models.Flight
 
         public Guid ToId { get; set; }
 
-        public DateTime DepartureTime { get; set; }
+        public DateTimeOffset DepartureTime { get; set; }
 
-        public DateTime ArrivalTime { get; set; }
+        public DateTimeOffset ArrivalTime { get; set; }
 
         public double FreeBaggageLimitInKilograms { get; set; }
 

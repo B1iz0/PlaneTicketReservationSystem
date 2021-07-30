@@ -18,9 +18,9 @@ namespace PlaneTicketReservationSystem.Data.Entities
         public Guid ToId { get; set; }
         public virtual AirportEntity To { get; set; }
 
-        public DateTime DepartureTime { get; set; }
+        public DateTimeOffset DepartureTime { get; set; }
 
-        public DateTime ArrivalTime { get; set; }
+        public DateTimeOffset ArrivalTime { get; set; }
 
         public double FreeBaggageLimitInKilograms { get; set; }
 
